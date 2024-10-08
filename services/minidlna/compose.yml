@@ -1,0 +1,50 @@
+volumes:
+  minidlna_db: {}
+
+configs:
+  small_png:
+    file: ./icons/small.png
+  small_jpg:
+    file: ./icons/small.jpg
+  large_png:
+    file: ./icons/large.png
+  large_jpg:
+    file: ./icons/large.jpg
+
+services:
+  minidlna:
+    image: ghcr.io/HeavenVolkoff/homelab/minidlna:latest
+    deploy:
+      resources:
+        limits:
+          cpus: '0.6'
+          memory: 256M
+        reservations:
+          memory: 64M
+      placement:
+        constraints:
+          - node.hostname == hills-dos
+    command: -r
+    configs:
+      - source: small_png
+        target: /usr/share/minidlna/small.png
+      - source: small_jpg
+        target: /usr/share/minidlna/small.jpg
+      - source: large_png
+        target: /usr/share/minidlna/large.png
+      - source: large_jpg
+        target: /usr/share/minidlna/large.jpg
+    volumes:
+      - type: volume
+        source: minidlna_db
+        target: /usr/share/minidlna
+      - ${MEDIA_DIR?Missing media dir}:/media
+    hostname: minidlna-{{.Service.ID}}
+    environment:
+      MINIDLNA_INOTIFY: 'yes'
+      MINIDLNA_MEDIA_DIR_1: V,/media
+      MINIDLNA_MEDIA_DIR_2: V,/media/.empty
+      MINIDLNA_FRIENDLY_NAME: VIDEOS
+      MINIDLNA_ROOT_CONTAINER: B
+      MINIDLNA_THUMBNAIL_WIDTH: 256
+      MINIDLNA_ENABLE_THUMBNAIL: 'yes'

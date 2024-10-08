@@ -1,0 +1,55 @@
+volumes:
+  caddy_data: {}
+  caddy_config: {}
+
+networks:
+  controller:
+    ipam:
+      driver: default
+      config:
+        - subnet: &controller_net 10.200.200.0/24
+    driver: overlay
+    attachable: false
+    enable_ipv6: true
+    driver_opts:
+      # Necessary for networks that may accessed behind pppoe
+      com.docker.network.driver.mtu: 1280
+
+services:
+  caddy_controller:
+    image: &image ghcr.io/HeavenVolkoff/homelab/caddy:latest
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 64M
+    networks:
+      - controller
+    hostname: caddy_controller-{{.Service.ID}}
+    environment:
+      CADDY_DOCKER_MODE: controller
+      CADDY_CONTROLLER_NETWORK: *controller_net
+      CADDY_DOCKER_POLLING_INTERVAL: 1m
+
+  caddy:
+    image: *image
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 256M
+        reservations:
+          memory: 64M
+    volumes:
+      - type: volume
+        target: /data/caddy
+        source: caddy_data
+      - type: volume
+        target: /config/caddy
+        source: caddy_config
+    networks:
+      - controller
+    hostname: caddy-{{.Service.ID}}
+    environment:
+      CADDY_DOCKER_MODE: server
+      CADDY_CONTROLLER_NETWORK: *controller_net

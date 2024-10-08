@@ -1,0 +1,46 @@
+volumes:
+  maria_db_data:
+    driver: glusterfs
+    driver_opts:
+      subdir: maria_db
+
+configs:
+  config:
+    file: ../configs/maria_db/config.ini
+  init_sql:
+    file: ./sql_init.sh
+
+services:
+  maria_db:
+    image: docker.io/library/mariadb:lts
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 6G
+        reservations:
+          memory: 256M
+    configs:
+      - source: config
+        target: /etc/mysql/mysql.conf.d/99-docker.cnf
+      - source: init_sql
+        target: /docker-entrypoint-initdb.d/sql_init.sh
+    volumes:
+      - type: volume
+        source: maria_db_data
+        target: /var/lib/mysql
+    hostname: maria_db-{{.Service.ID}}
+    healthcheck:
+      test:
+        - CMD
+        - healthcheck.sh
+        - --su-mysql
+        - --connect
+        - --innodb_initialized
+      retries: 5
+      timeout: 10s
+      interval: 5s
+      start_interval: 5s
+    environment:
+      MARIADB_AUTO_UPGRADE: "true"
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASS:?Missing db root password}

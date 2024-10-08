@@ -1,0 +1,8 @@
+<!--
+    Modified from: https://v8.dev/_css/img/moon.svg
+    Part of the V8 project (https://v8.dev/terms#site-policies)
+
+    This work is licensed under the Creative Commons 3.0 Attribution License.
+    To view a copy of this license, visit https://creativecommons.org/licenses/by/3.0/.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 8.7V4h-4.7L12 .7 8.7 4H4v4.7L.7 12 4 15.3V20h4.7l3.3 3.3 3.3-3.3H20v-4.7l3.3-3.3L20 8.7zm-2 5.8V18h-3.5L12 20.5 9.5 18H6v-3.5L3.5 12 6 9.5V6h3.5L12 3.5 14.5 6H18v3.5l2.5 2.5-2.5 2.5zM12 7a5 5 0 100 10 5 5 0 000-10z"/><path fill="none" d="M0 0h24v24H0V0z"/></svg>

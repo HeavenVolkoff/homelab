@@ -1,0 +1,40 @@
+services:
+  transmission:
+    image: ghcr.io/HeavenVolkoff/homelab/transmission:latest
+    sysctls:
+      net.ipv4.tcp_allowed_congestion_control: "cubic reno lp"
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 768M
+        reservations:
+          memory: 256M
+    volumes:
+      - ${ROOT_DIR?Missing root dir}/runtime/transmission/watch:/usr/share/transmission/watch
+      - ${ROOT_DIR?Missing root dir}/runtime/transmission/config:/etc/transmission
+      - ${MEDIA_DIR?Missing media dir}:/media
+      - ${TORRENT_DIR?Missing torrent dir}:/download
+    networks:
+      - transmission
+    hostname: transmission-{{.Service.ID}}
+    environment:
+      '-': '<<: *env'
+      TRANSMISSION_DTH: 1
+      TRANSMISSION_LPD: 1
+      TRANSMISSION_PEX: 1
+      TRANSMISSION_UTP: 1
+      TRANSMISSION_QUEUE: 0
+      TRANSMISSION_TCP_LP: 1
+      TRANSMISSION_UP_SPEED: 10240 # 10MB/s in KB/s
+      TRANSMISSION_DOWN_SPEED: 0
+      TRANSMISSION_RPC_USER: ${TRANSMISSION_RPC_USER?Missing transmission rpc user}
+      TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASS?Missing transmission rpc password}
+      TRANSMISSION_LOG_LEVEL: 3
+      TRANSMISSION_UMASK: '007'
+      TRANSMISSION_CACHE_SIZE: 32
+      TRANSMISSION_PREFETCH: 1
+      TRANSMISSION_BLOCKLIST_URL: https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz
+      TRANSMISSION_ENCRYPTION: 2
+      TRANSMISSION_PREALLOCATION: 2
+      TRANSMISSION_PEER_LIMIT_GLOBAL: 1000

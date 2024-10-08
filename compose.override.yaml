@@ -1,0 +1,353 @@
+x-env: &env
+  TZ: America/Sao_Paulo
+  PUID: 1000
+  PGID: 1000
+  LANG: &lang C.UTF-8
+  TMPDIR: /tmp
+  LC_ALL: *lang
+  LC_CTYPE: *lang
+  LANGUAGE: en
+
+x-deploy: &deploy
+  update_config:
+    delay: 10s
+    order: start-first
+    monitor: 60s
+    parallelism: 1
+    failure_action: rollback
+    max_failure_ratio: 0
+  restart_policy:
+    delay: 10s
+    window: 150s
+    condition: on-failure
+    max_attempts: 6
+  rollback_config:
+    delay: 10s
+    order: start-first
+    monitor: 60s
+    parallelism: 1
+    failure_action: pause
+    max_failure_ratio: 0
+
+x-service: &service
+  tty: false
+  init: false
+  attach: true
+  ulimits:
+    nproc: 65535
+    nofile:
+      soft: &nofile_limit 64000
+      hard: *nofile_limit
+  volumes:
+    - type: volume
+      source: run
+      target: /run
+    - type: volume
+      source: tmp
+      target: /tmp
+    - type: volume
+      source: logs
+      target: /var/log
+  stdin_open: false
+  stop_grace_period: 30s
+
+services:
+  docker_proxy:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: global
+      placement:
+        constraints:
+          - node.role == manager
+    networks:
+      - docker
+    environment:
+      <<: *env
+
+  valkey:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.cloud == oracle
+    networks:
+      - valkey
+    environment:
+      <<: *env
+
+  maria_db:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.cloud == oracle
+    networks:
+      - db
+    environment:
+      <<: *env
+      SETUP_DB_VAULTWARDEN: spacedrive_cloud_services,${VAULTWARDEN_DB_USER?Missing vaultwarden database user},${VAULTWARDEN_DB_PASS?Missing
+        vaultwarden database password}
+
+  minidlna:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == brasilia-uno
+    networks:
+      - host
+    environment:
+      <<: *env
+
+  transmission:
+    <<: *service
+    ports:
+      - mode: host
+        target: &peer_port 51413
+        protocol: tcp
+        published: *peer_port
+      - mode: host
+        target: *peer_port
+        protocol: udp
+        published: *peer_port
+    deploy:
+      <<: *deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == brasilia-uno
+    networks:
+      - transmission
+    environment:
+      <<: *env
+      TRANSMISSION_PEER_PORT: *peer_port
+
+  caddy_controller:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+        preferences:
+          - spread: node.labels.cloud
+    networks:
+      - valkey
+      - docker
+    environment:
+      <<: *env
+      DOCKER_HOST: tcp://docker_proxy:2375
+      CADDY_INGRESS_NETWORKS: &ingress_network '{{index .Service.Labels "com.docker.stack.namespace"}}_public'
+
+  caddy:
+    <<: *service
+    ports:
+      # HTTP
+      - mode: host
+        target: 80
+        published: 80
+        app_protocol: http
+      # HTTPS
+      - mode: host
+        target: 443
+        published: 443
+        app_protocol: https
+    deploy:
+      <<: *deploy
+      mode: global
+      labels:
+        caddy_0.log.level: WARN
+        caddy_0.log.output: stdout
+        caddy_0.log.format: console
+        caddy_0.email: support@${DOMAIN?Missing domain}
+        caddy_0.default_sni: ${DOMAIN?Missing domain}
+        caddy_1: (basic_headers)
+        caddy_1.header_0.-Server: '{{""}}'
+        caddy_1.header_1.X-Robots-Tag: none
+        caddy_1.header_2.-X-Powered-By: '{{""}}'
+        caddy_1.header_3.Permissions-Policy: interest-cohort=()
+        caddy_1.header_4.-Access-Control-Max-Age: '{{""}}'
+        caddy_1.header_5.Strict-Transport-Security: "`max-age=63072000; includeSubDomains; preload`"
+        caddy_1.header_0.-Access-Control-Allow-Origin: '{{""}}'
+        caddy_1.header_1.-Access-Control-Allow-Methods: '{{""}}'
+        caddy_1.header_2.-Access-Control-Allow-Headers: '{{""}}'
+        caddy_1.header_3.-Access-Control-Expose-Headers: '{{""}}'
+        caddy_1.header_4.-Access-Control-Allow-Credentials: '{{""}}'
+        caddy_2: (security_headers)
+        caddy_2.header_0.?X-Frame-Options: DENY
+        caddy_2.header_1.?Referrer-Policy: same-origin
+        caddy_2.header_2.?X-XSS-Protection: "`1; mode=block`"
+        caddy_2.header_3.?X-Download-Options: noopen
+        caddy_2.header_4.?X-Content-Type-Options: nosniff
+        caddy_2.header_5.?X-Permitted-Cross-Domain-Policies: none
+        caddy_3: (private_ips)
+        caddy_3.remote_ip_0: 10.0.0.0/8
+        caddy_3.remote_ip_1: 100.0.0.0/8
+        caddy_3.remote_ip_2: 172.16.0.0/12
+        caddy_3.remote_ip_3: 192.168.0.0/16
+        caddy_3.remote_ip_4: fc00::/7
+        caddy_3.remote_ip_5: fd00::/8
+        caddy_4: ${DOMAIN?Missing domain}
+        # NOT(NOT path AND NOT header) == (path || header)
+        caddy_4.@try_auth.not.not_1: path /login
+        caddy_4.@try_auth.not.not_2: header Authorization Basic*
+        caddy_4.root: "* /var/www/homepage"
+        caddy_4.import_0: basic_headers
+        caddy_4.import_1: security_headers
+        caddy_4.redir: /redirect https://{http.request.orig_uri.query}.{http.request.hostport} permanent
+        caddy_4.respond: /health `OK` 200
+        caddy_4.handle_errors.@401: expression `{http.error.status_code} == 401`
+        caddy_4.handle_errors.header: Content-Type `text/html; charset=UTF-8`
+        caddy_4.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN?Missing
+          domain}" /><body>Unauthorized`'
+        caddy_4.route.1_basicauth: "@try_auth"
+        caddy_4.route.1_basicauth.admin: ${ADMIN_PASS_HASH?Missing admin password hash}
+        caddy_4.route.2_redir: /login https://${DOMAIN?Missing domain}
+        caddy_4.route.3_templates: '{{""}}'
+        caddy_4.route.4_file_server.precompressed: zstd br gzip
+        caddy_5: www.${DOMAIN?Missing domain}
+        caddy_5.import_0: basic_headers
+        caddy_5.import_1: security_headers
+        caddy_5.redir: https://${DOMAIN?Missing domain} permanent
+        caddy_controlled_server: '{{""}}'
+    networks:
+      - valkey
+      - public
+    environment:
+      <<: *env
+      CADDY_INGRESS_NETWORKS: *ingress_network
+
+  flood:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      labels:
+        caddy: flood.${DOMAIN?Missing domain}
+        caddy.root: "* /var/www/flood"
+        caddy.route.0_reverse_proxy: /api/* {{upstreams http 3000}}
+        caddy.route.1_try_files: "{path} /index.html"
+        caddy.route.2_file_server.precompressed: zstd br gzip
+        caddy.encode.gzip: 6
+        caddy.header: /static/* Cache-Control `public, max-age=604800, must-revalidate`
+        caddy.import_0: basic_headers
+        caddy.import_1: security_headers
+        caddy.basicauth: '{{""}}'
+        caddy.basicauth.admin: ${FLOOD_PASS_HASH?Missing flood password hash}
+        caddy.handle_errors.@401: expression `{http.error.status_code} == 401`
+        caddy.handle_errors.header: Content-Type `text/html; charset=UTF-8`
+        caddy.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN?Missing
+          domain}" /><body>Unauthorized`'
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == brasilia-uno
+    networks:
+      - public
+      - transmission
+    environment:
+      <<: *env
+
+  vaultwarden:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      labels:
+        caddy: vaultwarden.${DOMAIN?Missing domain}
+        caddy.root: "* /var/www/vaultwarden"
+        caddy.@try_files.file: "{path}"
+        caddy.import: basic_headers
+        caddy.header: /
+        caddy.header.?X-Frame-Options: DENY
+        caddy.header.?X-XSS-Protection: 0
+        caddy.header.?X-Content-Type-Options: nosniff
+        caddy.encode.gzip: 6
+        caddy.route.0_rewrite: / /index.html
+        caddy.route.1_file_server: "@try_files"
+        caddy.route.1_file_server.precompressed: zstd br gzip
+        caddy.route.4_reverse_proxy: "{{upstreams http 8080}}"
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.cloud == oracle
+    networks:
+      - db
+      - public
+    environment:
+      <<: *env
+
+  shoko:
+    <<: *service
+    deploy:
+      <<: *deploy
+      mode: replicated
+      labels:
+        caddy: ${SHOKO_SUBDOMAIN?Variable not set}.${DOMAIN?Variable not set}
+        caddy.root: "* /var/www/shoko"
+        caddy.import_0: basic_headers
+        caddy.import_1: security_headers
+        caddy.handle_path: /webui/*
+        caddy.handle_path.file_server.precompressed: zstd br gzip
+        caddy.reverse_proxy: "{{upstreams http 8111}}"
+        caddy.reverse_proxy.import: forward_headers_up
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == brasilia-uno
+    networks:
+      - db
+      - public
+    environment:
+      <<: *env
+
+  jellyfin:
+    <<: *service
+    ports:
+      - mode: host
+        target: 7359
+        protocol: udp
+        published: 7359
+    deploy:
+      <<: *deploy
+      mode: replicated
+      labels:
+        caddy: jellyfin.${DOMAIN?Variable not set}
+        caddy.root: "* /var/www/jellyfin"
+        caddy.header.Content-Security-Policy: "`default-src https: data: blob: http://image.tmdb.org; style-src 'self' 'unsafe-inline';
+          script-src 'self' 'unsafe-inline' https://www.gstatic.com/cv/js/sender/v1/cast_sender.js https://www.gstatic.com/eureka/clank/cast_sender.js
+          https://www.gstatic.com/eureka/clank/93/cast_sender.js https://www.gstatic.com/eureka/clank/94/cast_sender.js https://www.gstatic.com/eureka/clank/95/cast_sender.js
+          https://www.gstatic.com/eureka/clank/96/cast_sender.js https://www.gstatic.com/eureka/clank/97/cast_sender.js https://www.gstatic.com/eureka/clank/98/cast_sender.js
+          https://www.gstatic.com/eureka/clank/99/cast_sender.js https://www.gstatic.com/eureka/clank/100/cast_sender.js https://www.gstatic.com/eureka/clank/101/cast_sender.js
+          https://www.youtube.com blob:;  worker-src 'self' blob:; connect-src 'self'; object-src 'none'; frame-ancestors
+          'self'`"
+        caddy.handle: "@static"
+        caddy.handle.uri: strip_prefix /web
+        caddy.handle.file_server.precompressed: zstd br gzip
+        caddy.@static.not: path /web/ConfigurationPage /web/ConfigurationPages
+        caddy.@static.path: /web/*
+        caddy.import_0: basic_headers
+        caddy.import_1: security_headers
+        caddy.reverse_proxy: "{{upstreams http 8096}}"
+        caddy.reverse_proxy.import: forward_headers_up
+      replicas: 1
+      placement:
+        constraints:
+          - node.hostname == brasilia-uno
+    networks:
+      - public
+    environment:
+      <<: *env

@@ -1,0 +1,153 @@
+{{ $isAdmin := eq (placeholder "http.auth.user.id") "admin" }}
+{{/* Check if remote connection comes from local network */}}
+{{ $isLocalIP := mustRegexMatch "^f([cd][0-9a-f]{2}|e[89ab][0-9a-f])[:0-9a-f]+$" .RemoteIP }}
+{{ $isLocalIP = or $isLocalIP (mustRegexMatch "^10(\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$" .RemoteIP) }}
+{{ $isLocalIP = or $isLocalIP (mustRegexMatch "^100(\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){3}$" .RemoteIP) }}
+{{ $isLocalIP = or $isLocalIP (mustRegexMatch "^192\\.168(\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){2}$" .RemoteIP) }}
+{{ $isLocalIP = or $isLocalIP (mustRegexMatch "^172\\.(1[6-9]|2[0-9]|3[01])(\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])){2}$" .RemoteIP) }}
+{{ $isLocalIP = or $isLocalIP (mustRegexMatch "^169\\.254\\.(25[0-4]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[1-9])\\.(25[0-5]|2[0-4][0-9]|1[0-9][0-9]|[1-9][0-9]|[0-9])$" .RemoteIP) }}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Specify document character encoding -->
+    <meta charset="utf-8" />
+    <!-- Color the status bar on mobile devices -->
+    <meta content="#ffffff" name="theme-color" />
+    <!-- Allow web page to correctly scale in multi-dpi devices -->
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <!-- Website author -->
+    <meta name="author" content="Vítor Vasconcellos" />
+    <!-- Website description -->
+    <meta content="Vasconcellos - Homepage" name="description" />
+
+    <title>Vasconcellos</title>
+
+    <!-- Favicon -->
+    <link rel="icon" href="assets/image/favicon.svg" type="image/svg+xml" />
+
+    <!-- External Scripts -->
+    <script
+      src="https://unpkg.com/dark-mode-toggle@0.16.0/src/dark-mode-toggle.mjs"
+      type="module"
+      async
+      integrity="sha384-JLFKm+ltkvcgdeQ3fdKgbAT6iBQQuLBY1CCL2krvvB1HikJHt72sknQ8e7Mj0p3W"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Internal Scripts -->
+    <script
+      src="assets/script/href.mjs"
+      type="module"
+      async
+      integrity="sha384-Qd168UOK5PbjGFJxWCuGUVzhExnIHhbC6GH1A1ROGtHXBZk8Z1LZDXkFkdjq9IFd"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Sanitize CSS -->
+    <link rel="stylesheet" href="assets/style/basic.css" />
+    <!-- Main style -->
+    <link rel="stylesheet" href="assets/style/main.css" />
+    <!-- Dark mode -->
+    <link rel="stylesheet" href="assets/style/dark.css" media="(prefers-color-scheme: dark)" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <nav>
+          {{if placeholder "http.auth.user.id"}}
+            <a
+              href="{{placeholder "http.request.scheme"}}://logout:logout@{{placeholder "http.request.hostport"}}/login"
+              >Logout</a
+            >
+          {{else}}
+            <a
+              href="{{placeholder "http.request.scheme"}}://{{placeholder "http.request.hostport"}}/login"
+              >Login</a
+            >
+          {{end}}
+          <input id="status_check" type="checkbox" class="top-left" style="opacity: 0" />
+          <label for="status_check"></label>
+          <div class="status">
+            <iframe
+              src="https://status-production.vasconcellos.workers.dev"
+              name="status"
+              allow="https://status-production.vasconcellos.workers.dev"
+              sandbox="allow-same-origin allow-scripts allow-storage-access-by-user-activation"
+              loading="eager"
+              frameborder="0"
+              allowfullscreen
+              referrerpolicy="no-referrer"
+            ></iframe>
+          </div>
+        </nav>
+        <div class="centerpiece">
+          <figure>
+            <img src="assets/image/favicon.svg" alt="Page main logo" />
+          </figure>
+          <h1>
+            <a href=".">Vasconcellos</a>
+          </h1>
+          <h2>Nossa casa web nas colinas</h2>
+        </div>
+      </header>
+      <section id="services">
+        {{if $isAdmin}}
+          <article>
+            <figure>
+              <img src="./assets/image/flood.logo.svg" alt="Flood logo" />
+            </figure>
+            <h4><a href="/redirect?flood">Flood</a></h4>
+            <p>Uma UI web moderna para varios clientes de torrent</p>
+          </article>
+        {{end}}
+        <article>
+          <figure>
+            <img src="./assets/image/jellyfin.logo.svg" alt="Jellyfin logo" />
+          </figure>
+          <h4><a href="/redirect?jellyfin">Jellyfin</a></h4>
+          <p>Sistema de mídia baseado em software livre</p>
+        </article>
+        <!-- <article>
+          <figure>
+            <img src="./assets/image/nextcloud.logo.svg" alt="Nextcloud logo" />
+          </figure>
+          <h4><a href="/redirect?nextcloud">Nextcloud</a></h4>
+          <p>A nuvem privada para seus dados</p>
+        </article> -->
+        <!-- {{if and $isAdmin $isLocalIP}}
+          <article>
+            <figure>
+              <img src="./assets/image/pihole.logo.svg" alt="Pi-hole logo" />
+            </figure>
+            <h4><a href="/redirect?pihole">Pi-hole</a></h4>
+            <p>Bloqueador de propaganda para rede</p>
+          </article>
+        {{end}} -->
+        {{if $isAdmin}}
+          <article>
+            <figure>
+              <img src="./assets/image/shoko.logo.svg" alt="Shoko logo" />
+            </figure>
+            <h4><a href="/redirect?shoko">Shoko</a></h4>
+            <p>Sistema para catalogação de coleções de animes.</p>
+          </article>
+        {{end}}
+        <article>
+          <figure>
+            <img src="./assets/image/vaultwarden.logo.svg" alt="Vaultwarden logo" />
+          </figure>
+          <h4><a href="/redirect?vaultwarden">Vaultwarden</a></h4>
+          <p>Gerenciador de senhas</p>
+        </article>
+      </section>
+    </main>
+    <footer>
+      <aside>
+        <p>
+          Feito com 🧡 por
+          <a href="https://github.com/HeavenVolkoff">@HeavenVolkoff</a>
+        </p>
+      </aside>
+      <dark-mode-toggle permanent></dark-mode-toggle>
+    </footer>
+  </body>
+</html>
