@@ -1,0 +1,22 @@
+:root {
+  --text: hsl(0, 0%, 100%);
+  --accent: hsl(44, 99%, 67%);
+  --primary: hsl(210, 9%, 22%);
+  --secondary: hsl(210, 17%, 22%);
+  --background: hsl(210, 12%, 16%);
+}
+
+img {
+    -webkit-filter: brightness(80%);
+            filter: brightness(80%);
+}
+
+[data-href]:hover {
+  -webkit-filter: brightness(115%);
+          filter: brightness(115%);
+}
+
+[data-href]:active {
+  -webkit-filter: brightness(130%);
+          filter: brightness(130%);
+}

@@ -1,0 +1,38 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -540,19 +540,33 @@
+ 	[with_dbpath="$withval"],[with_dbpath="/var/cache/minidlna"])
+ AC_DEFINE_UNQUOTED([DEFAULT_DB_PATH],"${with_dbpath}",[DB path])
+ 
++AC_ARG_WITH(os-release,
++	AS_HELP_STRING([--with-os-release=PATH],[Path to os-release file]),
++	[with_os_release="$withval"],[with_os_release="/etc/os-release"])
++AC_DEFINE_UNQUOTED([OS_RELEASE],"${with_os_release}",[Path to os-release file])
++
++if test -r "$with_os_release"; then
++	default_osname=$(source "$with_os_release" && echo "${NAME}")
++	default_osver=$(source "$with_os_release" && echo "${VERSION}")
++	default_osurl=$(source "$with_os_release" && echo "${HOME_URL}")
++fi
++test -z "$default_osname" && default_osname="$(uname -s)"
++test -z "$default_osver"  && default_osver="$(uname -r)"
++test -z "$default_osurl"  && default_osname="http://www.netgear.com"
++
+ AC_ARG_WITH(os-name,
+ 	AS_HELP_STRING([--with-os-name=NAME],[OS Name]),
+-	[with_osname="$withval"],[with_osname="$(uname -s)"])
++	[with_osname="$withval"],[with_osname="${default_osname}"])
+ AC_DEFINE_UNQUOTED([OS_NAME],"${with_osname}",[OS Name])
+ 
+ AC_ARG_WITH(os-version,
+ 	AS_HELP_STRING([--with-os-version=VERS],[OS Version]),
+-	[with_osver="$withval"],[with_osver="$(uname -r)"])
++	[with_osver="$withval"],[with_osver="${default_osver}"])
+ AC_DEFINE_UNQUOTED([OS_VERSION],"${with_osver}",[OS Version])
+ 
+ AC_ARG_WITH(os-url,
+ 	AS_HELP_STRING([--with-os-url=URL],[OS URL]),
+-	[with_osurl="$withval"],[with_osurl="http://www.netgear.com"])
++	[with_osurl="$withval"],[with_osurl="${default_osurl}"])
+ AC_DEFINE_UNQUOTED([OS_URL],"${with_osurl}",[OS URL])
+

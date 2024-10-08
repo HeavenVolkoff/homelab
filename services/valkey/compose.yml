@@ -1,0 +1,71 @@
+volumes:
+  valkey_data:
+    driver: glusterfs
+    driver_opts:
+      subdir: valkey/data
+
+services:
+  valkey:
+    image: docker.io/valkey/valkey:8-alpine
+    labels:
+      caddy.storage: redis
+      caddy.storage.address: valkey:6379
+      caddy.storage.aes_key: ${CADDY_STORAGE_AES_KEY?Missing caddy storage aes key}
+      caddy.storage.password: ${VALKEY_PASS?Missing valkey password}
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 4G
+        reservations:
+          memory: 64M
+    volumes:
+      - type: volume
+        target: /data
+        source: valkey_data
+    command:
+      - valkey-server
+      - --dir /data
+      - --save 900 1
+      - --save 300 10
+      - --save 60 10000
+      - --logfile ""
+      - --timeout 0
+      - --maxmemory 4294967296
+      - --daemonize no
+      - --appendonly no
+      - --dbfilename dump.rdb
+      - --appendfsync no
+      - --requirepass ${VALKEY_PASS?Missing valkey password}
+      - --rdbcompression yes
+    hostname: valkey-{{.Service.ID}}
+    entrypoint:
+      - sh
+      - -c
+      - |-
+        set -eu
+
+        echo "Configure unprivileged user"
+        deluser --remove-home valkey
+        addgroup --system --gid "$${PGID}" valkey
+        adduser --system --disabled-password \
+            --uid "$${PUID}" \
+            --home /var/empty \
+            --gecos 'Valkey system account' \
+            --ingroup valkey valkey
+
+        echo "Set an appropriate umask"
+        umask 0077
+
+        echo "Fix data dir permission"
+        find /data \! -user valkey -exec chown valkey: '{}' +
+
+        exec setpriv --reuid=valkey --regid=valkey --clear-groups -- "$@"
+      - sh
+    healthcheck:
+      test: test "$$(valkey-cli -a ${VALKEY_PASS?Missing valkey password} -h "$$(hostname -i || echo '127.0.0.1')" ping)"
+        = "PONG"
+      timeout: 5s
+      retries: 5
+      interval: 10s
+      start_period: 5s

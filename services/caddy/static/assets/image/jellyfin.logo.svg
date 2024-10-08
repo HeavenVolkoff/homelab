@@ -1,0 +1,11 @@
+<!--
+    Modified from: https://github.com/jellyfin/jellyfin-ux/blob/9e27258/branding/SVG/icon-transparent.svg
+    Part of the Jellyfin project (https://jellyfin.media)
+
+    All copyright belongs to the Jellyfin contributors; a full list can
+    be found in the file CONTRIBUTORS.md
+
+    This work is licensed under the Creative Commons Attribution-ShareAlike 4.0 International License.
+    To view a copy of this license, visit http://creativecommons.org/licenses/by-sa/4.0/.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><defs><linearGradient id="a" x1="105.3" x2="491.1" y1="214.3" y2="437.1" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#aa5cc3"/><stop offset="1" stop-color="#00a4dc"/></linearGradient><linearGradient id="b" x1="105.3" x2="491.1" y1="214.3" y2="437.1" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#aa5cc3"/><stop offset="1" stop-color="#00a4dc"/></linearGradient></defs><path fill="url(#a)" d="M256 203c-20 0-86 119-76 139s143 20 153 0-56-139-77-139z"/><path fill="url(#b)" fill-rule="evenodd" d="M486 444c-30 60-429 61-459 0C-3 384 195 24 256 24c62 0 260 360 230 420zM256 116c-40 0-170 236-150 276s281 39 301 0c19-40-110-276-151-276z"/></svg>

@@ -1,0 +1,58 @@
+name: Homelab
+
+volumes:
+  run:
+    driver: local
+    driver_opts:
+      o: mode=777,size=64m,nodev,nosuid
+      type: tmpfs
+      device: tmpfs
+  tmp:
+    driver: local
+    driver_opts:
+      o: mode=777,size=256m,nodev,nosuid,noexec
+      type: tmpfs
+      device: tmpfs
+  logs: {}
+
+x-net: &default_net
+  driver: overlay
+  attachable: false
+  enable_ipv6: true
+  driver_opts:
+    # Necessary for networks that may accessed behind pppoe
+    com.docker.network.driver.mtu: 1280
+
+networks:
+  db:
+    <<: *default_net
+    internal: true
+  host:
+    name: host
+    external: true
+  docker:
+    <<: *default_net
+    internal: true
+  valkey:
+    <<: *default_net
+    internal: true
+  public:
+    <<: *default_net
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.201.200.0/24
+  transmission:
+    <<: *default_net
+
+include:
+  - path: "services/transmission/compose.yml"
+  - path: "services/flood/compose.yml"
+  - path: "services/jellyfin/compose.yml"
+  - path: "services/caddy/compose.yml"
+  - path: "services/minidlna/compose.yml"
+  - path: "services/mariadb/compose.yml"
+  - path: "services/docker-proxy/compose.yml"
+  - path: "services/valkey/compose.yml"
+  - path: "services/vaultwarden/compose.yml"
+  - path: "services/shoko/compose.yml"

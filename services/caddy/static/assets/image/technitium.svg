@@ -1,0 +1,6 @@
+<!--
+    Modified from: https://github.com/TechnitiumSoftware/DnsServer/blob/v12.2.1/DnsServerCore/www/img/logo.png
+    Copyright (C) 2024  Shreyas Zare (shreyas@technitium.com)
+    License: GPL-3.0
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" version="1.2" viewBox="0 0 48 48"><path fill="#69f" d="M0 48V0h48v48z"/><path fill="#fff" d="M2 2h35v6H17v20h-6V8H2zm38 0h6v35h-6V17H20v-6h20zM2 11h6v20h20v6H8v9H2zm29 9h6v20h9v6H11v-6h20z"/></svg>

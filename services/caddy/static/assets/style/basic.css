@@ -1,0 +1,245 @@
+/**
+ * Based on:
+ * https://github.com/vladocar/Basic.css
+ * https://dev.to/hankchizljaw/a-modern-css-reset-6p3
+ */
+
+:root {
+  --sans: 1em/1.6 system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Droid Sans, Helvetica Neue, Fira Sans, sans-serif;
+  --mono: "Courier New", Courier, "Ubuntu Mono", "Liberation Mono", monospace;
+  --text: hsl(0, 0%, 0%);
+  --margin: 8px;
+  --accent: hsl(31, 45%, 50%);
+  --primary: hsl(216, 20%, 95%);
+  --roundness: 8px;
+  --secondary: hsl(240, 33%, 98%);
+  --background: hsl(220, 14%, 96%);
+}
+
+*,
+*::after,
+*::before {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+     -moz-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+          text-size-adjust: 100%;
+}
+
+body {
+  font: var(--sans);
+  color: var(--text);
+  min-height: 100vh;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  text-rendering: optimizeLegibility;
+  background-color: var(--background);
+  -webkit-font-smoothing: antialiased;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+li,
+dl,
+dd,
+ul[class],
+ol[class],
+body,
+figure,
+figcaption,
+blockquote {
+  margin: 0;
+}
+
+ul[class],
+ol[class] {
+  padding: 0;
+  list-style: none;
+}
+
+img,
+iframe {
+  border: none;
+  max-width: 100%;
+}
+
+a, a:hover {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+a:not([class]) {
+  -webkit-text-decoration-skip: ink;
+      text-decoration-skip-ink: auto;
+}
+
+pre {
+  font: 1em/1.6 var(--mono);
+  padding: 1em;
+  overflow: auto;
+  background: var(--primary);
+}
+
+code {
+  font: 1em/1.6 var(--mono);
+}
+
+blockquote {
+  padding: 1em 1.5em;
+  border-left: 5px solid var(--primary);
+}
+
+hr {
+  border: 0;
+  border-bottom: 1px solid var(--text);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0.6em 0;
+  font-weight: normal;
+}
+
+h1 {
+  font-size: 2.625em;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 1.625em;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 1.3125em;
+  line-height: 1.24;
+}
+
+h4 {
+  font-size: 1.1875em;
+  line-height: 1.23;
+}
+
+h5,
+h6 {
+  font-size: 1em;
+  font-weight: bold;
+}
+
+table {
+  margin: 1em 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  border: 1px solid;
+  padding: 0.4em;
+  text-align: left;
+  vertical-align: top;
+}
+
+thead,
+tfoot {
+  background: var(--primary);
+}
+
+img,
+pre,
+code,
+input,
+select,
+textarea,
+button {
+  border-radius: var(--roundness);
+}
+
+input,
+select,
+textarea {
+  color: var(--text);
+  border: 0;
+  padding: 0.6em;
+  font-size: 1em;
+  background: var(--primary);
+}
+
+button,
+input[type="reset"],
+input[type="submit"],
+input[type="button"] {
+  color: var(--secondary);
+  border: 0;
+  margin: 4px;
+  cursor: pointer;
+  padding: 0.6em;
+  display: inline-block;
+  font-size: 1em;
+  text-align: center;
+  background: var(--accent);
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+}
+
+input:hover,
+select:hover,
+button:hover,
+button:focus,
+textarea:hover {
+  opacity: 0.8;
+}
+
+section {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-flow: row wrap;
+          flex-flow: row wrap;
+}
+
+aside,
+article,
+[style*="--c:"],
+section > section {
+  margin: var(--margin);
+  -webkit-box-flex: var(--c, 1);
+          -ms-flex: var(--c, 1);
+              flex: var(--c, 1);
+}
+
+article {
+  padding: 1em;
+  background: var(--primary);
+  border-radius: var(--roundness);
+  -webkit-box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+          box-shadow: 0px 1px 0px rgba(0, 0, 0, 0.3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+    -webkit-animation-duration: 0.01ms !important;
+            animation-duration: 0.01ms !important;
+    -webkit-transition-duration: 0.01ms !important;
+         -o-transition-duration: 0.01ms !important;
+            transition-duration: 0.01ms !important;
+    -webkit-animation-iteration-count: 1 !important;
+            animation-iteration-count: 1 !important;
+  }
+}

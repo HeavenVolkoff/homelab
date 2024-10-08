@@ -1,0 +1,31 @@
+volumes:
+  jellyfin_cache: {}
+  jellyfin_transcodes: {}
+
+services:
+  jellyfin:
+    image: ghcr.io/HeavenVolkoff/homelab/jellyfin:latest
+    deploy:
+      resources:
+        limits:
+          cpus: "4"
+          memory: 4G
+        reservations:
+          memory: 512M
+    volumes:
+      - ${MEDIA_DIR?Missing media dir}:/media
+      - ${ROOT_DIR?Missing root dir}/runtime/jellyfin/config:/etc/jellyfin
+      - ${ROOT_DIR?Missing root dir}/runtime/jellyfin/data:/usr/share/jellyfin
+      - type: volume
+        source: jellyfin_data
+        target: /usr/share/jellyfin
+      - type: volume
+        source: jellyfin_cache
+        target: /var/cache/jellyfin
+      - type: volume
+        source: jellyfin_transcodes
+        target: /tmp/transcodes
+    hostname: jellyfin-{{.Service.ID}}
+    environment:
+      JELLYFIN_URL: https://jellyfin.${DOMAIN?Variable not set}
+      JELLYFIN_NOWEBCONTENT: "true"

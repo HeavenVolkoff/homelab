@@ -1,0 +1,16 @@
+services:
+  shoko:
+    image: shokoanime/server:daily
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1G
+        reservations:
+          memory: 200M
+    volumes:
+      - ${MEDIA_DIR?Missing media dir}:/media/Animes:/media/Animes
+      - ${ROOT_DIR?Missing root dir}/runtime/shoko:/home/shoko/.shoko
+    hostname: shoko-{{.Service.ID}}
+    environment:
+      AVDUMP_MONO: 'true'
