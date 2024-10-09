@@ -11,6 +11,9 @@ volumes:
 
 services:
   vaultwarden:
+    build:
+      context: .
+      network: host
     image: docker.io/library/vaultwarden/server:latest
     deploy:
       resources:

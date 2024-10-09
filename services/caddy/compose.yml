@@ -17,6 +17,9 @@ networks:
 
 services:
   caddy_controller:
+    build:
+      context: .
+      network: host
     image: &image ghcr.io/HeavenVolkoff/homelab/caddy:latest
     deploy:
       resources:
