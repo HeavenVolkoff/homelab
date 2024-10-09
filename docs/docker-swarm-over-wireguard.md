@@ -78,19 +78,9 @@ EOF
           printf '%s' "${_daemon_json:-{\}}" |
             jq -S --arg ip "$(
               printf 'fd%s:%s:%s::/48' "$(uuidgen | cut -c 6-7)" "$(uuidgen | cut -c 10-13)" "$(uuidgen | cut -c 15-18)"
-            )" '. | (.ipv6|=true) | (.["log-driver"]|="journald") | (.["userland-proxy"]|=true) | (.["fixed-cidr-v6"]|=$ip)' |
+            )" '. | (.ipv6|=true) | (.ip6tables|=true) | (.["userland-proxy"]|=true) | (.["fixed-cidr-v6"]|=$ip)' |
             tee /etc/docker/daemon.json
 EOF
-    ```
-
-- [Docker-ipv6nat](https://github.com/robbertkl/docker-ipv6nat)
-
-    This utility is needed to allow containers to seamless be assigned IPv6 address and use port
-    forwarding just as Docker allows with IPv4.
-
-    Deploy with:
-    ```sh
-    $> docker compose -f compose/docker-ipv6nat.yml --compatibility up -d
     ```
 
 ## Restart the Docker Daemon

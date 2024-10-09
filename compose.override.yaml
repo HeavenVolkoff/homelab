@@ -147,6 +147,9 @@ services:
     networks:
       - valkey
       - docker
+    depends_on:
+      - valkey
+      - docker_proxy
     environment:
       <<: *env
       DOCKER_HOST: tcp://docker_proxy:2375
@@ -202,8 +205,8 @@ services:
         caddy_3.remote_ip_5: fd00::/8
         caddy_4: ${DOMAIN?Missing domain}
         # NOT(NOT path AND NOT header) == (path || header)
-        caddy_4.@try_auth.not.not_1: path /login
-        caddy_4.@try_auth.not.not_2: header Authorization Basic*
+        caddy_4.@try_auth.not.not_0: path /login
+        caddy_4.@try_auth.not.not_1: header Authorization Basic*
         caddy_4.root: "* /var/www/homepage"
         caddy_4.import_0: basic_headers
         caddy_4.import_1: security_headers
@@ -213,11 +216,11 @@ services:
         caddy_4.handle_errors.header: Content-Type `text/html; charset=UTF-8`
         caddy_4.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN?Missing
           domain}" /><body>Unauthorized`'
-        caddy_4.route.1_basicauth: "@try_auth"
-        caddy_4.route.1_basicauth.admin: ${ADMIN_PASS_HASH?Missing admin password hash}
-        caddy_4.route.2_redir: /login https://${DOMAIN?Missing domain}
-        caddy_4.route.3_templates: '{{""}}'
-        caddy_4.route.4_file_server.precompressed: zstd br gzip
+        caddy_4.route.0_basicauth: "@try_auth"
+        caddy_4.route.0_basicauth.admin: ${ADMIN_PASS_HASH?Missing admin password hash}
+        caddy_4.route.1_redir: /login https://${DOMAIN?Missing domain}
+        caddy_4.route.2_templates: '{{""}}'
+        caddy_4.route.3_file_server.precompressed: zstd br gzip
         caddy_5: www.${DOMAIN?Missing domain}
         caddy_5.import_0: basic_headers
         caddy_5.import_1: security_headers
@@ -226,6 +229,13 @@ services:
     networks:
       - valkey
       - public
+    depends_on:
+      - valkey
+      - flood
+      - vaultwarden
+      - shoko
+      - jellyfin
+      - caddy_controller
     environment:
       <<: *env
       CADDY_INGRESS_NETWORKS: *ingress_network
@@ -258,6 +268,8 @@ services:
     networks:
       - public
       - transmission
+    depends_on:
+      - transmission
     environment:
       <<: *env
 
@@ -279,7 +291,7 @@ services:
         caddy.route.0_rewrite: / /index.html
         caddy.route.1_file_server: "@try_files"
         caddy.route.1_file_server.precompressed: zstd br gzip
-        caddy.route.4_reverse_proxy: "{{upstreams http 8080}}"
+        caddy.route.2_reverse_proxy: "{{upstreams http 8080}}"
       replicas: 1
       placement:
         constraints:
@@ -287,6 +299,8 @@ services:
     networks:
       - db
       - public
+    depends_on:
+      - maria_db
     environment:
       <<: *env
 
@@ -311,6 +325,8 @@ services:
     networks:
       - db
       - public
+    depends_on:
+      - maria_db
     environment:
       <<: *env
 

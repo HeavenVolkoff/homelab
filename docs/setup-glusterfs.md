@@ -1,6 +1,6 @@
 # Setup Glusterfs
 
->The tutorial assumes you using a Ubuntu system
+> The tutorial assumes you using a Ubuntu system
 
 ## Configure a Disk for GlusterFS
 
@@ -174,7 +174,6 @@ sudo gluster volume set storage performance.strict-o-direct on
 sudo gluster volume set storage performance.parallel-readdir on
 sudo gluster volume set storage performance.qr-cache-timeout 600
 sudo gluster volume set storage performance.cache-max-file-size 2MB
-
 ```
 
 ## Start Volume

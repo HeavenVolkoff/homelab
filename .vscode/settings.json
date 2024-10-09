@@ -1,0 +1,10 @@
+{
+  "[yaml]": {
+    "editor.defaultFormatter": "bluebrown.yamlfmt"
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.patterns": {
+		"Dockerfile": ".dockerignore",
+		"README.md": "CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md",
+	},
+}

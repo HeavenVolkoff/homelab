@@ -1,5 +1,8 @@
 services:
   flood:
+    build:
+      context: .
+      network: host
     image: ghcr.io/HeavenVolkoff/homelab/flood:latest
     deploy:
       resources:

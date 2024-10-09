@@ -1,5 +1,8 @@
 services:
   transmission:
+    build:
+      context: .
+      network: host
     image: ghcr.io/HeavenVolkoff/homelab/transmission:latest
     sysctls:
       net.ipv4.tcp_allowed_congestion_control: "cubic reno lp"

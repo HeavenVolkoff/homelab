@@ -13,6 +13,9 @@ configs:
 
 services:
   minidlna:
+    build:
+      context: .
+      network: host
     image: ghcr.io/HeavenVolkoff/homelab/minidlna:latest
     deploy:
       resources:

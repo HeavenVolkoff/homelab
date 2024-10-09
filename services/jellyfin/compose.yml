@@ -4,6 +4,9 @@ volumes:
 
 services:
   jellyfin:
+    build:
+      context: .
+      network: host
     image: ghcr.io/HeavenVolkoff/homelab/jellyfin:latest
     deploy:
       resources:
