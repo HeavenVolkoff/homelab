@@ -14,9 +14,14 @@ configs:
 services:
   minidlna:
     build:
+      x-bake:
+        pull: true
+        platforms:
+          - linux/amd64
+          - linux/arm64
       context: .
       network: host
-    image: ghcr.io/HeavenVolkoff/homelab/minidlna:latest
+    image: ghcr.io/heavenvolkoff/homelab/minidlna:latest
     deploy:
       resources:
         limits:

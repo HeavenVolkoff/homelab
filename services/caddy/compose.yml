@@ -18,9 +18,14 @@ networks:
 services:
   caddy_controller:
     build:
+      x-bake:
+        pull: true
+        platforms:
+          - linux/amd64
+          - linux/arm64
       context: .
       network: host
-    image: &image ghcr.io/HeavenVolkoff/homelab/caddy:latest
+    image: &image ghcr.io/heavenvolkoff/homelab/caddy:latest
     deploy:
       resources:
         limits:

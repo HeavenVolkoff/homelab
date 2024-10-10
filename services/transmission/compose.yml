@@ -1,9 +1,14 @@
 services:
   transmission:
     build:
+      x-bake:
+        pull: true
+        platforms:
+          - linux/amd64
+          - linux/arm64
       context: .
       network: host
-    image: ghcr.io/HeavenVolkoff/homelab/transmission:latest
+    image: ghcr.io/heavenvolkoff/homelab/transmission:latest
     sysctls:
       net.ipv4.tcp_allowed_congestion_control: "cubic reno lp"
     deploy:
