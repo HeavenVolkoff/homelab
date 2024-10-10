@@ -14,10 +14,10 @@ services:
         reservations:
           memory: 256M
     volumes:
-      - ${ROOT_DIR?Missing root dir}/runtime/transmission/watch:/usr/share/transmission/watch
-      - ${ROOT_DIR?Missing root dir}/runtime/transmission/config:/etc/transmission
-      - ${MEDIA_DIR?Missing media dir}:/media
-      - ${TORRENT_DIR?Missing torrent dir}:/download
+      - ${ROOT_DIR:?Missing root dir}/runtime/transmission/watch:/usr/share/transmission/watch
+      - ${ROOT_DIR:?Missing root dir}/runtime/transmission/config:/etc/transmission
+      - ${MEDIA_DIR:?Missing media dir}:/media
+      - ${TORRENT_DIR:?Missing torrent dir}:/download
     networks:
       - transmission
     hostname: transmission-{{.Service.ID}}
@@ -31,8 +31,8 @@ services:
       TRANSMISSION_TCP_LP: 1
       TRANSMISSION_UP_SPEED: 10240 # 10MB/s in KB/s
       TRANSMISSION_DOWN_SPEED: 0
-      TRANSMISSION_RPC_USER: ${TRANSMISSION_RPC_USER?Missing transmission rpc user}
-      TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASS?Missing transmission rpc password}
+      TRANSMISSION_RPC_USER: ${TRANSMISSION_RPC_USER:?Missing transmission rpc user}
+      TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASS:?Missing transmission rpc password}
       TRANSMISSION_LOG_LEVEL: 3
       TRANSMISSION_UMASK: '007'
       TRANSMISSION_CACHE_SIZE: 32

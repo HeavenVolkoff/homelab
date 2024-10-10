@@ -41,7 +41,7 @@ services:
       - type: volume
         source: minidlna_db
         target: /usr/share/minidlna
-      - ${MEDIA_DIR?Missing media dir}:/media
+      - ${MEDIA_DIR:?Missing media dir}:/media
     hostname: minidlna-{{.Service.ID}}
     environment:
       MINIDLNA_INOTIFY: 'yes'

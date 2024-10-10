@@ -15,14 +15,14 @@ services:
       - --auth=none
       - --host=0.0.0.0
       - --trurl=http://transmission:9091/transmission/rpc
-      - --truser=${TRANSMISSION_RPC_USER?Missing transmission rpc user}
-      - --trpass=${TRANSMISSION_RPC_PASS?Missing transmission rpc password}
+      - --truser=${TRANSMISSION_RPC_USER:?Missing transmission rpc user}
+      - --trpass=${TRANSMISSION_RPC_PASS:?Missing transmission rpc password}
       - --assets=false
-      - --secret=${FLOOD_JWT_SECRET?Missing flood jwt secret}
+      - --secret=${FLOOD_JWT_SECRET:?Missing flood jwt secret}
     volumes:
-      - ${ROOT_DIR?Missing root dir}/runtime/flood/config:/usr/share/flood
-      - ${MEDIA_DIR?Missing media dir}:/media
-      - ${TORRENT_DIR?Missing torrent dir}:/download
+      - ${ROOT_DIR:?Missing root dir}/runtime/flood/config:/usr/share/flood
+      - ${MEDIA_DIR:?Missing media dir}:/media
+      - ${TORRENT_DIR:?Missing torrent dir}:/download
     hostname: flood-{{.Service.ID}}
     environment:
       FLOOD_ALLOWED_DIRS: /media,/download

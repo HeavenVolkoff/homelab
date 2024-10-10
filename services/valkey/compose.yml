@@ -10,8 +10,8 @@ services:
     labels:
       caddy.storage: redis
       caddy.storage.address: valkey:6379
-      caddy.storage.aes_key: ${CADDY_STORAGE_AES_KEY?Missing caddy storage aes key}
-      caddy.storage.password: ${VALKEY_PASS?Missing valkey password}
+      caddy.storage.aes_key: ${CADDY_STORAGE_AES_KEY:?Missing caddy storage aes key}
+      caddy.storage.password: ${VALKEY_PASS:?Missing valkey password}
     deploy:
       resources:
         limits:
@@ -36,7 +36,7 @@ services:
       - --appendonly no
       - --dbfilename dump.rdb
       - --appendfsync no
-      - --requirepass ${VALKEY_PASS?Missing valkey password}
+      - --requirepass ${VALKEY_PASS:?Missing valkey password}
       - --rdbcompression yes
     hostname: valkey-{{.Service.ID}}
     entrypoint:
@@ -63,7 +63,7 @@ services:
         exec setpriv --reuid=valkey --regid=valkey --clear-groups -- "$@"
       - sh
     healthcheck:
-      test: test "$$(valkey-cli -a ${VALKEY_PASS?Missing valkey password} -h "$$(hostname -i || echo '127.0.0.1')" ping)"
+      test: test "$$(valkey-cli -a ${VALKEY_PASS:?Missing valkey password} -h "$$(hostname -i || echo '127.0.0.1')" ping)"
         = "PONG"
       timeout: 5s
       retries: 5

@@ -34,19 +34,19 @@ services:
         source: vaultwarden_cache
     hostname: vaultwarden-{{.Service.ID}}
     environment:
-      DOMAIN: https://vaultwarden.${DOMAIN?Missing domain}
+      DOMAIN: https://vaultwarden.${DOMAIN:?Missing domain}
       LOG_LEVEL: warn
       IP_HEADER: X-Forwarded-For
-      SMTP_HOST: ${SMTP_HOST?Missing smtp host}
-      SMTP_PORT: ${SMTP_PORT?Missing smtp port}
-      SMTP_FROM: vaultwarden@mail.${DOMAIN?Missing domain}
+      SMTP_HOST: ${SMTP_HOST:?Missing smtp host}
+      SMTP_PORT: ${SMTP_PORT:?Missing smtp port}
+      SMTP_FROM: vaultwarden@mail.${DOMAIN:?Missing domain}
       ROCKET_ENV: production
       ROCKET_PORT: 8080
-      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN?Missing vaultwarden admin token}
-      DATABASE_URL: mysql://${VAULTWARDEN_DB_USER?Missing vaultwarden database user}:${VAULTWARDEN_DB_PASS?Missing vaultwarden
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:?Missing vaultwarden admin token}
+      DATABASE_URL: mysql://${VAULTWARDEN_DB_USER:?Missing vaultwarden database user}:${VAULTWARDEN_DB_PASS:?Missing vaultwarden
         database password}@maria_db/bitwarden
-      SMTP_USERNAME: ${SMTP_USER?Missing smtp username}
-      SMTP_PASSWORD: ${SMTP_PASS?Missing smtp password}
+      SMTP_USERNAME: ${SMTP_USER:?Missing smtp username}
+      SMTP_PASSWORD: ${SMTP_PASS:?Missing smtp password}
       SMTP_FROM_NAME: Vasconcellos Vaultwarden
       SIGNUPS_VERIFY: 'false'
       RUST_BACKTRACE: 1
