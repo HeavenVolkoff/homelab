@@ -5,9 +5,14 @@ volumes:
 services:
   jellyfin:
     build:
+      x-bake:
+        pull: true
+        platforms:
+          - linux/amd64
+          - linux/arm64
       context: .
       network: host
-    image: ghcr.io/HeavenVolkoff/homelab/jellyfin:latest
+    image: ghcr.io/heavenvolkoff/homelab/jellyfin:latest
     deploy:
       resources:
         limits:
@@ -19,9 +24,6 @@ services:
       - ${MEDIA_DIR:?Missing media dir}:/media
       - ${ROOT_DIR:?Missing root dir}/runtime/jellyfin/config:/etc/jellyfin
       - ${ROOT_DIR:?Missing root dir}/runtime/jellyfin/data:/usr/share/jellyfin
-      - type: volume
-        source: jellyfin_data
-        target: /usr/share/jellyfin
       - type: volume
         source: jellyfin_cache
         target: /var/cache/jellyfin

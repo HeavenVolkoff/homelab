@@ -7,10 +7,10 @@ ARG VAULWARDEN_VERSION=1.32.1
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest AS xx
 
 # === Stage 1.1 - Flood ========================================================
-FROM --platform=$BUILDPLATFORM ghcr.io/HeavenVolkoff/homelab/flood:latest AS flood
+FROM --platform=$BUILDPLATFORM ghcr.io/heavenvolkoff/homelab/flood:latest AS flood
 
 # === Stage 1.2 - Jellyfin =====================================================
-FROM --platform=$BUILDPLATFORM ghcr.io/HeavenVolkoff/homelab/jellyfin:latest AS jellyfin
+FROM --platform=$BUILDPLATFORM ghcr.io/heavenvolkoff/homelab/jellyfin:latest AS jellyfin
 
 # === Stage 1.3 - Vaultwarden ==================================================
 FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:${VAULWARDEN_VERSION} AS vaultwarden
