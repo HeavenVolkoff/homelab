@@ -39,22 +39,16 @@ ENV TZ=UTC \
     TRANSMISSION_WATCH_DIR=/usr/share/transmission/watch \
     TRANSMISSION_DOWNLOAD_DIR=/download
 
-# Tool to parse /etc/passwd
-ADD --chmod=755 --checksum=sha256:a99beabea22571cfad4f77422e5d3ed922d9490232d94cb87cf32956766bc42a \
-    https://github.com/kraj/uClibc/raw/v0.9.33.2/extra/scripts/getent /usr/bin/
-
-# Shell library with a collection of functions for entrypoint.sh
-ADD --chmod=644 --checksum=sha256:e9f81f8c13f585804b1e37bd2b2e37c8957270bcf2b71d95f24a2e80e4c47813 \
-    https://gist.githubusercontent.com/HeavenVolkoff/d3d14669f2786df68dd8a445eed8dd81/raw \
-    /usr/local/bin/entrypoint.shlib
-
 COPY --from=busybox /bin/busybox /bin/busybox
 
 RUN ["/bin/busybox", "--install", "-s", "/bin"]
 RUN ln -s /bin/env /usr/bin/env
 
-COPY --chmod=755    rpc.sh          /usr/local/bin/
-COPY --chmod=755    entrypoint.sh   /usr/local/bin/
+COPY                  entrypoint.sh    /usr/local/bin/
+COPY --from=utilities getent.sh        /usr/local/bin/getent
+COPY --from=utilities entrypoint.shlib /usr/local/bin/
+
+COPY                rpc.sh          /usr/local/bin/
 COPY --from=install /srv/           /
 
 EXPOSE $TRANSMISSION_PEER_PORT/tcp $TRANSMISSION_PEER_PORT/udp $TRANSMISSION_RPC_PORT/tcp

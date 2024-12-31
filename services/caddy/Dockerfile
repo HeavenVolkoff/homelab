@@ -1,7 +1,9 @@
 # syntax=docker/dockerfile:1
 
+# renovate: datasource=docker packageName=caddy/caddy
 ARG CADDY_VERSION=2.8.4
-ARG VAULWARDEN_VERSION=1.32.1
+# renovate: datasource=docker packageName=vaultwarden/server
+ARG VAULWARDEN_VERSION=1.32.7
 
 # === Stage 0 - Cross-compilation helper =======================================
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest AS xx
@@ -24,9 +26,7 @@ COPY --from=xx / /
 
 ENV CADDY_VERSION ${CADDY_VERSION}
 
-RUN xx-go --wrap
-
-RUN CGO_ENABLED=0 xcaddy build \
+RUN env CGO_ENABLED=0 XCADDY_WHICH_GO=xx-go xcaddy build \
     --output /bin/caddy \
     --with github.com/pberkel/caddy-storage-redis \
     --with github.com/lucaslorentz/caddy-docker-proxy/v2 \
@@ -95,32 +95,25 @@ ENV TZ=UTC \
     XDG_DATA_HOME=/usr/share \
     XDG_CONFIG_HOME=/etc
 
-# Tool to parse /etc/passwd
-ADD --chmod=755 --checksum=sha256:a99beabea22571cfad4f77422e5d3ed922d9490232d94cb87cf32956766bc42a \
-    https://github.com/kraj/uClibc/raw/v0.9.33.2/extra/scripts/getent /usr/bin/
-
-# Shell library with a collection of functions for entrypoint.sh
-ADD --chmod=644 --checksum=sha256:e9f81f8c13f585804b1e37bd2b2e37c8957270bcf2b71d95f24a2e80e4c47813 \
-    https://gist.githubusercontent.com/HeavenVolkoff/d3d14669f2786df68dd8a445eed8dd81/raw \
-    /usr/local/bin/entrypoint.shlib
-
-COPY --chmod=755    entrypoint.sh   /usr/bin/
-COPY --from=static  /var/www        /var/www
-COPY --from=static  /etc/mime.types /etc/mime.types
-COPY --from=builder /bin/caddy      /bin/caddy
-COPY --from=busybox /bin/busybox    /bin/busybox
+COPY --from=busybox /bin/busybox /bin/busybox
 
 RUN ["/bin/busybox", "--install", "-s", "/bin"]
-RUN set -eu;\
-    ln -s /bin/env /usr/bin/env \
-    && \
-    mkdir -p /usr/share/caddy /etc/caddy
+RUN ln -s /bin/env /usr/bin/env
+
+COPY                  entrypoint.sh    /usr/local/bin/
+COPY --from=utilities getent.sh        /usr/local/bin/getent
+COPY --from=utilities entrypoint.shlib /usr/local/bin/
+
+COPY --from=static    /var/www         /var/www
+COPY --from=static    /etc/mime.types  /etc/mime.types
+COPY --from=builder   /bin/caddy       /bin/caddy
+COPY --from=busybox   /bin/busybox     /bin/busybox
 
 EXPOSE 80/tcp 443/tcp 2019/tcp
 
 VOLUME ["/usr/share/caddy", "/etc/caddy"]
 
-ENTRYPOINT ["/usr/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 CMD ["docker-proxy"]
 

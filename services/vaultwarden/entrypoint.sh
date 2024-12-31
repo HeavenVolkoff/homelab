@@ -23,7 +23,6 @@ fi
 echo "Configure unprivileged user"
 create group vaultwarden "${PUID}"
 create passwd vaultwarden "${PGID}"
-add2group vaultwarden vaultwarden
 
 echo "Configure timezone"
 cfg_tz "${TZ:-UTC}"

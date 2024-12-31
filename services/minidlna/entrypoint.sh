@@ -23,7 +23,6 @@ fi
 echo "Configure unprivileged user"
 create group minidlna "${PUID}"
 create passwd minidlna "${PGID}"
-add2group minidlna minidlna
 
 echo "Configure timezone"
 cfg_tz "${TZ:-UTC}"

@@ -10,19 +10,19 @@ x-env: &env
 
 x-deploy: &deploy
   update_config:
-    delay: 10s
+    delay: &delay 10s
     order: start-first
     monitor: 60s
     parallelism: 1
     failure_action: rollback
     max_failure_ratio: 0
   restart_policy:
-    delay: 10s
+    delay: *delay
     window: 150s
     condition: on-failure
     max_attempts: 6
   rollback_config:
-    delay: 10s
+    delay: *delay
     order: start-first
     monitor: 60s
     parallelism: 1
@@ -52,19 +52,6 @@ x-service: &service
   stop_grace_period: 30s
 
 services:
-  docker_proxy:
-    <<: *service
-    deploy:
-      <<: *deploy
-      mode: global
-      placement:
-        constraints:
-          - node.role == manager
-    networks:
-      - docker
-    environment:
-      <<: *env
-
   valkey:
     <<: *service
     deploy:
@@ -146,13 +133,10 @@ services:
           - spread: node.labels.cloud
     networks:
       - valkey
-      - docker
     depends_on:
       - valkey
-      - docker_proxy
     environment:
       <<: *env
-      DOCKER_HOST: tcp://docker_proxy:2375
       CADDY_INGRESS_NETWORKS: &ingress_network '{{index .Service.Labels "com.docker.stack.namespace"}}_public'
 
   caddy:
@@ -220,7 +204,7 @@ services:
         caddy_4.route.0_basicauth.admin: ${ADMIN_PASS_HASH:?Missing admin password hash}
         caddy_4.route.1_redir: /login https://${DOMAIN:?Missing domain}
         caddy_4.route.2_templates: '{{""}}'
-        caddy_4.route.3_file_server.precompressed: zstd br gzip
+        caddy_4.route.3_file_server.precompressed: &precompressed zstd br gzip
         caddy_5: www.${DOMAIN:?Missing domain}
         caddy_5.import_0: basic_headers
         caddy_5.import_1: security_headers
@@ -250,7 +234,7 @@ services:
         caddy.root: "* /var/www/flood"
         caddy.route.0_reverse_proxy: /api/* {{upstreams http 3000}}
         caddy.route.1_try_files: "{path} /index.html"
-        caddy.route.2_file_server.precompressed: zstd br gzip
+        caddy.route.2_file_server.precompressed: *precompressed
         caddy.encode.gzip: 6
         caddy.header: /static/* Cache-Control `public, max-age=604800, must-revalidate`
         caddy.import_0: basic_headers
@@ -290,7 +274,7 @@ services:
         caddy.encode.gzip: 6
         caddy.route.0_rewrite: / /index.html
         caddy.route.1_file_server: "@try_files"
-        caddy.route.1_file_server.precompressed: zstd br gzip
+        caddy.route.1_file_server.precompressed: *precompressed
         caddy.route.2_reverse_proxy: "{{upstreams http 8080}}"
       replicas: 1
       placement:
@@ -315,7 +299,7 @@ services:
         caddy.import_0: basic_headers
         caddy.import_1: security_headers
         caddy.handle_path: /webui/*
-        caddy.handle_path.file_server.precompressed: zstd br gzip
+        caddy.handle_path.file_server.precompressed: *precompressed
         caddy.reverse_proxy: "{{upstreams http 8111}}"
         caddy.reverse_proxy.import: forward_headers_up
       replicas: 1
@@ -352,7 +336,7 @@ services:
           'self'`"
         caddy.handle: "@static"
         caddy.handle.uri: strip_prefix /web
-        caddy.handle.file_server.precompressed: zstd br gzip
+        caddy.handle.file_server.precompressed: *precompressed
         caddy.@static.not: path /web/ConfigurationPage /web/ConfigurationPages
         caddy.@static.path: /web/*
         caddy.import_0: basic_headers

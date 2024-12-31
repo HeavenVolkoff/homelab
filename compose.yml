@@ -20,9 +20,10 @@ x-net: &default_net
   attachable: false
   enable_ipv6: true
   driver_opts:
-    # Necessary for networks that may accessed behind pppoe
+    # Necessary for TCP to work with my home network
     com.docker.network.driver.mtu: 1280
 
+# WARNING: Careful when changing network names, as they are hardcoded in the compose files
 networks:
   db:
     <<: *default_net
@@ -30,24 +31,16 @@ networks:
   host:
     name: host
     external: true
-  docker:
-    <<: *default_net
-    internal: true
   valkey:
     <<: *default_net
     internal: true
   public:
     <<: *default_net
-    ipam:
-      driver: default
-      config:
-        - subnet: 10.201.200.0/24
   transmission:
     <<: *default_net
 
 include:
   - path: "services/caddy/compose.yml"
-  - path: "services/docker-proxy/compose.yml"
   - path: "services/flood/compose.yml"
   - path: "services/jellyfin/compose.yml"
   - path: "services/mariadb/compose.yml"

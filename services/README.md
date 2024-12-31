@@ -6,7 +6,12 @@ For deploying spacedrive cloud services you need to have [docker](https://docs.d
 
 ## Build custom images
 
-TODO
+To manually build a service image run the following:
+
+```sh
+$> cd ${SERVICE}
+$> env BUILDX_EXPERIMENTAL=1 docker buildx debug --on=error build --build-context utilities=../../utilities --tag ghcr.io/heavenvolkoff/homelab/${SERVICE}:latest .
+```
 
 ## How to run
 
@@ -39,7 +44,7 @@ TODO
   X_TASK_SLOT: '{{.Task.Slot}}'
   ```
 
-  Resulting env variables inside the container: (Stack is called `test`)
+  Resulting environment variables inside the container: (Stack is called `test`)
 
   ```
   X_NODE_HOSTNAME=docker2

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG VAULWARDEN_VERSION=1.32.1
+ARG VAULWARDEN_VERSION=1.32.7
 
 # === Stage 0 - Disambiguation =================================================
 FROM gcr.io/distroless/cc-debian12:debug AS disambiguation
@@ -21,9 +21,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 
 # Configure apt
-ADD --chmod=644 --checksum=sha256:8bea540b2cd1a47c94555e746c75fd41a42847a46d8c8c36c7ab6dd9c8526ab4 \
-    https://gist.githubusercontent.com/HeavenVolkoff/ff7b77b9087f956b8df944772e93c071/raw \
-    /etc/apt/apt.conf.d/99docker-apt-config
+COPY --from=utilities apt.conf /etc/apt/apt.conf.d/99docker-apt-config
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN rm -f /etc/apt/apt.conf.d/docker-clean
 
@@ -72,23 +70,17 @@ ENV TZ=UTC \
     ROCKET_ADDRESS=:: \
     ROCKET_PORT=8080
 
-# Tool to parse /etc/passwd
-ADD --chmod=755 --checksum=sha256:a99beabea22571cfad4f77422e5d3ed922d9490232d94cb87cf32956766bc42a \
-    https://github.com/kraj/uClibc/raw/v0.9.33.2/extra/scripts/getent /usr/bin/
-
-# Shell library with a collection of functions for entrypoint.sh
-ADD --chmod=644 --checksum=sha256:e9f81f8c13f585804b1e37bd2b2e37c8957270bcf2b71d95f24a2e80e4c47813 \
-    https://gist.githubusercontent.com/HeavenVolkoff/d3d14669f2786df68dd8a445eed8dd81/raw \
-    /usr/local/bin/entrypoint.shlib
-
 COPY --from=busybox /bin/busybox /bin/busybox
 
 RUN ["/bin/busybox", "--install", "-s", "/bin"]
 RUN ln -s /bin/env /usr/bin/env
 
+COPY                  entrypoint.sh    /usr/local/bin/
+COPY --from=utilities getent.sh        /usr/local/bin/getent
+COPY --from=utilities entrypoint.shlib /usr/local/bin/
+
 COPY --from=vaultwarden /srv/           /
 COPY --from=vaultwarden /healthcheck.sh /usr/local/bin/
-COPY --chmod=755        entrypoint.sh   /usr/local/bin/
 
 EXPOSE $ROCKET_PORT/tcp
 

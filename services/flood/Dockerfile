@@ -1,5 +1,8 @@
 # syntax=docker/dockerfile:1
 
+# renovate: datasource=npm packageName=flood
+ARG FLOOD_VERSION=4.8.5
+
 # === Stage 0 - Disambiguation =================================================
 FROM gcr.io/distroless/nodejs22-debian12:debug AS disambiguation
 
@@ -19,9 +22,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=DontWarn
 
 # Configure apt
-ADD --chmod=644 --checksum=sha256:8bea540b2cd1a47c94555e746c75fd41a42847a46d8c8c36c7ab6dd9c8526ab4 \
-    https://gist.githubusercontent.com/HeavenVolkoff/ff7b77b9087f956b8df944772e93c071/raw \
-    /etc/apt/apt.conf.d/99docker-apt-config
+COPY --from=utilities apt.conf /etc/apt/apt.conf.d/99docker-apt-config
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN rm -f /etc/apt/apt.conf.d/docker-clean
 
@@ -34,12 +35,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     && \
     apt-get full-upgrade \
     && \
-    apt-get install mediainfo
+    apt-get install mediainfo coreutils
 
 COPY --from=disambiguation /libs.txt ./
 
 RUN set -eux; \
-    for _bin in "$(realpath "$(command -v mediainfo)")"; do \
+    for _bin in '/usr/bin/mediainfo' '/usr/bin/df'; do \
         for _so in $( \
             ldd "$_bin" | awk '{print $3}' | sort | uniq | comm -23 - ./libs.txt \
         ); do \
@@ -51,18 +52,19 @@ RUN set -eux; \
         install -D -t /srv/usr/bin/ "$_bin" \
     ; done
 
-# Cache burst
-ADD https://api.github.com/repos/jesec/flood/releases info.json
+ARG FLOOD_VERSION
 
 # Install flood
 RUN --mount=type=cache,target=/root/.npm \
-    npm i -g flood
+    npm i -g flood@${FLOOD_VERSION}
 
 # === Stage 2 - Busybox ========================================================
 FROM busybox:stable-musl AS busybox
 
 # === Stage 3 - Runtime ========================================================
 FROM gcr.io/distroless/nodejs22-debian12
+
+ARG FLOOD_VERSION
 
 ENV TZ=UTC \
     PUID=1000 \
@@ -74,23 +76,17 @@ ENV TZ=UTC \
 	NODE_ENV=production \
     FLOOD_DATA_DIR=/usr/share/flood
 
-# Tool to parse /etc/passwd
-ADD --chmod=755 --checksum=sha256:a99beabea22571cfad4f77422e5d3ed922d9490232d94cb87cf32956766bc42a \
-    https://github.com/kraj/uClibc/raw/v0.9.33.2/extra/scripts/getent /usr/bin/
-
-# Shell library with a collection of functions for entrypoint.sh
-ADD --chmod=644 --checksum=sha256:e9f81f8c13f585804b1e37bd2b2e37c8957270bcf2b71d95f24a2e80e4c47813 \
-    https://gist.githubusercontent.com/HeavenVolkoff/d3d14669f2786df68dd8a445eed8dd81/raw \
-    /usr/local/bin/entrypoint.shlib
-
 COPY --from=busybox /bin/busybox /bin/busybox
 
 RUN ["/bin/busybox", "--install", "-s", "/bin"]
 RUN ln -s /bin/env /usr/bin/env
 
-COPY --from=install /usr/local/lib/node_modules/flood   /usr/local/lib/node_modules/flood
-COPY --from=install /srv/                               /
-COPY --chmod=755    entrypoint.sh                       /usr/local/bin/
+COPY                  entrypoint.sh    /usr/local/bin/
+COPY --from=utilities getent.sh        /usr/local/bin/getent
+COPY --from=utilities entrypoint.shlib /usr/local/bin/
+
+COPY --from=install   /usr/local/lib/node_modules/flood /usr/local/lib/node_modules/flood
+COPY --from=install   /srv/                             /
 
 RUN ln -s /nodejs/bin/node /usr/local/bin/node \
     && ln -s ../lib/node_modules/flood/dist/index.js /usr/local/bin/flood
@@ -103,9 +99,7 @@ ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 
 LABEL org.opencontainers.image.title="Flood" \
       org.opencontainers.image.authors="Vítor Vasconcellos <vasconcellos.dev@gmail.com>" \
-      org.opencontainers.image.revision="10" \
+      org.opencontainers.image.version="${FLOOD_VERSION}" \
+      org.opencontainers.image.revision="1" \
       org.opencontainers.image.licenses="GPL-3.0" \
-      org.opencontainers.image.description="A modern web UI for various torrent clients with a Node.js backend and React frontend" \
-      version.entrypoint="flood" \
-      version.command="--version"
-
+      org.opencontainers.image.description="A modern web UI for various torrent clients with a Node.js backend and React frontend"
