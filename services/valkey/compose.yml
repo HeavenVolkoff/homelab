@@ -10,8 +10,8 @@ services:
     labels:
       caddy.storage: redis
       caddy.storage.address: valkey:6379
-      caddy.storage.aes_key: ${CADDY_STORAGE_AES_KEY:?Missing caddy storage aes key}
       caddy.storage.password: ${VALKEY_PASS:?Missing valkey password}
+      caddy.storage.encryption_key: ${CADDY_STORAGE_AES_KEY:?Missing caddy storage aes key}
     deploy:
       resources:
         limits:

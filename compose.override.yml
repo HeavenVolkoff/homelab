@@ -294,7 +294,7 @@ services:
       <<: *deploy
       mode: replicated
       labels:
-        caddy: shoko.${DOMAIN:?Variable not set}
+        caddy: shoko.${DOMAIN:?Missing domain}
         caddy.root: "* /var/www/shoko"
         caddy.import_0: basic_headers
         caddy.import_1: security_headers
@@ -325,7 +325,7 @@ services:
       <<: *deploy
       mode: replicated
       labels:
-        caddy: jellyfin.${DOMAIN:?Variable not set}
+        caddy: jellyfin.${DOMAIN:?Missing domain}
         caddy.root: "* /var/www/jellyfin"
         caddy.header.Content-Security-Policy: "`default-src https: data: blob: http://image.tmdb.org; style-src 'self' 'unsafe-inline';
           script-src 'self' 'unsafe-inline' https://www.gstatic.com/cv/js/sender/v1/cast_sender.js https://www.gstatic.com/eureka/clank/cast_sender.js

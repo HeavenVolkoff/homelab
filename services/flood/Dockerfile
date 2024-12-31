@@ -27,8 +27,8 @@ RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selectio
 RUN rm -f /etc/apt/apt.conf.d/docker-clean
 
 # Install dependencies
-RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
+    --mount=type=cache,sharing=locked,target=/var/lib/apt \
     set -xeu \
     && \
     apt-get update \
@@ -55,7 +55,7 @@ RUN set -eux; \
 ARG FLOOD_VERSION
 
 # Install flood
-RUN --mount=type=cache,target=/root/.npm \
+RUN --mount=type=cache,sharing=locked,target=/root/.npm \
     npm i -g flood@${FLOOD_VERSION}
 
 # === Stage 2 - Busybox ========================================================
