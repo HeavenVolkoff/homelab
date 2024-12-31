@@ -17,14 +17,6 @@ networks:
 
 services:
   caddy_controller:
-    build:
-      x-bake:
-        pull: true
-        platforms:
-          - linux/amd64
-          - linux/arm64
-      context: .
-      network: host
     image: &image ghcr.io/heavenvolkoff/homelab/caddy:latest
     deploy:
       resources:
@@ -42,6 +34,16 @@ services:
       CADDY_DOCKER_POLLING_INTERVAL: 1m
 
   caddy:
+    build:
+      x-bake:
+        pull: true
+        contexts:
+          utilities: ./utilities
+        platforms:
+          - linux/amd64
+          - linux/arm64
+      context: .
+      network: host
     image: *image
     deploy:
       resources:

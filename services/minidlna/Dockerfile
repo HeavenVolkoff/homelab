@@ -10,8 +10,8 @@ ARG TARGETPLATFORM
 
 COPY --from=xx / /
 
-RUN --mount=type=cache,target=/var/cache/apk \
-    --mount=type=cache,target=/etc/apk/cache \
+RUN --mount=type=cache,sharing=locked,target=/var/cache/apk \
+    --mount=type=cache,sharing=locked,target=/etc/apk/cache \
     apk add \
         git \
         lld \
