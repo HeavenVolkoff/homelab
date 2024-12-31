@@ -23,7 +23,6 @@ fi
 echo "Configure unprivileged user"
 create group transmission "${PUID}"
 create passwd transmission "${PGID}"
-add2group transmission transmission
 
 echo "Configure timezone"
 cfg_tz "${TZ:-UTC}"

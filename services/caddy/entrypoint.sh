@@ -23,7 +23,6 @@ fi
 echo "Configure unprivileged user"
 create group caddy "${PUID}"
 create passwd caddy "${PGID}"
-add2group caddy caddy
 
 echo "Configure timezone"
 cfg_tz "${TZ:-UTC}"

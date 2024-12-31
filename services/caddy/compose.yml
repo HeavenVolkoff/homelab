@@ -12,7 +12,7 @@ networks:
     attachable: false
     enable_ipv6: true
     driver_opts:
-      # Necessary for networks that may accessed behind pppoe
+      # Necessary for TCP to work with my home network
       com.docker.network.driver.mtu: 1280
 
 services:
@@ -31,6 +31,8 @@ services:
         limits:
           cpus: "0.1"
           memory: 64M
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     networks:
       - controller
     hostname: caddy_controller-{{.Service.ID}}

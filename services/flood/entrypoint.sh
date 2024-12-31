@@ -23,7 +23,6 @@ fi
 echo "Configure unprivileged user"
 create group flood "${PUID}"
 create passwd flood "${PGID}"
-add2group flood flood
 
 echo "Configure timezone"
 cfg_tz "${TZ:-UTC}"

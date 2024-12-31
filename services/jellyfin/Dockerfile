@@ -1,6 +1,7 @@
 # syntax=docker/dockerfile:1
 
-ARG JELLYFIN_VERSION=10.9.11
+# renovate: datasource=docker packageName=jellyfin/jellyfin
+ARG JELLYFIN_VERSION=10.10.3
 
 FROM jellyfin/jellyfin:${JELLYFIN_VERSION}
 
@@ -20,12 +21,8 @@ ENV TZ=UTC \
     JELLYFIN_CONFIG_DIR=/etc/jellyfin \
     JELLYFIN_TRANSCODE_DIR=/tmp/transcodes
 
-# Shell library with a collection of functions for entrypoint.sh
-ADD --chmod=644 --checksum=sha256:e9f81f8c13f585804b1e37bd2b2e37c8957270bcf2b71d95f24a2e80e4c47813 \
-    https://gist.githubusercontent.com/HeavenVolkoff/d3d14669f2786df68dd8a445eed8dd81/raw \
-    /usr/local/bin/entrypoint.shlib
-
-COPY --chmod=755    entrypoint.sh   /usr/local/bin/
+COPY                  entrypoint.sh    /usr/local/bin/
+COPY --from=utilities entrypoint.shlib /usr/local/bin/
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 

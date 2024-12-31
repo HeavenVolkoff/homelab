@@ -23,8 +23,6 @@ services:
       - ${ROOT_DIR:?Missing root dir}/runtime/transmission/config:/etc/transmission
       - ${MEDIA_DIR:?Missing media dir}:/media
       - ${TORRENT_DIR:?Missing torrent dir}:/download
-    networks:
-      - transmission
     hostname: transmission-{{.Service.ID}}
     environment:
       '-': '<<: *env'

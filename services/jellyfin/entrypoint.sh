@@ -23,7 +23,6 @@ fi
 echo "Configure unprivileged user"
 create group jellyfin "${PUID}"
 create passwd jellyfin "${PGID}"
-add2group jellyfin jellyfin
 
 echo "Configure timezone"
 cfg_tz "${TZ:-UTC}"

@@ -2,9 +2,12 @@
   "[yaml]": {
     "editor.defaultFormatter": "bluebrown.yamlfmt"
   },
+  "files.associations": {
+    "*.shlib": "shellscript"
+  },
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-		"Dockerfile": ".dockerignore",
-		"README.md": "CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md",
-	},
+    "Dockerfile": ".dockerignore",
+    "README.md": "CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md"
+  }
 }
