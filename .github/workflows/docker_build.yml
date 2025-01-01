@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Symlink .env
+        run: ln -s .env.example .env
       - name: List targets
         id: generate
         uses: docker/bake-action/subaction/list-targets@v4
@@ -37,6 +39,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Symlink .env
+        run: ln -s .env.example .env
       - name: Login to GitHub Container Registry
         if: ${{ github.event_name != 'pull_request' }}
         uses: docker/login-action@v3
