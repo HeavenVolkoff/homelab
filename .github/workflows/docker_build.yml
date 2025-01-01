@@ -23,7 +23,7 @@ jobs:
         id: generate
         uses: docker/bake-action/subaction/list-targets@v4
         with:
-          target: ubuntu
+          target: default
 
   build-containesr:
     name: Build Containers
