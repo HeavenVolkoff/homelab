@@ -99,7 +99,7 @@ RUN set -eux; \
         fi \
     ; done \
     && \
-    install -D -t "/srv/lib" "$(xx-clang -print-sysroot)/lib/ld-musl-aarch64.so.1";
+    install -D -t "/srv/lib" "$(xx-clang -print-sysroot)/lib"/ld-musl-*.so.1;
 
 # === Stage 2 - Busybox ========================================================
 FROM busybox:stable-musl AS busybox

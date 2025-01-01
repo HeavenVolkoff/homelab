@@ -2,20 +2,18 @@
 
 # renovate: datasource=docker packageName=caddy/caddy
 ARG CADDY_VERSION=2.8.4
-# renovate: datasource=docker packageName=vaultwarden/server
-ARG VAULWARDEN_VERSION=1.32.7
 
 # === Stage 0 - Cross-compilation helper =======================================
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest AS xx
 
 # === Stage 1.1 - Flood ========================================================
-FROM --platform=$BUILDPLATFORM ghcr.io/heavenvolkoff/homelab/flood:latest AS flood
+FROM --platform=$BUILDPLATFORM jesec/flood:4.8.5 AS flood
 
 # === Stage 1.2 - Jellyfin =====================================================
-FROM --platform=$BUILDPLATFORM ghcr.io/heavenvolkoff/homelab/jellyfin:latest AS jellyfin
+FROM --platform=$BUILDPLATFORM jellyfin/jellyfin:10.10.3 AS jellyfin
 
 # === Stage 1.3 - Vaultwarden ==================================================
-FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:${VAULWARDEN_VERSION} AS vaultwarden
+FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7 AS vaultwarden
 
 # === Stage 2 - Builder ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/caddy/caddy:${CADDY_VERSION}-builder-alpine AS builder
