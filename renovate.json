@@ -36,5 +36,11 @@
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ],
-  "packageRules": []
+  "packageRules": [
+    {
+      "matchDatasources": ["docker"],
+      "matchPackagePrefixes": ["ghcr.io/heavenvolkoff/homelab"],
+      "enabled": false
+    }
+  ]
 }
