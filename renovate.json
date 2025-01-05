@@ -73,11 +73,9 @@
         "docker"
       ],
       "matchPackageNames": [
-        "alpine"
+        "docker.io/library/alpine"
       ],
-      "ignoreVersions": [
-        "20[0-9]{6}"
-      ]
+      "allowedVersions": "!/^202[0-9]{5}$/"
     }
   ]
 }
