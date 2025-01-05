@@ -1,7 +1,7 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
 # renovate: datasource=docker packageName=jellyfin/jellyfin
-ARG JELLYFIN_VERSION=10.10.3
+ARG JELLYFIN_VERSION=10.10.3@sha256:17c3a8d9dddb97789b5f37112840ebf96566442c14d4754193a6c2eb154bc221
 
 FROM docker.io/jellyfin/jellyfin:${JELLYFIN_VERSION}
 

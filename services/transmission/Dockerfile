@@ -1,7 +1,7 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
 # === Stage 0 - Install Transmission ===========================================
-FROM docker.io/library/alpine:edge AS install
+FROM docker.io/library/alpine:edge@sha256:f4b9f111e2c5290552a920590dd48dc58f5ea1cacda6e25b0a2718974d090cf0 AS install
 
 ADD https://git.alpinelinux.org/aports/plain/community/transmission/APKBUILD APKBUILD
 
@@ -21,10 +21,10 @@ RUN set -eu; \
     ; done
 
 # === Stage 1 - Busybox ========================================================
-FROM docker.io/library/busybox:stable-musl AS busybox
+FROM docker.io/library/busybox:stable-musl@sha256:b4771ab006a5344931341972e1e4b1ff14db2c327eeab0053416aa2277213b1d AS busybox
 
 # === Stage 2 - Runtime ========================================================
-FROM gcr.io/distroless/static-debian12
+FROM gcr.io/distroless/static-debian12@sha256:5c7e2b465ac6a2a4e5f4f7f722ce43b147dabe87cb21ac6c4007ae5178a1fa58
 
 ENV TZ=UTC \
     PUID=1000 \
