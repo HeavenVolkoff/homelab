@@ -1,19 +1,19 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
 # renovate: datasource=docker packageName=caddy/caddy
 ARG CADDY_VERSION=2.8.4
 
 # === Stage 0 - Cross-compilation helper =======================================
-FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest AS xx
+FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:923441d7c25f1e2eb5789f82d987693c47b8ed987c4ab3b075d6ed2b5d6779a3 AS xx
 
 # === Stage 1.1 - Flood ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.8.5 AS flood
+FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.8.5@sha256:029fd802b125a53dd6289776a1793e815d61f8ee33cbb686cfae951a390963fe AS flood
 
 # === Stage 1.2 - Jellyfin =====================================================
-FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.3 AS jellyfin
+FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.3@sha256:17c3a8d9dddb97789b5f37112840ebf96566442c14d4754193a6c2eb154bc221 AS jellyfin
 
 # === Stage 1.3 - Vaultwarden ==================================================
-FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7 AS vaultwarden
+FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7@sha256:7a0aa23c0947be3582898deb5170ea4359493ed9a76af2badf60a7eb45ac36af AS vaultwarden
 
 # === Stage 2 - Builder ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/caddy/caddy:${CADDY_VERSION}-builder-alpine AS builder
@@ -33,7 +33,7 @@ RUN env CGO_ENABLED=0 XCADDY_WHICH_GO=xx-go xcaddy build \
 
 #--
 
-FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3 AS static
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3@sha256:21dc6063fd678b478f57c0e13f47560d0ea4eeba26dfc947b2a4f81f686b9f45 AS static
 
 RUN apk add --no-cache jq curl file pigz zstd brotli mailcap moreutils libarchive-tools
 
@@ -76,11 +76,11 @@ RUN set -eu; \
 
 #--
 
-FROM docker.io/library/busybox:stable-musl AS busybox
+FROM docker.io/library/busybox:stable-musl@sha256:b4771ab006a5344931341972e1e4b1ff14db2c327eeab0053416aa2277213b1d AS busybox
 
 #--
 
-FROM gcr.io/distroless/static-debian12
+FROM gcr.io/distroless/static-debian12@sha256:5c7e2b465ac6a2a4e5f4f7f722ce43b147dabe87cb21ac6c4007ae5178a1fa58
 
 ARG CADDY_VERSION
 
