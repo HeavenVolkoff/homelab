@@ -59,7 +59,7 @@ RUN --mount=type=cache,sharing=locked,target=/root/.npm \
     npm i -g flood@${FLOOD_VERSION}
 
 # === Stage 2 - Busybox ========================================================
-FROM busybox:stable-musl AS busybox
+FROM docker.io/library/busybox:stable-musl AS busybox
 
 # === Stage 3 - Runtime ========================================================
 FROM gcr.io/distroless/nodejs22-debian12

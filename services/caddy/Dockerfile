@@ -7,10 +7,10 @@ ARG CADDY_VERSION=2.8.4
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest AS xx
 
 # === Stage 1.1 - Flood ========================================================
-FROM --platform=$BUILDPLATFORM jesec/flood:4.8.5 AS flood
+FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.8.5 AS flood
 
 # === Stage 1.2 - Jellyfin =====================================================
-FROM --platform=$BUILDPLATFORM jellyfin/jellyfin:10.10.3 AS jellyfin
+FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.3 AS jellyfin
 
 # === Stage 1.3 - Vaultwarden ==================================================
 FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7 AS vaultwarden

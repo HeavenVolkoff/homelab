@@ -21,7 +21,7 @@ RUN set -eu; \
     ; done
 
 # === Stage 1 - Busybox ========================================================
-FROM busybox:stable-musl AS busybox
+FROM docker.io/library/busybox:stable-musl AS busybox
 
 # === Stage 2 - Runtime ========================================================
 FROM gcr.io/distroless/static-debian12
