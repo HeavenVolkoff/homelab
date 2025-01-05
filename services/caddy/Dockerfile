@@ -1,22 +1,25 @@
 # syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
-# renovate: datasource=docker packageName=caddy/caddy
-ARG CADDY_VERSION=2.8.4
+# renovate: datasource=github-release packageName=caddyserver/caddy
+ARG CADDY_VERSION=2.9.0
 
 # === Stage 0 - Cross-compilation helper =======================================
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:923441d7c25f1e2eb5789f82d987693c47b8ed987c4ab3b075d6ed2b5d6779a3 AS xx
 
-# === Stage 1.1 - Flood ========================================================
+# === Stage 1.1 - Shoko ========================================================
+FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily AS shoko
+
+# === Stage 1.2 - Flood ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.8.5@sha256:029fd802b125a53dd6289776a1793e815d61f8ee33cbb686cfae951a390963fe AS flood
 
-# === Stage 1.2 - Jellyfin =====================================================
+# === Stage 1.3 - Jellyfin =====================================================
 FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.3@sha256:17c3a8d9dddb97789b5f37112840ebf96566442c14d4754193a6c2eb154bc221 AS jellyfin
 
-# === Stage 1.3 - Vaultwarden ==================================================
+# === Stage 1.4 - Vaultwarden ==================================================
 FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7@sha256:7a0aa23c0947be3582898deb5170ea4359493ed9a76af2badf60a7eb45ac36af AS vaultwarden
 
 # === Stage 2 - Builder ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/caddy/caddy:${CADDY_VERSION}-builder-alpine AS builder
+FROM --platform=$BUILDPLATFORM docker.io/caddy:2.9-builder AS builder
 
 ARG TARGETPLATFORM CADDY_VERSION
 
@@ -38,22 +41,10 @@ FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3@sha256:21dc6063fd678b4
 RUN apk add --no-cache jq curl file pigz zstd brotli mailcap moreutils libarchive-tools
 
 COPY                    ./static                                        /var/www/homepage
+COPY --from=shoko       /usr/src/app/build/webui                        /var/www/shoko
 COPY --from=flood       /usr/local/lib/node_modules/flood/dist/assets   /var/www/flood
 COPY --from=jellyfin    /jellyfin/jellyfin-web                          /var/www/jellyfin
 COPY --from=vaultwarden /web-vault                                      /var/www/vaultwarden
-
-# Pull lastest Shoko webui version from upstream
-RUN set -eu; \
-    mkdir -p /var/www/shoko \
-    && \
-    curl -LSs "$( \
-        while { \
-            i=$((${i--1}+1)); \
-            ! curl -L#sS 'https://api.github.com/repos/ShokoAnime/ShokoServer-WebUI/releases?per_page=100&page='$i \
-              | jq -r 'if . | length == 0 then error("Empty") else . | .[0].assets[0]["browser_download_url"] end'; \
-        }; do sleep 1; done \
-    )" \
-    | bsdtar -xf- -C /var/www/shoko/
 
 # https://docs.fastly.com/en/guides/enabling-automatic-gzipping
 RUN find /var/www -type f -regex '.*\.\(js\|css\|xml\|txt\|html\|json\|ico\|svg\|eot\|otf\|ttf\)' \
@@ -82,8 +73,6 @@ FROM docker.io/library/busybox:stable-musl@sha256:b4771ab006a5344931341972e1e4b1
 
 FROM gcr.io/distroless/static-debian12@sha256:5c7e2b465ac6a2a4e5f4f7f722ce43b147dabe87cb21ac6c4007ae5178a1fa58
 
-ARG CADDY_VERSION
-
 ENV TZ=UTC \
     PUID=1000 \
     PGID=1000 \
@@ -91,7 +80,6 @@ ENV TZ=UTC \
     LC_ALL=C.UTF-8 \
     TMPDIR=/tmp \
     LANGUAGE=en \
-    CADDY_VERSION=${CADDY_VERSION} \
     XDG_DATA_HOME=/usr/share \
     XDG_CONFIG_HOME=/etc
 
@@ -118,7 +106,6 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["docker-proxy"]
 
 LABEL org.opencontainers.image.title="Caddy" \
-    org.opencontainers.image.version="${CADDY_VERSION}" \
     org.opencontainers.image.authors="Vítor Vasconcellos <vasconcellos.dev@gmail.com>" \
     org.opencontainers.image.revision="1" \
     org.opencontainers.image.licenses="Apache-2.0" \

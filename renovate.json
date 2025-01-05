@@ -60,6 +60,13 @@
   ],
   "packageRules": [
     {
+      "matchPackageNames": [
+        "jesec/flood",
+        "caddyserver/caddy"
+      ],
+      "extractVersion": "^v(?<version>.+)$"
+    },
+    {
       "matchDatasources": [
         "docker"
       ],
