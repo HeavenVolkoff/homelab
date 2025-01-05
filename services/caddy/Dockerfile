@@ -18,11 +18,11 @@ FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7 AS vaultwarde
 # === Stage 2 - Builder ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/caddy/caddy:${CADDY_VERSION}-builder-alpine AS builder
 
-ARG TARGETPLATFORM
+ARG TARGETPLATFORM CADDY_VERSION
 
 COPY --from=xx / /
 
-ENV CADDY_VERSION ${CADDY_VERSION}
+ENV CADDY_VERSION "v${CADDY_VERSION}"
 
 RUN env CGO_ENABLED=0 XCADDY_WHICH_GO=xx-go xcaddy build \
     --output /bin/caddy \
@@ -81,6 +81,8 @@ FROM docker.io/library/busybox:stable-musl AS busybox
 #--
 
 FROM gcr.io/distroless/static-debian12
+
+ARG CADDY_VERSION
 
 ENV TZ=UTC \
     PUID=1000 \
