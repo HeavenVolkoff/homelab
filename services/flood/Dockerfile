@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
-# renovate: datasource=npm packageName=flood
+# renovate: datasource=github-release packageName=jesec/flood
 ARG FLOOD_VERSION=4.8.5
 
 # === Stage 0 - Disambiguation =================================================
@@ -99,7 +99,6 @@ ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 
 LABEL org.opencontainers.image.title="Flood" \
       org.opencontainers.image.authors="Vítor Vasconcellos <vasconcellos.dev@gmail.com>" \
-      org.opencontainers.image.version="${FLOOD_VERSION}" \
       org.opencontainers.image.revision="1" \
       org.opencontainers.image.licenses="GPL-3.0" \
       org.opencontainers.image.description="A modern web UI for various torrent clients with a Node.js backend and React frontend"
