@@ -1,10 +1,10 @@
-# syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
 # renovate: datasource=github-release packageName=HeavenVolkoff/minidlna-build
 ARG MINIDLNA_VERSION='1.3.3.1P-1'
 
 # === Stage 0 - Busybox ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/library/busybox:stable-musl AS install
+FROM --platform=$BUILDPLATFORM docker.io/library/busybox:stable-musl@sha256:b4771ab006a5344931341972e1e4b1ff14db2c327eeab0053416aa2277213b1d AS install
 
 ARG TARGETPLATFORM MINIDLNA_VERSION
 
@@ -24,10 +24,10 @@ RUN case "$TARGETPLATFORM" in \
     esac
 
 # === Stage 1 - Busybox ========================================================
-FROM docker.io/library/busybox:stable-musl AS busybox
+FROM docker.io/library/busybox:stable-musl@sha256:b4771ab006a5344931341972e1e4b1ff14db2c327eeab0053416aa2277213b1d AS busybox
 
 # === Stage 2 - Runtime ========================================================
-FROM gcr.io/distroless/base-nossl-debian12
+FROM gcr.io/distroless/base-nossl-debian12@sha256:c2977db459c8763ee3d739f68b547d2193af92267f989754c09153919757d36a
 
 ARG MINIDLNA_VERSION
 
