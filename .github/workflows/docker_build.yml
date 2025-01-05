@@ -3,8 +3,23 @@ name: Containers
 on:
   workflow_dispatch:
   push:
+    paths:
+      - 'services/**'
+      - 'utilities/**'
+      - '.env.example'
+      - 'compose.yml'
+      - 'compose.override.yml'
+      - '.github/workflows/docker_build.yml'
     branches:
       - 'main'
+  pull_request:
+    paths:
+      - 'services/**'
+      - 'utilities/**'
+      - '.env.example'
+      - 'compose.yml'
+      - 'compose.override.yml'
+      - '.github/workflows/docker_build.yml'
 
 env:
   REGISTRY_IMAGE: ghcr.io/HeavenVolkoff/homelab
@@ -25,7 +40,7 @@ jobs:
         with:
           target: default
 
-  build-containesr:
+  build-containers:
     name: Build Containers
     runs-on: ubuntu-latest
     needs:
@@ -52,7 +67,15 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and Push
+      - name: Build and Push (PRs)
+        if: ${{ github.ref != 'refs/heads/main' }}
+        uses: docker/bake-action@v5
+        with:
+          targets: ${{ matrix.target }}
+          allow: network.host
+          push: false
+      - name: Build and Push (main)
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/bake-action@v5
         with:
           targets: ${{ matrix.target }}
