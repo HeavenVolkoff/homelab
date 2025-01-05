@@ -50,7 +50,7 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "Dockerfile$"
+        "(^|/|\\.)Dockerfile$"
       ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
@@ -60,6 +60,11 @@
   ],
   "packageRules": [
     {
+      "enabled": true,
+      "matchDatasources": [
+        "github-releases",
+        "github-tags"
+      ],
       "matchPackageNames": [
         "jesec/flood",
         "caddyserver/caddy"
