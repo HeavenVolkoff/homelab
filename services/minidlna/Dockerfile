@@ -3,7 +3,7 @@
 # renovate: datasource=github-release packageName=HeavenVolkoff/minidlna-build
 ARG MINIDLNA_VERSION='1.3.3.1P-1'
 
-# === Stage 0 - Busybox ========================================================
+# === Stage 0 - Install MiniDLNA ===============================================
 FROM --platform=$BUILDPLATFORM docker.io/library/busybox:stable-musl@sha256:b4771ab006a5344931341972e1e4b1ff14db2c327eeab0053416aa2277213b1d AS install
 
 ARG TARGETPLATFORM MINIDLNA_VERSION
