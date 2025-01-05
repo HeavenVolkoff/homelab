@@ -21,6 +21,11 @@ on:
       - 'compose.override.yml'
       - '.github/workflows/docker_build.yml'
 
+# Cancel previous runs of the same workflow on the same branch.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   REGISTRY_IMAGE: ghcr.io/HeavenVolkoff/homelab
 
@@ -48,7 +53,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-          target: ${{ fromJson(needs.prepare.outputs.targets) }}
+        target: ${{ fromJson(needs.prepare.outputs.targets) }}
     permissions:
       packages: write
     steps:
