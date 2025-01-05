@@ -22,7 +22,7 @@ ARG TARGETPLATFORM CADDY_VERSION
 
 COPY --from=xx / /
 
-ENV CADDY_VERSION "v${CADDY_VERSION}"
+ENV CADDY_VERSION="v${CADDY_VERSION}"
 
 RUN env CGO_ENABLED=0 XCADDY_WHICH_GO=xx-go xcaddy build \
     --output /bin/caddy \

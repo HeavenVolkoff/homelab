@@ -1,0 +1,40 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":label(type/renovate)",
+    ":docker",
+    "docker:enableMajor",
+    "docker:pinDigests",
+    ":disableRateLimiting",
+    ":ignoreUnstable",
+    ":pinVersions",
+    ":separateMajorReleases",
+    ":automergePr",
+    ":automergeRequireAllStatusChecks",
+    ":automergeAll",
+    ":semanticCommits",
+    ":enableVulnerabilityAlerts",
+    ":enableVulnerabilityAlertsWithLabel(security)"
+  ],
+  "rebaseWhen": "conflicted",
+  "platformAutomerge": true,
+  "rebaseLabel": "renovate/rebase",
+  "stopUpdatingLabel": "renovate/stop-updating",
+  "major": { "labels": ["bump/major"] },
+  "minor": { "labels": ["bump/minor"] },
+  "patch": { "labels": ["bump/patch"] },
+  "pin": { "labels": ["bump/pin"] },
+  "digest": { "labels": ["bump/digest"] },
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["^Dockerfile$"],
+      "matchStrings": [
+        "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    }
+  ],
+  "packageRules": []
+}
