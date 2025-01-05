@@ -7,7 +7,7 @@ ARG CADDY_VERSION='2.9.0'
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:923441d7c25f1e2eb5789f82d987693c47b8ed987c4ab3b075d6ed2b5d6779a3 AS xx
 
 # === Stage 1.1 - Shoko ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily AS shoko
+FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily@sha256:c9b4500001a414436a2b162536592e9cd989c2feb81ac66e02a1a17a54d1ad0d AS shoko
 
 # === Stage 1.2 - Flood ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.8.5@sha256:029fd802b125a53dd6289776a1793e815d61f8ee33cbb686cfae951a390963fe AS flood
@@ -19,7 +19,7 @@ FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.3@sha256:17c3a8
 FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.32.7@sha256:7a0aa23c0947be3582898deb5170ea4359493ed9a76af2badf60a7eb45ac36af AS vaultwarden
 
 # === Stage 2 - Builder ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/caddy:2.9-builder AS builder
+FROM --platform=$BUILDPLATFORM docker.io/caddy:2.9-builder@sha256:b498d7800b72667c072267e135e1f64ea4d2f2b80a90b008d82df3938f3239e1 AS builder
 
 ARG TARGETPLATFORM CADDY_VERSION
 
