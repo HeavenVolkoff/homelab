@@ -67,6 +67,17 @@
       "matchPackageNames": [
         "ghcr.io/heavenvolkoff/homelab{/,}**"
       ]
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "alpine"
+      ],
+      "ignoreVersions": [
+        "20[0-9]{6}"
+      ]
     }
   ]
 }
