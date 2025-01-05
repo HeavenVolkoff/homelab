@@ -50,8 +50,7 @@
     {
       "customType": "regex",
       "fileMatch": [
-        "(^|/|\\.)([Dd]ocker|[Cc]ontainer)file$",
-        "(^|/)([Dd]ocker|[Cc]ontainer)file[^/]*$"
+        "Dockerfile$"
       ],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"

@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
-# renovate: datasource=github-release packageName=HeavenVolkoff/minidlna-build
+# renovate: datasource=github-release packageName=HeavenVolkoff/minidlna-build versioning=semver-coerced
 ARG MINIDLNA_VERSION='1.3.3+p.1'
 
 # === Stage 0 - Install MiniDLNA ===============================================
