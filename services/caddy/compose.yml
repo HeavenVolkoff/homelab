@@ -17,7 +17,7 @@ networks:
 
 services:
   caddy_controller:
-    image: ghcr.io/heavenvolkoff/homelab/caddy:latest
+    image: &image ghcr.io/heavenvolkoff/homelab/caddy:latest
     deploy:
       resources:
         limits:
@@ -44,7 +44,7 @@ services:
           - linux/arm64
       context: .
       network: host
-    image: ghcr.io/heavenvolkoff/homelab/caddy:latest
+    image: *image
     deploy:
       resources:
         limits:
