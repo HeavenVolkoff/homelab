@@ -4,7 +4,7 @@
 ARG MINIDLNA_VERSION='1.3.3.1P-1'
 
 # === Stage 0 - Busybox ========================================================
-FROM --platform=$BUILDPLATFORM busybox:stable-musl AS busybox
+FROM --platform=$BUILDPLATFORM docker.io/library/busybox:stable-musl AS install
 
 ARG TARGETPLATFORM MINIDLNA_VERSION
 
@@ -23,7 +23,10 @@ RUN case "$TARGETPLATFORM" in \
             echo "Unsupported architecture"; exit 1 ;; \
     esac
 
-# === Stage 1 - Runtime ========================================================
+# === Stage 1 - Busybox ========================================================
+FROM docker.io/library/busybox:stable-musl AS busybox
+
+# === Stage 2 - Runtime ========================================================
 FROM gcr.io/distroless/base-nossl-debian12
 
 ARG MINIDLNA_VERSION
@@ -47,7 +50,7 @@ COPY                  entrypoint.sh    /usr/local/bin/
 COPY --from=utilities getent.sh        /usr/local/bin/getent
 COPY --from=utilities entrypoint.shlib /usr/local/bin/
 
-COPY --from=busybox /opt/minidlna/  /usr/
+COPY --from=install /opt/minidlna/  /usr/
 
 EXPOSE 1900/udp 8200/tcp
 
