@@ -9,7 +9,7 @@ For deploying spacedrive cloud services you need to have [docker](https://docs.d
 To manually build a single service image run the following:
 
 ```sh
-$> cd ${SERVICE}
+$> cd services/${SERVICE}
 $> env BUILDX_EXPERIMENTAL=1 docker buildx debug --on=error build --build-context utilities=../../utilities --tag ghcr.io/heavenvolkoff/homelab/${SERVICE}:latest .
 ```
 

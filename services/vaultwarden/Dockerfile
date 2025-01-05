@@ -1,5 +1,6 @@
 # syntax=docker/dockerfile:1
 
+# renovate: datasource=docker packageName=vaultwarden/server
 ARG VAULWARDEN_VERSION=1.32.7
 
 # === Stage 0 - Disambiguation =================================================
@@ -58,6 +59,8 @@ FROM busybox:stable-musl AS busybox
 # === Stage 3 - Runtime ========================================================
 FROM gcr.io/distroless/cc-debian12
 
+ARG VAULWARDEN_VERSION
+
 ENV TZ=UTC \
     PUID=1000 \
     PGID=1000 \
@@ -92,9 +95,8 @@ HEALTHCHECK --retries=6 --interval=30s --timeout=10s --start-period=30s \
     CMD healthcheck.sh
 
 LABEL org.opencontainers.image.title="Vaultwarden" \
+      org.opencontainers.image.version="${VAULWARDEN_VERSION}" \
       org.opencontainers.image.authors="Vítor Vasconcellos <vasconcellos.dev@gmail.com>" \
       org.opencontainers.image.revision="1" \
       org.opencontainers.image.licenses="AGPL-3.0" \
-      org.opencontainers.image.description="Unofficial Bitwarden compatible server written in Rust" \
-      version.command="--version | awk -F' ' '{ print \$2 }' | head -n1" \
-      version.entrypoint="vaultwarden"
+      org.opencontainers.image.description="Unofficial Bitwarden compatible server written in Rust"
