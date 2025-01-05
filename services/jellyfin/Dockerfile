@@ -3,7 +3,7 @@
 # renovate: datasource=docker packageName=jellyfin/jellyfin
 ARG JELLYFIN_VERSION=10.10.3
 
-FROM jellyfin/jellyfin:${JELLYFIN_VERSION}
+FROM docker.io/jellyfin/jellyfin:${JELLYFIN_VERSION}
 
 ARG JELLYFIN_VERSION
 

@@ -54,7 +54,7 @@ RUN set -eux; \
     ; done
 
 # === Stage 2 - Busybox ========================================================
-FROM busybox:stable-musl AS busybox
+FROM docker.io/library/busybox:stable-musl AS busybox
 
 # === Stage 3 - Runtime ========================================================
 FROM gcr.io/distroless/cc-debian12
