@@ -41,7 +41,7 @@ jobs:
         run: ln -s .env.example .env
       - name: List targets
         id: generate
-        uses: docker/bake-action/subaction/list-targets@v5
+        uses: docker/bake-action/subaction/list-targets@v6
         with:
           target: default
 
@@ -74,14 +74,14 @@ jobs:
         uses: docker/setup-buildx-action@v3
       - name: Build and Push (PRs)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v6
         with:
           targets: ${{ matrix.target }}
           allow: network.host
           push: false
       - name: Build and Push (main)
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/bake-action@v5
+        uses: docker/bake-action@v6
         with:
           targets: ${{ matrix.target }}
           allow: network.host
