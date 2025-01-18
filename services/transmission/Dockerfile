@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:93bfd3b68c109427185cd78b4779fc82b484b0b7618e36d0f104d4d801e66d25
 
 # === Stage 0 - Install Transmission ===========================================
-FROM docker.io/library/alpine:edge@sha256:f4b9f111e2c5290552a920590dd48dc58f5ea1cacda6e25b0a2718974d090cf0 AS install
+FROM docker.io/library/alpine:edge@sha256:115729ec5cb049ba6359c3ab005ac742012d92bbaa5b8bc1a878f1e8f62c0cb8 AS install
 
 ADD https://git.alpinelinux.org/aports/plain/community/transmission/APKBUILD APKBUILD
 
