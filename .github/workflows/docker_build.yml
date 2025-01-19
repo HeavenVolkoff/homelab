@@ -76,6 +76,7 @@ jobs:
         if: ${{ github.event_name == 'pull_request' }}
         uses: docker/bake-action@v6
         with:
+          source: .
           targets: ${{ matrix.target }}
           allow: network.host
           push: false
@@ -83,6 +84,7 @@ jobs:
         if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/bake-action@v6
         with:
+          source: .
           targets: ${{ matrix.target }}
           allow: network.host
           push: true
