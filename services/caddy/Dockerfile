@@ -10,7 +10,7 @@ FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:923441d7c25
 FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily@sha256:9cee4e5dc4fdc1ecd09659fc737080aab93fae49b9da492a8270ff9c64e0b410 AS shoko
 
 # === Stage 1.2 - Flood ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.9.0@sha256:6139dc1277c77c5cf8c279229383f9fdad3107d56ad14c40b22c3551beeed8d4 AS flood
+FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.9.3@sha256:e9c8a3fd460ad1e81b47e7e17ec257a998f4e92e2b8c4935190d63c28e5b9b50 AS flood
 
 # === Stage 1.3 - Jellyfin =====================================================
 FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.4@sha256:5ff40713373c1a9b069a2f452b652ee965987f39d5c48ee52462008209b7ad6a AS jellyfin
