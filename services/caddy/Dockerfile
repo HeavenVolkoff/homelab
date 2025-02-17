@@ -13,7 +13,7 @@ FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily@sha256:bcbebc19
 FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.9.0@sha256:6139dc1277c77c5cf8c279229383f9fdad3107d56ad14c40b22c3551beeed8d4 AS flood
 
 # === Stage 1.3 - Jellyfin =====================================================
-FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.4@sha256:5ff40713373c1a9b069a2f452b652ee965987f39d5c48ee52462008209b7ad6a AS jellyfin
+FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.6@sha256:96b09723b22fdde74283274bdc1f63b9b76768afd6045dd80d4a4559fc4bb7f3 AS jellyfin
 
 # === Stage 1.4 - Vaultwarden ==================================================
 FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.33.2@sha256:87edb99945da91bd7504ac1435495595af2e89ad2c7adc151ae5bf091ec8baf2 AS vaultwarden
