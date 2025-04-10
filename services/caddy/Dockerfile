@@ -19,7 +19,7 @@ FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.10.6@sha256:96b097
 FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.33.2@sha256:87edb99945da91bd7504ac1435495595af2e89ad2c7adc151ae5bf091ec8baf2 AS vaultwarden
 
 # === Stage 2 - Builder ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/caddy:2.9-builder@sha256:c1e258b449a2deaab94f90330450fcfe8c3e0b6f0891f28a704c749f43825877 AS builder
+FROM --platform=$BUILDPLATFORM docker.io/caddy:2.9-builder@sha256:84c64e5704f0b7366f0721cd9f5e6be155e824126dd12fe3f0fd7d6ea996b78b AS builder
 
 ARG TARGETPLATFORM CADDY_VERSION
 
