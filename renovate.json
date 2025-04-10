@@ -17,7 +17,7 @@
     ":enableVulnerabilityAlerts",
     ":enableVulnerabilityAlertsWithLabel(security)"
   ],
-  "rebaseWhen": "conflicted",
+  "rebaseWhen": "auto",
   "platformAutomerge": true,
   "rebaseLabel": "renovate/rebase",
   "stopUpdatingLabel": "renovate/stop-updating",
