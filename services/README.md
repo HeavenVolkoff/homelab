@@ -2,7 +2,7 @@
 
 ## Requirements
 
-For deploying spacedrive cloud services you need to have [docker](https://docs.docker.com/engine/install/), [docker compose v2+](https://docs.docker.com/compose/install/) and [docker buildx](https://docs.docker.com/build/architecture/#install-buildx) installed
+For deploying you need to have [docker](https://docs.docker.com/engine/install/), [docker compose v2+](https://docs.docker.com/compose/install/) and [docker buildx](https://docs.docker.com/build/architecture/#install-buildx) installed
 
 ## Build custom images
 

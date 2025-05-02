@@ -79,7 +79,7 @@ services:
       - db
     environment:
       <<: *env
-      SETUP_DB_VAULTWARDEN: spacedrive_cloud_services,${VAULTWARDEN_DB_USER:?Missing vaultwarden database user},${VAULTWARDEN_DB_PASS:?Missing
+      SETUP_DB_VAULTWARDEN: bitwarden,${VAULTWARDEN_DB_USER:?Missing vaultwarden database user},${VAULTWARDEN_DB_PASS:?Missing
         vaultwarden database password}
 
   minidlna:
