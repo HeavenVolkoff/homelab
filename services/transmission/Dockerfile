@@ -3,8 +3,6 @@
 # === Stage 0 - Install Transmission ===========================================
 FROM docker.io/library/alpine:edge@sha256:115729ec5cb049ba6359c3ab005ac742012d92bbaa5b8bc1a878f1e8f62c0cb8 AS install
 
-ADD https://git.alpinelinux.org/aports/plain/community/transmission/APKBUILD APKBUILD
-
 RUN apk upgrade --no-cache
 RUN apk add --no-cache transmission-daemon binutils
 RUN set -eu; \
