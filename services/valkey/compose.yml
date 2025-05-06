@@ -6,7 +6,7 @@ volumes:
 
 services:
   valkey:
-    image: docker.io/valkey/valkey:8-alpine@sha256:bfc7c55cc6dc0cbcbb8672ee494f5b0c65b328ad06be3675aa620a29df614fcf
+    image: docker.io/valkey/valkey:8-alpine@sha256:f43639a6811342b5db26475f3463d4d1950d07bf05542d9483159a44be1fe62f
     labels:
       caddy.storage: redis
       caddy.storage.address: valkey:6379
