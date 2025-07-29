@@ -67,7 +67,7 @@ RUN set -eu; \
 
 #--
 
-FROM docker.io/library/busybox:stable-musl@sha256:5c16ec53d312df1867044cc90abd951bf37fdad32cc9b4a1e1e25d2f8eaf343c AS busybox
+FROM docker.io/library/busybox:stable-musl@sha256:74322b4716a11835c6f413fe9ffc2608ffdb8452f51cad9514a2b804908dc16e AS busybox
 
 #--
 
