@@ -27,7 +27,7 @@ RUN case "$TARGETPLATFORM" in \
 FROM docker.io/library/busybox:stable-musl@sha256:74322b4716a11835c6f413fe9ffc2608ffdb8452f51cad9514a2b804908dc16e AS busybox
 
 # === Stage 2 - Runtime ========================================================
-FROM gcr.io/distroless/base-nossl-debian12@sha256:1202f767cf810c5bc5f30b95babc268a37eaa1e6fbacd35bed2c924f1bb2a234
+FROM gcr.io/distroless/base-nossl-debian12@sha256:6fe9fd551fab9d442b7ee7096b8fcf286047ff91bac31bc577270bb77afa0184
 
 ENV TZ=UTC \
     PUID=1000 \
