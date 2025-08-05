@@ -71,7 +71,7 @@ FROM docker.io/library/busybox:stable-musl@sha256:74322b4716a11835c6f413fe9ffc26
 
 #--
 
-FROM gcr.io/distroless/static-debian12@sha256:b7b9a6953e7bed6baaf37329331051d7bdc1b99c885f6dbeb72d75b1baad54f9
+FROM gcr.io/distroless/static-debian12@sha256:2e114d20aa6371fd271f854aa3d6b2b7d2e70e797bb3ea44fb677afec60db22c
 
 ENV TZ=UTC \
     PUID=1000 \
