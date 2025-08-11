@@ -36,7 +36,7 @@ jobs:
       targets: ${{ steps.generate.outputs.targets }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Symlink .env
         run: ln -s .env.example .env
       - name: List targets
@@ -58,7 +58,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Symlink .env
         run: ln -s .env.example .env
       - name: Login to GitHub Container Registry
