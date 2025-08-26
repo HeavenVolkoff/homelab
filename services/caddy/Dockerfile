@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:38387523653efa0039f8e1c89bb74a30504e76ee9f565e25c9a09841f9427b05
 
 # renovate: datasource=github-releases depName=caddyserver/caddy
-ARG CADDY_VERSION='2.10.0'
+ARG CADDY_VERSION='2.10.2'
 
 # === Stage 0 - Cross-compilation helper =======================================
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:923441d7c25f1e2eb5789f82d987693c47b8ed987c4ab3b075d6ed2b5d6779a3 AS xx
