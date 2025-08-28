@@ -22,7 +22,7 @@ RUN set -eu; \
 FROM docker.io/library/busybox:stable-musl@sha256:74322b4716a11835c6f413fe9ffc2608ffdb8452f51cad9514a2b804908dc16e AS busybox
 
 # === Stage 2 - Runtime ========================================================
-FROM gcr.io/distroless/static-debian12@sha256:2e114d20aa6371fd271f854aa3d6b2b7d2e70e797bb3ea44fb677afec60db22c
+FROM gcr.io/distroless/static-debian12@sha256:f2ff10a709b0fd153997059b698ada702e4870745b6077eff03a5f4850ca91b6
 
 ENV TZ=UTC \
     PUID=1000 \
