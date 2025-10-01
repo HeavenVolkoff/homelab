@@ -13,7 +13,7 @@ RUN [ "/busybox/ln", "-s", "/busybox/env", "/usr/bin/env" ]
 RUN find / -type f -name '*.so*' | sort | uniq > /libs.txt
 
 # === Stage 1 - Install Flood ==================================================
-FROM docker.io/library/node:22.20.0-bookworm@sha256:4973262386dc1cb70f7d6fc48a855027d8f12d2d3b1fe559b9db9a4fcb74668f AS install
+FROM docker.io/library/node:22.20.0-bookworm@sha256:2bb201f33898d2c0ce638505b426f4dd038cc00e5b2b4cbba17b069f0fff1496 AS install
 
 # Don't allow APT to make question
 ARG DEBIAN_FRONTEND=noninteractive
