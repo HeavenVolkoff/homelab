@@ -9,6 +9,7 @@
     "redhat.vscode-xml",
     "redhat.vscode-yaml",
     "mads-hartmann.bash-ide-vscode",
-    "hangxingliu.vscode-systemd-support"
+    "hangxingliu.vscode-systemd-support",
+    "docker.docker"
   ]
 }

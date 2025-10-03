@@ -77,6 +77,11 @@ storage:
         inline: |
           net.ipv4.ip_forward=1
           net.ipv6.conf.all.forwarding=1
+    # --- SSH Daemon Configuration ---
+    - path: /etc/ssh/sshd_config.d/00-custom.conf
+      mode: 0600
+      contents:
+        inline: "!!include files/sshd.conf"
 
 systemd:
   units:
