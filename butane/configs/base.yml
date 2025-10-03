@@ -1,0 +1,98 @@
+# yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
+
+variant: fcos
+version: 1.6.0
+
+kernel_arguments:
+  should_exist:
+    # --- Performance, Low-Latency & High Availability ---
+    # Disable watchdog timers, which are often unnecessary in virtualized environments.
+    - nowatchdog
+    # Set Transparent Huge Pages to the recommended setting to avoid latency spikes.
+    - transparent_hugepage=madvise
+
+passwd:
+  users:
+    - name: core
+      ssh_authorized_keys:
+        - "ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBBp3qXL7OmnuoELorBE0p2vgGIf2LwrGABr+PGmo9JdfM6leBWo9eJ7UUInXpSsKuIh3Cug2kkPqIcUsBMaE/pc= macbook-pro-touchid@secretive.vitor’s-MacBook-Pro.local"
+        - "sk-ecdsa-sha2-nistp256@openssh.com AAAAInNrLWVjZHNhLXNoYTItbmlzdHAyNTZAb3BlbnNzaC5jb20AAAAIbmlzdHAyNTYAAABBBMXynyIuGR1frHPTMDg5DBIKKSaO1Wut7iytA9s6RTz5haEKhQSw42lSdJcUnDdPNSYQ47zqYxGrg0l7FXyiS4wAAAAEc3NoOg== ShadowValley-12-12-2021-physical_solokey_0"
+      password_hash: "!!env CORE_PASSHASH"
+
+storage:
+  directories:
+    - path: /etc/ucore-autorebase
+      mode: 0754
+    # Directory for X11 keyboard configuration
+    - path: /etc/X11/xorg.conf.d
+      mode: 0755
+  links:
+    # Set the system timezone
+    - path: /etc/localtime
+      target: ../usr/share/zoneinfo/America/Sao_Paulo
+  files:
+    # --- System Locale Configuration ---
+    - path: /etc/locale.conf
+      mode: 0644
+      contents:
+        inline: |
+          LANG=en_US.UTF-8
+          LC_NUMERIC=pt_BR.UTF-8
+          LC_TIME=pt_BR.UTF-8
+          LC_MONETARY=pt_BR.UTF-8
+          LC_PAPER=pt_BR.UTF-8
+          LC_NAME=pt_BR.UTF-8
+          LC_ADDRESS=pt_BR.UTF-8
+          LC_TELEPHONE=pt_BR.UTF-8
+          LC_MEASUREMENT=pt_BR.UTF-8
+          LC_IDENTIFICATION=pt_BR.UTF-8
+    # --- Virtual Console Keyboard Layout ---
+    - path: /etc/vconsole.conf
+      mode: 0644
+      contents:
+        inline: |
+          KEYMAP=us
+          XKBLAYOUT=us
+          XKBMODEL=alt-intl
+    # --- X11 Keyboard Layout (for Cockpit, etc.) ---
+    - path: /etc/X11/xorg.conf.d/00-keyboard.conf
+      mode: 0644
+      contents:
+        inline: |
+          Section "InputClass"
+                  Identifier "system-keyboard"
+                  MatchIsKeyboard "on"
+                  Option "XkbLayout" "us"
+                  Option "XkbVariant" "alt-intl"
+          EndSection
+    # --- NTP (Time) Configuration ---
+    - path: /etc/chrony.conf
+      mode: 0644
+      contents:
+        inline: "!!include files/chrony.conf"
+    # --- Sysctl settings for IP forwarding ---
+    - path: /etc/sysctl.d/99-networking.conf
+      mode: 0644
+      contents:
+        inline: |
+          net.ipv4.ip_forward=1
+          net.ipv6.conf.all.forwarding=1
+
+systemd:
+  units:
+    # --- Enable and configure time synchronization service ---
+    - name: chronyd.service
+      enabled: true
+    # --- Enable tuned ---
+    - name: tuned.service
+      enabled: true
+    - name: tuned-profile.service
+      enabled: true
+      contents: "!!include systemd/tuned-profile.service"
+    # --- uCore Autorebase Services ---
+    - name: ucore-unsigned-autorebase.service
+      enabled: true
+      contents: "!!include systemd/ucore-unsigned-autorebase.service"
+    - name: ucore-signed-autorebase.service
+      enabled: true
+      contents: "!!include systemd/ucore-signed-autorebase.service"

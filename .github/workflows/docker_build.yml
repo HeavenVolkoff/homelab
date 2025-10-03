@@ -4,22 +4,22 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'services/**'
-      - 'utilities/**'
-      - '.env.example'
-      - 'compose.yml'
-      - 'compose.override.yml'
-      - '.github/workflows/docker_build.yml'
+      - "services/**"
+      - "utilities/**"
+      - ".env.example"
+      - "compose.yml"
+      - "compose.override.yml"
+      - ".github/workflows/docker_build.yml"
     branches:
-      - 'main'
+      - "main"
   pull_request:
     paths:
-      - 'services/**'
-      - 'utilities/**'
-      - '.env.example'
-      - 'compose.yml'
-      - 'compose.override.yml'
-      - '.github/workflows/docker_build.yml'
+      - "services/**"
+      - "utilities/**"
+      - ".env.example"
+      - "compose.yml"
+      - "compose.override.yml"
+      - ".github/workflows/docker_build.yml"
 
 # Cancel previous runs of the same workflow on the same branch.
 concurrency:

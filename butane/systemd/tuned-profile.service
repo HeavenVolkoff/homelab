@@ -1,0 +1,10 @@
+[Unit]
+Description=Enable Realtime Host Tuned Profile
+After=tuned.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/tuned-adm profile atomic-host
+
+[Install]
+WantedBy=multi-user.target

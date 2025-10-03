@@ -79,8 +79,7 @@ services:
       - db
     environment:
       <<: *env
-      SETUP_DB_VAULTWARDEN: bitwarden,${VAULTWARDEN_DB_USER:?Missing vaultwarden database user},${VAULTWARDEN_DB_PASS:?Missing
-        vaultwarden database password}
+      SETUP_DB_VAULTWARDEN: bitwarden,${VAULTWARDEN_DB_USER:?Missing vaultwarden database user},${VAULTWARDEN_DB_PASS:?Missing vaultwarden database password}
 
   minidlna:
     <<: *service
@@ -198,8 +197,7 @@ services:
         caddy_4.respond: /health `OK` 200
         caddy_4.handle_errors.@401: expression `{http.error.status_code} == 401`
         caddy_4.handle_errors.header: Content-Type `text/html; charset=UTF-8`
-        caddy_4.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN:?Missing
-          domain}" /><body>Unauthorized`'
+        caddy_4.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN:?Missing domain}" /><body>Unauthorized`'
         caddy_4.route.0_basicauth: "@try_auth"
         caddy_4.route.0_basicauth.admin: ${ADMIN_PASS_HASH:?Missing admin password hash}
         caddy_4.route.1_redir: /login https://${DOMAIN:?Missing domain}
@@ -243,8 +241,7 @@ services:
         caddy.basicauth.admin: ${FLOOD_PASS_HASH:?Missing flood password hash}
         caddy.handle_errors.@401: expression `{http.error.status_code} == 401`
         caddy.handle_errors.header: Content-Type `text/html; charset=UTF-8`
-        caddy.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN:?Missing
-          domain}" /><body>Unauthorized`'
+        caddy.handle_errors.respond: '`<!DOCTYPE html><meta http-equiv="refresh" content="1; url=https://${DOMAIN:?Missing domain}" /><body>Unauthorized`'
       replicas: 1
       placement:
         constraints:
@@ -327,7 +324,8 @@ services:
       labels:
         caddy: jellyfin.${DOMAIN:?Missing domain}
         caddy.root: "* /var/www/jellyfin"
-        caddy.header.Content-Security-Policy: "`default-src https: data: blob: http://image.tmdb.org; style-src 'self' 'unsafe-inline';
+        caddy.header.Content-Security-Policy:
+          "`default-src https: data: blob: http://image.tmdb.org; style-src 'self' 'unsafe-inline';
           script-src 'self' 'unsafe-inline' https://www.gstatic.com/cv/js/sender/v1/cast_sender.js https://www.gstatic.com/eureka/clank/cast_sender.js
           https://www.gstatic.com/eureka/clank/93/cast_sender.js https://www.gstatic.com/eureka/clank/94/cast_sender.js https://www.gstatic.com/eureka/clank/95/cast_sender.js
           https://www.gstatic.com/eureka/clank/96/cast_sender.js https://www.gstatic.com/eureka/clank/97/cast_sender.js https://www.gstatic.com/eureka/clank/98/cast_sender.js

@@ -22,36 +22,24 @@
   "rebaseLabel": "renovate/rebase",
   "stopUpdatingLabel": "renovate/stop-updating",
   "major": {
-    "labels": [
-      "bump/major"
-    ]
+    "labels": ["bump/major"]
   },
   "minor": {
-    "labels": [
-      "bump/minor"
-    ]
+    "labels": ["bump/minor"]
   },
   "patch": {
-    "labels": [
-      "bump/patch"
-    ]
+    "labels": ["bump/patch"]
   },
   "pin": {
-    "labels": [
-      "bump/pin"
-    ]
+    "labels": ["bump/pin"]
   },
   "digest": {
-    "labels": [
-      "bump/digest"
-    ]
+    "labels": ["bump/digest"]
   },
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": [
-        "(^|/|\\.)Dockerfile$"
-      ],
+      "fileMatch": ["(^|/|\\.)Dockerfile$"],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
       ],
@@ -61,32 +49,18 @@
   "packageRules": [
     {
       "enabled": true,
-      "matchDatasources": [
-        "github-releases",
-        "github-tags"
-      ],
-      "matchPackageNames": [
-        "jesec/flood",
-        "caddyserver/caddy"
-      ],
+      "matchDatasources": ["github-releases", "github-tags"],
+      "matchPackageNames": ["jesec/flood", "caddyserver/caddy"],
       "extractVersion": "^v(?<version>.+)$"
     },
     {
-      "matchDatasources": [
-        "docker"
-      ],
+      "matchDatasources": ["docker"],
       "enabled": false,
-      "matchPackageNames": [
-        "ghcr.io/heavenvolkoff/homelab{/,}**"
-      ]
+      "matchPackageNames": ["ghcr.io/heavenvolkoff/homelab{/,}**"]
     },
     {
-      "matchDatasources": [
-        "docker"
-      ],
-      "matchPackageNames": [
-        "docker.io/library/alpine"
-      ],
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["docker.io/library/alpine"],
       "allowedVersions": "!/^20[0-9]{6}$/"
     }
   ]
