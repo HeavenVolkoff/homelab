@@ -4,7 +4,7 @@
 ARG FLOOD_VERSION='4.9.5'
 
 # === Stage 0 - Disambiguation =================================================
-FROM gcr.io/distroless/nodejs22-debian12:debug@sha256:1f30bd108d151163530ef663840d376ed2dcd460ef57b5820d85431acb52db8f AS disambiguation
+FROM gcr.io/distroless/nodejs22-debian12:debug@sha256:6c15b92a332225658056df3409b05b43d758a1883b579f3b7ea68f655170da2c AS disambiguation
 
 # Setup busybox symlinks
 RUN [ "/busybox/ln", "-s", "/busybox/sh", "/bin/sh" ]
