@@ -1,0 +1,33 @@
+# yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
+
+variant: fcos
+version: 1.6.0
+
+storage:
+  files:
+    - path: /etc/hostname
+      mode: 0644
+      contents:
+        inline: oracle-nueve
+    # --- NetworkManager Connection Profiles ---
+    - path: /etc/NetworkManager/system-connections/enp0s6.nmconnection
+      mode: 0600
+      contents:
+        inline: |
+          [connection]
+          id=enp0s6
+          type=ethernet
+          interface-name=enp0s6
+
+          [ipv4]
+          address1=10.0.0.102/24
+          gateway=10.0.0.1
+          may-fail=false
+          method=manual
+
+          [ipv6]
+          addr-gen-mode=eui64
+          address1=2603:c025:4001:ea7e:cdb0:7d32:954:8060/64
+          gateway6=fe80::200:17ff:fe6d:b550
+          method=manual
+          accept-ra=2

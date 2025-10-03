@@ -50,28 +50,28 @@ sudo apt install glusterfs-server
 
 - Generate a gpg key with RSA 4096bits.
 
-    User: GlusterFS GlusterFS deb packages
-    Email: deb.packages@gluster.org
+  User: GlusterFS GlusterFS deb packages
+  Email: deb.packages@gluster.org
 
-    ```sh
-    gpg --full-generate-key
-    ```
+  ```sh
+  gpg --full-generate-key
+  ```
 
 - Generate deb package
 
-    ```sh
-    cd
-    mkdir -p ~/Workspace/build
-    cd ~/Workspace
+  ```sh
+  cd
+  mkdir -p ~/Workspace/build
+  cd ~/Workspace
 
-    git clone --depth 1 --branch focal-glusterfs-10 https://github.com/gluster/glusterfs-debian.git
-    git clone --depth 1 --branch v10.1 https://github.com/gluster/glusterfs.git
-    cd glusterfs
-    cp -r ../glusterfs-debian/debian ./
-    cp -r /opt/DockerHills/scritps/make-debs.sh ./
+  git clone --depth 1 --branch focal-glusterfs-10 https://github.com/gluster/glusterfs-debian.git
+  git clone --depth 1 --branch v10.1 https://github.com/gluster/glusterfs.git
+  cd glusterfs
+  cp -r ../glusterfs-debian/debian ./
+  cp -r /opt/DockerHills/scritps/make-debs.sh ./
 
-    ./make-debs.sh ~/Workspace/build
-    ```
+  ./make-debs.sh ~/Workspace/build
+  ```
 
 ### Edit `glusterd.service`:
 

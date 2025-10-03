@@ -16,7 +16,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 768M
         reservations:
           memory: 256M
@@ -27,7 +27,7 @@ services:
       - ${TORRENT_DIR:?Missing torrent dir}:/download
     hostname: transmission-{{.Service.ID}}
     environment:
-      '-': '<<: *env'
+      "-": "<<: *env"
       TRANSMISSION_DTH: 1
       TRANSMISSION_LPD: 1
       TRANSMISSION_PEX: 1
@@ -39,7 +39,7 @@ services:
       TRANSMISSION_RPC_USER: ${TRANSMISSION_RPC_USER:?Missing transmission rpc user}
       TRANSMISSION_RPC_PASSWORD: ${TRANSMISSION_RPC_PASS:?Missing transmission rpc password}
       TRANSMISSION_LOG_LEVEL: 3
-      TRANSMISSION_UMASK: '007'
+      TRANSMISSION_UMASK: "007"
       TRANSMISSION_CACHE_SIZE: 32
       TRANSMISSION_PREFETCH: 1
       TRANSMISSION_BLOCKLIST_URL: https://github.com/Naunter/BT_BlockLists/raw/master/bt_blocklists.gz

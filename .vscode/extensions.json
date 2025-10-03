@@ -1,5 +1,14 @@
 {
-	"recommendations": [
-    "bluebrown.yamlfmt"
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "EditorConfig.EditorConfig",
+    "tamasfe.even-better-toml",
+    "codezombiech.gitignore",
+    "foxundermoon.shell-format",
+    "timonwong.shellcheck",
+    "redhat.vscode-xml",
+    "redhat.vscode-yaml",
+    "mads-hartmann.bash-ide-vscode",
+    "hangxingliu.vscode-systemd-support"
   ]
 }

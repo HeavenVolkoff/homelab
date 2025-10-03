@@ -26,9 +26,11 @@ TODO
 ## Resources:
 
 - Compose definition:
+
   > https://docs.docker.com/reference/compose-file
 
 - List if all (?) docker swarm template placeholders:
+
   > https://forums.docker.com/t/example-usage-of-docker-swarm-template-placeholders/73859
 
   Compose environment:

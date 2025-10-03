@@ -25,7 +25,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '1'
+          cpus: "1"
           memory: 512M
         reservations:
           memory: 64M
@@ -50,18 +50,17 @@ services:
       ROCKET_ENV: production
       ROCKET_PORT: 8080
       ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN:?Missing vaultwarden admin token}
-      DATABASE_URL: mysql://${VAULTWARDEN_DB_USER:?Missing vaultwarden database user}:${VAULTWARDEN_DB_PASS:?Missing vaultwarden
-        database password}@maria_db/bitwarden
+      DATABASE_URL: mysql://${VAULTWARDEN_DB_USER:?Missing vaultwarden database user}:${VAULTWARDEN_DB_PASS:?Missing vaultwarden database password}@maria_db/bitwarden
       SMTP_USERNAME: ${SMTP_USER:?Missing smtp username}
       SMTP_PASSWORD: ${SMTP_PASS:?Missing smtp password}
       SMTP_FROM_NAME: Vasconcellos Vaultwarden
-      SIGNUPS_VERIFY: 'false'
+      SIGNUPS_VERIFY: "false"
       RUST_BACKTRACE: 1
       ROCKET_WORKERS: 6
-      SIGNUPS_ALLOWED: 'false'
-      EXTENDED_LOGGING: 'true'
-      WEB_VAULT_ENABLED: 'false'
-      WEBSOCKET_ENABLED: 'true'
-      SHOW_PASSWORD_HINT: 'false'
+      SIGNUPS_ALLOWED: "false"
+      EXTENDED_LOGGING: "true"
+      WEB_VAULT_ENABLED: "false"
+      WEBSOCKET_ENABLED: "true"
+      SHOW_PASSWORD_HINT: "false"
       INVITATION_ORG_NAME: Vasconcellos Vaultwarden
-      INVITATIONS_ALLOWED: 'true'
+      INVITATIONS_ALLOWED: "true"

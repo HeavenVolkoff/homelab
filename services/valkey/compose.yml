@@ -63,8 +63,7 @@ services:
         exec setpriv --reuid=valkey --regid=valkey --clear-groups -- "$@"
       - sh
     healthcheck:
-      test: test "$$(valkey-cli -a ${VALKEY_PASS:?Missing valkey password} -h "$$(hostname -i || echo '127.0.0.1')" ping)"
-        = "PONG"
+      test: test "$$(valkey-cli -a ${VALKEY_PASS:?Missing valkey password} -h "$$(hostname -i || echo '127.0.0.1')" ping)" = "PONG"
       timeout: 5s
       retries: 5
       interval: 10s

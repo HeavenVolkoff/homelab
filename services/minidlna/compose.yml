@@ -27,7 +27,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.6'
+          cpus: "0.6"
           memory: 256M
         reservations:
           memory: 64M
@@ -51,10 +51,10 @@ services:
       - ${MEDIA_DIR:?Missing media dir}:/media
     hostname: minidlna-{{.Service.ID}}
     environment:
-      MINIDLNA_INOTIFY: 'yes'
+      MINIDLNA_INOTIFY: "yes"
       MINIDLNA_MEDIA_DIR_1: V,/media
       MINIDLNA_MEDIA_DIR_2: V,/media/.empty
       MINIDLNA_FRIENDLY_NAME: VIDEOS
       MINIDLNA_ROOT_CONTAINER: B
       MINIDLNA_THUMBNAIL_WIDTH: 256
-      MINIDLNA_ENABLE_THUMBNAIL: 'yes'
+      MINIDLNA_ENABLE_THUMBNAIL: "yes"

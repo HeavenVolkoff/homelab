@@ -4,7 +4,7 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '2'
+          cpus: "2"
           memory: 1G
         reservations:
           memory: 200M
@@ -13,4 +13,4 @@ services:
       - ${ROOT_DIR:?Missing root dir}/runtime/shoko:/home/shoko/.shoko
     hostname: shoko-{{.Service.ID}}
     environment:
-      AVDUMP_MONO: 'true'
+      AVDUMP_MONO: "true"
