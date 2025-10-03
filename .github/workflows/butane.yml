@@ -18,7 +18,6 @@ concurrency:
 
 jobs:
   build-ignition:
-    name: Build Ignition files
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -33,9 +32,33 @@ jobs:
         shell: bash
         run: env CORE_PASSHASH='${{ secrets.CORE_PASSHASH }}' ./butane/build.sh
       - name: Upload ignition files to Gist
+        shell: bash
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: pentatonicfunk/action-gist-repo-sync@v1
-        with:
-          gist_token: ${{ secrets.GIST_TOKEN }}
-          gist_id: ${{ secrets.GIST_ID }}
-          source_path: butane/output
+        run: |
+          set -euo pipefail
+
+          gist="$(mktemp "${TMPDIR:-/tmp}/ist.XXXXXX")"
+          trap 'rm -f "$gist"' EXIT
+
+          pushd "$gist"
+
+          git init
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git remote add origin 'https://${{ secrets.GIST_TOKEN }}@gist.github.com/${{ secrets.GIST_ID }}.git'
+          git fetch -apP --all
+          git checkout main
+
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
+
+          popd
+
+          rsync -aP butane/output/ "$gist/"
+
+          pushd "$gist"
+
+          git add -A
+          if ! git diff-index --quiet HEAD --; then
+            git commit -am "Update ignition files"
+            git push origin main
+          fi
