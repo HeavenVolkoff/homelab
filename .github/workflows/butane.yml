@@ -39,7 +39,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          gist="$(mktemp "${TMPDIR:-/tmp}/ist.XXXXXX")"
+          gist="$(mktemp -d "${TMPDIR:-/tmp}/ist.XXXXXX")"
           trap 'rm -f "$gist"' EXIT
 
           pushd "$gist"
