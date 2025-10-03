@@ -40,13 +40,15 @@ jobs:
           set -euo pipefail
 
           gist="$(mktemp -d "${TMPDIR:-/tmp}/ist.XXXXXX")"
-          trap 'rm -f "$gist"' EXIT
+          trap 'rm -rf "$gist"' EXIT
+
+          git config --global set advice.defaultBranchName false
 
           pushd "$gist"
 
           git init
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git config --local user.name "$GITHUB_ACTOR"
+          git config --local user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git remote add origin 'https://${{ secrets.GIST_TOKEN }}@gist.github.com/${{ secrets.GIST_ID }}.git'
           git fetch -apP --all
           git checkout main
@@ -62,5 +64,5 @@ jobs:
           git add -A
           if ! git diff-index --quiet HEAD --; then
             git commit -am "Update ignition files"
-            git push origin main
+            git push -u origin main
           fi
