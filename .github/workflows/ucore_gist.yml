@@ -26,8 +26,7 @@ jobs:
       - name: Install dependencies
         shell: bash
         run: |
-          sudo parallel --xapply curl -fsSL -O /usr/local/bin/{1} https://github.com/{2}/{1}/releases/latest/download/{1}{3} \
-            ::: yq butane ::: mikefarah coreos ::: _linux_amd64 -x86_64-unknown-linux-gnu
+          sudo parallel --xapply curl -fsSL -O /usr/local/bin/{1} https://github.com/{2}/{1}/releases/latest/download/{1}{3} ::: yq butane ::: mikefarah coreos ::: _linux_amd64 -x86_64-unknown-linux-gnu
           sudo chmod +x /usr/local/bin/yq /usr/local/bin/butane
       - name: Build Ignition files
         shell: bash
