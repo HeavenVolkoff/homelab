@@ -43,8 +43,13 @@ has yq
 has butane
 
 # Create output directory
-find "$OUTPUT_DIR" -type f \( -name "*.bu" -o -name "*.ign" \) -delete
-rmdir "$OUTPUT_DIR" 2>/dev/null || true
+if [ -d "$OUTPUT_DIR" ]; then
+  find "$OUTPUT_DIR" -type f \( -name "*.bu" -o -name "*.ign" \) -delete
+  rmdir "$OUTPUT_DIR" 2>/dev/null || true
+elif [ -e "$OUTPUT_DIR" ]; then
+  echo "Error: '$OUTPUT_DIR' exists and is not a directory. Please remove or rename it." >&2
+  exit 1
+fi
 mkdir -p "$OUTPUT_DIR"
 
 echo "--- Starting Butane build process ---"
