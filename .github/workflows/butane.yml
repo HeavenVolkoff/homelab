@@ -5,11 +5,13 @@ on:
   push:
     paths:
       - "butane/**"
+      - ".github/workflows/butane.yml"
     branches:
       - "main"
   pull_request:
     paths:
       - "butane/**"
+      - ".github/workflows/butane.yml"
 
 # Cancel previous runs of the same workflow on the same branch.
 concurrency:
