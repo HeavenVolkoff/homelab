@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:dabfc0969b935b2080555ace70ee69a5261af8a8f1b4df97b9e7fbcf6722eddf
 
 # renovate: datasource=github-releases depName=jesec/flood
-ARG FLOOD_VERSION='4.9.5'
+ARG FLOOD_VERSION='4.10.0'
 
 # === Stage 0 - Disambiguation =================================================
 FROM gcr.io/distroless/nodejs22-debian12:debug@sha256:6c15b92a332225658056df3409b05b43d758a1883b579f3b7ea68f655170da2c AS disambiguation
