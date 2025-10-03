@@ -1,8 +1,5 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
-variant: fcos
-version: 1.6.0
-
 kernel_arguments:
   should_exist:
     # --- CPU Isolation for LXC Workloads (4-Core Ampere A1) ---
@@ -40,3 +37,13 @@ storage:
 
           [ipv6]
           method=disabled
+
+systemd:
+  units:
+    # --- uCore Autorebase Services ---
+    - name: ucore-unsigned-autorebase.service
+      enabled: true
+      contents: "!!include systemd/ucore-unsigned-autorebase.service"
+    - name: ucore-signed-autorebase.service
+      enabled: true
+      contents: "!!include systemd/ucore-signed-autorebase.service"

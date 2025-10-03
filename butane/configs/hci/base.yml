@@ -1,0 +1,11 @@
+# yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
+
+systemd:
+  units:
+    # --- uCore Autorebase Services ---
+    - name: ucore-unsigned-autorebase.service
+      enabled: true
+      contents: "!!include systemd/ucore-hci-unsigned-autorebase.service"
+    - name: ucore-signed-autorebase.service
+      enabled: true
+      contents: "!!include systemd/ucore-hci-signed-autorebase.service"

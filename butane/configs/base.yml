@@ -88,16 +88,12 @@ systemd:
     # --- Enable and configure time synchronization service ---
     - name: chronyd.service
       enabled: true
+    # --- Enable Tailscale ---
+    - name: tailscaled.service
+      enabled: true
     # --- Enable tuned ---
     - name: tuned.service
       enabled: true
     - name: tuned-profile.service
       enabled: true
       contents: "!!include systemd/tuned-profile.service"
-    # --- uCore Autorebase Services ---
-    - name: ucore-unsigned-autorebase.service
-      enabled: true
-      contents: "!!include systemd/ucore-unsigned-autorebase.service"
-    - name: ucore-signed-autorebase.service
-      enabled: true
-      contents: "!!include systemd/ucore-signed-autorebase.service"
