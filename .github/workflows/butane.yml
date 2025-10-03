@@ -37,12 +37,10 @@ jobs:
         shell: bash
         if: ${{ github.ref == 'refs/heads/main' }}
         run: |
-          set -euo pipefail
+          set -euxo pipefail
 
           gist="$(mktemp -d "${TMPDIR:-/tmp}/ist.XXXXXX")"
           trap 'rm -rf "$gist"' EXIT
-
-          git config --global set advice.defaultBranchName false
 
           pushd "$gist"
 
