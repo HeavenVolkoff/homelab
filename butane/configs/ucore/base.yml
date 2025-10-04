@@ -9,6 +9,16 @@ kernel_arguments:
     - transparent_hugepage=madvise
 
 storage:
+  files:
+    # --- System Locale Configuration ---
+    - path: /etc/resolv.conf
+      mode: 0644
+      contents:
+        # Use OpenDNS as the default DNS resolver
+        inline: |
+          nameserver 208.67.222.222
+          nameserver 2620:119:35::35
+      overwrite: true
   directories:
     - path: /etc/ucore-autorebase
       mode: 0754
@@ -18,6 +28,9 @@ storage:
 
 systemd:
   units:
+    # --- Disable systemd-resolved ---
+    - name: systemd-resolved.service
+      enabled: false
     # --- Enable Tailscale ---
     - name: tailscaled.service
       enabled: true
