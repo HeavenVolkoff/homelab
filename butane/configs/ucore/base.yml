@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
+
+storage:
+  directories:
+    - path: /etc/ucore-autorebase
+      mode: 0754
+
+systemd:
+  units:
+    # --- Enable Tailscale ---
+    - name: tailscaled.service
+      enabled: true
+    # --- Enable tuned ---
+    - name: tuned.service
+      enabled: true
+    - name: tuned-profile.service
+      enabled: true
+      contents: "!!include systemd/tuned-profile.service"
