@@ -1,5 +1,13 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
+kernel_arguments:
+  should_exist:
+    # --- Performance, Low-Latency & High Availability ---
+    # Disable watchdog timers, which are often unnecessary in virtualized environments.
+    - nowatchdog
+    # Set Transparent Huge Pages to the recommended setting to avoid latency spikes.
+    - transparent_hugepage=madvise
+
 storage:
   directories:
     - path: /etc/ucore-autorebase
