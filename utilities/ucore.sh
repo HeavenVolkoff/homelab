@@ -20,10 +20,10 @@ curl -fsSL -o "/boot/fcos/fedora-coreos-${VERSION}-live-initramfs.${ARCH}.img" \
 
 mkdir -p /boot/grub2
 
-cat << EOF > /boot/grub2/user.cfg
+cat << EOF > /boot/grub2/custom.cfg
 menuentry 'Fedora CoreOS (Live)' {
     set arch="${ARCH}"
-    set version="${VERSION}$"
+    set version="${VERSION}"
 
     set dns="208.67.222.222"
     set mask="255.255.255.0"
