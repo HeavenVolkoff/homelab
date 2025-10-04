@@ -6,6 +6,7 @@ storage:
       mode: 0644
       contents:
         inline: oracle-uno
+      overwrite: true
     # --- NetworkManager Connection Profiles ---
     - path: /etc/NetworkManager/system-connections/enp0s6.nmconnection
       mode: 0600
@@ -28,3 +29,4 @@ storage:
           gateway6=fe80::200:17ff:fecf:4f27
           method=manual
           accept-ra=2
+      overwrite: true

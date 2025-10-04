@@ -37,6 +37,7 @@ storage:
 
           [ipv6]
           method=disabled
+      overwrite: true
 
 systemd:
   units:

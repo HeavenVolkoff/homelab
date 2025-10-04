@@ -21,6 +21,7 @@ storage:
       mode: 0644
       contents:
         inline: brasilia-uno
+      overwrite: true
 
     # --- NetworkManager Connection Profiles ---
     # This is the main bridge interface that holds the IP configuration.
@@ -46,6 +47,7 @@ storage:
           method=auto
           accept-ra=true
           addr-gen-mode=eui64
+      overwrite: true
 
     # --- Bridge Port Configurations ---
     # Each physical interface is enslaved to the vmbr0 bridge.
@@ -66,6 +68,7 @@ storage:
 
           [ipv6]
           method=disabled
+      overwrite: true
 
     - path: /etc/NetworkManager/system-connections/enp1s0.nmconnection
       mode: 0600
@@ -83,6 +86,7 @@ storage:
 
           [ipv6]
           method=disabled
+      overwrite: true
 
     - path: /etc/NetworkManager/system-connections/enp7s0.nmconnection
       mode: 0600
@@ -100,6 +104,7 @@ storage:
 
           [ipv6]
           method=disabled
+      overwrite: true
 
     - path: /etc/NetworkManager/system-connections/enp8s0.nmconnection
       mode: 0600
@@ -117,3 +122,4 @@ storage:
 
           [ipv6]
           method=disabled
+      overwrite: true

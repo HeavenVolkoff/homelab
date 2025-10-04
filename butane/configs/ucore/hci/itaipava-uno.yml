@@ -22,6 +22,7 @@ storage:
       mode: 0644
       contents:
         inline: itaipava-uno
+      overwrite: true
 
     # --- NetworkManager Connection Profiles ---
     # This is the main bridge interface that holds the IP configuration.
@@ -47,6 +48,7 @@ storage:
           method=auto
           accept-ra=true
           addr-gen-mode=eui64
+      overwrite: true
 
     # --- Bridge Port Configuration ---
     # The physical interface is enslaved to the vmbr0 bridge.
@@ -66,3 +68,4 @@ storage:
 
           [ipv6]
           method=disabled
+      overwrite: true

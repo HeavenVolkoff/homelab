@@ -19,6 +19,7 @@ storage:
     # Set the system timezone
     - path: /etc/localtime
       target: ../usr/share/zoneinfo/America/Sao_Paulo
+      overwrite: true
   files:
     # --- System Locale Configuration ---
     - path: /etc/locale.conf
@@ -35,6 +36,7 @@ storage:
           LC_TELEPHONE=pt_BR.UTF-8
           LC_MEASUREMENT=pt_BR.UTF-8
           LC_IDENTIFICATION=pt_BR.UTF-8
+      overwrite: true
     # --- Virtual Console Keyboard Layout ---
     - path: /etc/vconsole.conf
       mode: 0644
@@ -43,6 +45,7 @@ storage:
           KEYMAP=us
           XKBLAYOUT=us
           XKBMODEL=alt-intl
+      overwrite: true
     # --- X11 Keyboard Layout (for Cockpit, etc.) ---
     - path: /etc/X11/xorg.conf.d/00-keyboard.conf
       mode: 0644
@@ -59,6 +62,7 @@ storage:
       mode: 0644
       contents:
         inline: "!!include files/chrony.conf"
+      overwrite: true
     # --- Sysctl settings for IP forwarding ---
     - path: /etc/sysctl.d/99-networking.conf
       mode: 0644

@@ -12,6 +12,9 @@ storage:
   directories:
     - path: /etc/ucore-autorebase
       mode: 0754
+    - path: /etc/NetworkManager/system-connections
+      mode: 0700
+      overwrite: true
 
 systemd:
   units:
