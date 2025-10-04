@@ -27,7 +27,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  REGISTRY_IMAGE: ghcr.io/HeavenVolkoff/homelab
+  REGISTRY_IMAGE: ghcr.io/heavenvolkoff/homelab
 
 jobs:
   prepare:
