@@ -25,7 +25,7 @@ menuentry 'Fedora CoreOS (Live)' {
     set arch="${ARCH}"
     set version="${VERSION}$"
 
-    set dns="1.1.1.1"
+    set dns="208.67.222.222"
     set mask="255.255.255.0"
     set ipaddr="10.0.0.102"
     set gateway="10.0.0.1"
