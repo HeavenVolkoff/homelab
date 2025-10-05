@@ -43,3 +43,11 @@ menuentry 'Fedora CoreOS (Live)' {
     initrd /fcos/fedora-coreos-\${version}-live-initramfs.\${arch}.img
 }
 EOF
+
+# After boot
+sudo coreos-installer install -s stable -p metal \
+    --append-karg 'ip=10.0.0.102::10.0.0.1:255.255.255.0:oracle-nueve:enp0s6:none:208.67.222.222 cgroup_enable=memory swapaccount=1' \
+    --ignition-url "${GIST:?Please set the GIST environment variable to your Ignition config URL}" \
+    /dev/sda
+
+podman network create --ipv6 podman1
