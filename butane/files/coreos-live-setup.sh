@@ -75,8 +75,7 @@ mapfile -t ROUTE < <(
 IP_ADDR="$(
   ip --json addr show "${ROUTE[0]}" |
     jq -r '.[0] | .addr_info[] | select(.family == "inet") | .local'
-)
-"
+)"
 HOSTNAME="$(cat /etc/hostname)"
 
 # Check if the default route interface is a bridge

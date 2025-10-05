@@ -58,6 +58,7 @@ storage:
       group: { name: core }
       contents:
         inline: "!!include files/bashrc.sh"
+      overwrite: true
     # --- Starship configuration ---
     - path: /home/core/.config/starship.toml
       mode: 0640
