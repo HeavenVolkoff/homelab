@@ -7,6 +7,9 @@ kernel_arguments:
     - nowatchdog
     # Set Transparent Huge Pages to the recommended setting to avoid latency spikes.
     - transparent_hugepage=madvise
+    # Required for docker to be able to assign swap memory to containers.
+    - cgroup_enable=memory
+    - swapaccount=1
 
 storage:
   files:
