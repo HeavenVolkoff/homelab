@@ -12,6 +12,11 @@ if [ $# -ne 1 ] || [ -z "${1}" ]; then
   exit 1
 fi
 
+if ! GRUB_DIR="$(dirname "$(find /boot -type f -name 'grub.cfg' | head -n1)")"; then
+  echo "Error: Could not find GRUB directory" 1>&2
+  exit 1
+fi
+
 IGNITION_URL="$1"
 
 if ! IGNITION_VERSION="$(curl -fsSL "$IGNITION_URL" | jq -r '.ignition.version')" ||
@@ -22,9 +27,12 @@ fi
 
 echo "Ignition config version: $IGNITION_VERSION"
 
-# Remount /boot as read-write
-mount -o remount,rw /boot
-trap 'mount -o remount,ro /boot' EXIT
+# Check if /boot is mounted read-only
+if mount | awk '$3 == "/boot" {print $6}' | grep -q 'ro,'; then
+  # Remount /boot as read-write
+  mount -o remount,rw /boot
+  trap 'mount -o remount,ro /boot' EXIT
+fi
 
 # Create directory for Fedora CoreOS files
 mkdir -p /boot/fcos
@@ -55,8 +63,8 @@ curl -fsSL -o "/boot/fcos/fedora-coreos-${VERSION}-live-initramfs.${ARCH}.img" \
   "${BASEURL}/${VERSION}/${ARCH}/fedora-coreos-${VERSION}-live-initramfs.${ARCH}.img"
 
 echo "Configuring GRUB2 to boot Fedora CoreOS Live installer"
-mkdir -p /boot/grub2
-cat <<EOF >/boot/grub2/custom.cfg
+
+cat <<EOF >"${GRUB_DIR}/custom.cfg"
 menuentry 'Fedora CoreOS (Live)' {
     set arch="${ARCH}"
     set version="${VERSION}"
