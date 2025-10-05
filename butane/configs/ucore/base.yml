@@ -15,6 +15,26 @@ storage:
   directories:
     - path: /etc/ucore-autorebase
       mode: 0754
+    - path: /home/core/.local
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
+    - path: /home/core/.local/share
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
+    - path: /home/core/.local/state
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
+    - path: /home/core/.local/state/bash
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
+    - path: /home/core/.config
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
     - path: /home/core/.config/environment.d
       mode: 0750
       user: { name: core }
