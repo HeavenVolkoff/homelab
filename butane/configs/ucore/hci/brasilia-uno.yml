@@ -1,13 +1,29 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
+boot_device:
+  luks:
+    tpm2: true
+  mirror:
+    devices:
+      - /dev/disk/by-id/nvme-KINGSTON_OM8PDP3256B-A01_50026B7684398C01
+      - /dev/disk/by-id/nvme-XPG_GAMMIX_S11_Pro_2L37291Q7CWA
+
 storage:
+  disks:
+    - device: /dev/disk/by-id/nvme-KINGSTON_OM8PDP3256B-A01_50026B7684398C01
+      partitions:
+        - label: root-1
+          size_mib: 242688
+    - device: /dev/disk/by-id/nvme-XPG_GAMMIX_S11_Pro_2L37291Q7CWA
+      partitions:
+        - label: root-2
+          size_mib: 242688
   files:
     - path: /etc/hostname
       mode: 0644
       contents:
         inline: brasilia-uno
       overwrite: true
-
     # --- NetworkManager Connection Profiles ---
     # This is the main bridge interface that holds the IP configuration.
     - path: /etc/NetworkManager/system-connections/vmbr0.nmconnection
@@ -35,7 +51,6 @@ storage:
           addr-gen-mode=eui64
           ignore-auto-dns=true
       overwrite: true
-
     # --- Bridge Port Configurations ---
     # Each physical interface is enslaved to the vmbr0 bridge.
     # They do not have their own IP configuration.
@@ -56,7 +71,6 @@ storage:
           [ipv6]
           method=disabled
       overwrite: true
-
     - path: /etc/NetworkManager/system-connections/enp1s0.nmconnection
       mode: 0600
       contents:
@@ -74,7 +88,6 @@ storage:
           [ipv6]
           method=disabled
       overwrite: true
-
     - path: /etc/NetworkManager/system-connections/enp7s0.nmconnection
       mode: 0600
       contents:
@@ -92,7 +105,6 @@ storage:
           [ipv6]
           method=disabled
       overwrite: true
-
     - path: /etc/NetworkManager/system-connections/enp8s0.nmconnection
       mode: 0600
       contents:

@@ -1,6 +1,23 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
+boot_device:
+  luks:
+    tpm2: true
+  mirror:
+    devices:
+      - /dev/disk/by-id/nvme-SA2000M8_250G_20001
+      - /dev/disk/by-id/nvme-ADATA_SX8200NP_2I2820030266
+
 storage:
+  disks:
+    - device: /dev/disk/by-id/nvme-SA2000M8_250G_20001
+      partitions:
+        - label: root-1
+          size_mib: 242688
+    - device: /dev/disk/by-id/nvme-ADATA_SX8200NP_2I2820030266
+      partitions:
+        - label: root-2
+          size_mib: 242688
   files:
     # --- Set Hostname ---
     - path: /etc/hostname
@@ -8,9 +25,7 @@ storage:
       contents:
         inline: itaipava-uno
       overwrite: true
-
-    # --- Bridge Port Configuration ---
-    # The physical interface is enslaved to the vmbr0 bridge.
+    # --- NetworkManager Connection Profiles ---
     - path: /etc/NetworkManager/system-connections/enp0s31f6.nmconnection
       mode: 0600
       contents:

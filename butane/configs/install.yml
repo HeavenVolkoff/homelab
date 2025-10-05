@@ -1,1 +1,9 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
+
+storage:
+  files:
+    # --- CoreOS install script ---
+    - path: /usr/local/bin/coreos-install
+      mode: 0750
+      contents:
+        inline: "!!include files/coreos-install.sh"
