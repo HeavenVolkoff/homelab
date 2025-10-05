@@ -5,7 +5,22 @@ if [ -f /etc/bashrc ]; then
   . /etc/bashrc
 fi
 
-# If not running interactively, don't do anything
+# User specific bin path
+if ! [[ "$PATH" =~ "${HOME}/.local/bin:" ]]; then
+  PATH="${HOME}/.local/bin:$PATH"
+fi
+export PATH
+
+# Read environment variables from environment.d
+_generator="/usr/lib/systemd/user-environment-generators/30-systemd-environment-d-generator"
+if command -v "$_generator" >/dev/null; then
+  while IFS='=' read -r _key _value; do
+    export "$_key"="$_value"
+  done < <("$_generator")
+fi
+unset _generator _key _value
+
+# If not running interactively, don't continue
 [[ $- != *i* ]] && return
 
 # Limit permissions on files created by the shell to 0750 at most
@@ -21,22 +36,6 @@ PS1='\[\e]0;\u@\h: \w\a\]' # set window title
 PS1+="\[\e[0;32m\]\u@\h "  # green user@host
 PS1+="\[\e[0;34m\]\w"      # blue working directory
 PS1+="\[\e[0m\]\$ "        # normal color $
-
-# User specific bin path
-if ! [[ "$PATH" =~ "${HOME}/.local/bin:" ]]; then
-  PATH="${HOME}/.local/bin:$PATH"
-fi
-export PATH
-
-# Read environment variables from environment.d
-_envdir="${XDG_CONFIG_HOME:-$HOME/.config}/environment.d"
-if [ -d "$_envdir" ]; then
-  for _envfile in "${_envdir}/"*.conf; do
-    [ -f "$_envfile" ] || continue
-    . "$_envfile"
-  done
-fi
-unset _envdir _envfile
 
 # Set default editor to micro
 export EDITOR='micro'
