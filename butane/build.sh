@@ -38,6 +38,12 @@ has() {
   fi
 }
 
+function join_by {
+  local IFS="$1"
+  shift
+  echo "$*"
+}
+
 # --- Validation ---
 has yq
 has butane
@@ -88,14 +94,24 @@ while read -r host_file; do
 
   echo "  - Inlining external files..."
   while read -r include; do
-    filepath="$(echo "$include" | sed 's/^!!include //')"
+    IFS=";" read -r -a filepaths <<<"$(echo "$include" | sed 's/^!!include //')"
 
-    if [[ ! -f "$filepath" ]]; then
-      echo "Warning: file $filepath not found, skipping" >&2
+    load_str=()
+    for filepath in "${filepaths[@]}"; do
+      if ! [ -f "$filepath" ]; then
+        echo "Warning: file $filepath not found, skipping" >&2
+        continue
+      fi
+      load_str+=("load_str(\"$filepath\")")
+    done
+
+    if [ ${#load_str[@]} -eq 0 ]; then
+      echo "Warning: no valid files found for include directive '$include', skipping" >&2
       continue
     fi
 
-    yq eval-all -i "(.. | select(. == \"$include\")) |= load_str(\"$filepath\")" "$temp_bu_file"
+    include_expr=$(join_by + "${load_str[@]}")
+    yq eval-all -i "(.. | select(. == \"$include\")) |= ( $include_expr )" "$temp_bu_file"
   done < <(yq -r '.. | select(tag == "!!str") | select(test("^!!include "))' "$temp_bu_file")
 
   echo "  - Inlining environment variables..."

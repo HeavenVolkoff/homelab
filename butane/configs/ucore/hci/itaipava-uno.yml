@@ -1,20 +1,5 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
-kernel_arguments:
-  should_exist:
-    # --- CPU Isolation for LXC Workloads (Intel(R) Core(TM) i7-8700K) ---
-    # Isolate CPUs 2-11 from the host scheduler for exclusive container use.
-    - isolcpus=2,3,4,5,6,7,8,9,10,11
-    # Stop the scheduler tick on isolated cores to eliminate jitter.
-    - nohz_full=2,3,4,5,6,7,8,9,10,11
-    # Offload Read-Copy-Update callbacks from the isolated CPUs.
-    - rcu_nocbs=2,3,4,5,6,7,8,9,10,11
-    # Confine all hardware interrupts to the non-isolated CPUs (0 & 1).
-    - irqaffinity=0,1
-    # Provide a hint to the tuned daemon about which CPUs are not isolated.
-    # The mask 00000003 corresponds to binary 11, representing CPUs 0 and 1.
-    - tuned.non_isolcpus=00000003
-
 storage:
   files:
     # --- Set Hostname ---
@@ -24,32 +9,6 @@ storage:
         inline: itaipava-uno
       overwrite: true
 
-    # --- NetworkManager Connection Profiles ---
-    # This is the main bridge interface that holds the IP configuration.
-    - path: /etc/NetworkManager/system-connections/vmbr0.nmconnection
-      mode: 0600
-      contents:
-        inline: |
-          [connection]
-          id=vmbr0
-          type=bridge
-          interface-name=vmbr0
-
-          [bridge]
-          # Enable IGMP (IPv4) and MLD (IPv6) snooping for multicast traffic efficiency.
-          mcast-snooping=true
-
-          [ipv4]
-          method=manual
-          address1=192.168.0.254/23
-          gateway=192.168.0.1
-
-          [ipv6]
-          method=auto
-          accept-ra=true
-          addr-gen-mode=eui64
-      overwrite: true
-
     # --- Bridge Port Configuration ---
     # The physical interface is enslaved to the vmbr0 bridge.
     - path: /etc/NetworkManager/system-connections/enp0s31f6.nmconnection
@@ -57,15 +16,21 @@ storage:
       contents:
         inline: |
           [connection]
-          id=enp0s31f6-port
+          id=enp0s31f6
           type=ethernet
           interface-name=enp0s31f6
-          master=vmbr0
-          slave-type=bridge
 
           [ipv4]
-          method=disabled
+          dns=208.67.222.222;
+          method=manual
+          gateway=192.168.0.1
+          address1=192.168.0.254/23
+          may-fail=false
+          ignore-auto-dns=true
 
           [ipv6]
-          method=disabled
+          method=auto
+          addr-gen-mode=eui64
+          dns=2620:119:35::35;
+          ignore-auto-dns=true
       overwrite: true

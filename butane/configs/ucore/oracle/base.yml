@@ -17,27 +17,11 @@ kernel_arguments:
 
 storage:
   files:
-    # --- NetworkManager Connection Profiles ---
-    - path: /etc/NetworkManager/system-connections/vmbr0.nmconnection
-      mode: 0600
+    # --- Distrobox Configuration ---
+    - path: /etc/distrobox.ini
+      mode: 0644
       contents:
-        inline: |
-          [connection]
-          id=vmbr0
-          type=bridge
-          interface-name=vmbr0
-
-          [bridge]
-          stp=false
-          forward-delay=0
-
-          [ipv4]
-          address1=10.209.0.1/24
-          method=manual
-
-          [ipv6]
-          method=disabled
-      overwrite: true
+        inline: "!!include files/distrobox.ini;files/distrobox-oracle.ini"
 
 systemd:
   units:

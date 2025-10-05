@@ -1,5 +1,28 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
+kernel_arguments:
+  should_exist:
+    # --- CPU Isolation for LXC Workloads ---
+    # Isolate CPUs 2-11 from the host scheduler for exclusive container use.
+    - isolcpus=2,3,4,5,6,7,8,9,10,11
+    # Stop the scheduler tick on isolated cores to eliminate jitter.
+    - nohz_full=2,3,4,5,6,7,8,9,10,11
+    # Offload Read-Copy-Update callbacks from the isolated CPUs.
+    - rcu_nocbs=2,3,4,5,6,7,8,9,10,11
+    # Confine all hardware interrupts to the non-isolated CPUs (0 & 1).
+    - irqaffinity=0,1
+    # Provide a hint to the tuned daemon about which CPUs are not isolated.
+    # The mask 00000003 corresponds to binary 11, representing CPUs 0 and 1.
+    - tuned.non_isolcpus=00000003
+
+storage:
+  files:
+    # --- Distrobox Configuration ---
+    - path: /etc/distrobox.ini
+      mode: 0644
+      contents:
+        inline: "!!include files/distrobox.ini;files/distrobox-hc.ini"
+
 systemd:
   units:
     # --- uCore Autorebase Services ---

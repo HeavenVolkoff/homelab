@@ -18,15 +18,16 @@ storage:
           interface-name=enp0s6
 
           [ipv4]
-          address1=10.0.0.182/24
-          gateway=10.0.0.1
-          may-fail=false
+          dns=208.67.222.222;
           method=manual
+          gateway=10.0.0.1
+          address1=10.0.0.182/24
+          may-fail=false
+          ignore-auto-dns=true
 
           [ipv6]
+          dns=2620:119:35::35;
+          method=auto
           addr-gen-mode=eui64
-          address1=2603:c021:c007:b7aa:b226:daaa:4db1:4253/64
-          gateway6=fe80::200:17ff:fefb:2cd
-          method=manual
-          accept-ra=2
+          ignore-auto-dns=true
       overwrite: true
