@@ -10,14 +10,19 @@ boot_device:
 
 storage:
   disks:
-    - device: /dev/disk/by-id/nvme-KINGSTON_OM8PDP3256B-A01_50026B7684398C01
+    - device: /dev/disk/by-id/coreos-boot-disk # /dev/disk/by-id/nvme-KINGSTON_OM8PDP3256B-A01_50026B7684398C01
       partitions:
         - label: root-1
           size_mib: 242688
     - device: /dev/disk/by-id/nvme-XPG_GAMMIX_S11_Pro_2L37291Q7CWA
       partitions:
+        - number: 1
+          size_mib: 127 # EFI
+        - number: 2
+          size_mib: 384 # /boot
         - label: root-2
           size_mib: 242688
+      wipe_table: true
   files:
     - path: /etc/hostname
       mode: 0644
