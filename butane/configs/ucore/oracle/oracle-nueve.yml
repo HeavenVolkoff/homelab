@@ -2,6 +2,7 @@
 
 storage:
   files:
+    # --- Set Hostname ---
     - path: /etc/hostname
       mode: 0644
       contents:

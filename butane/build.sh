@@ -134,7 +134,7 @@ while read -r host_file; do
   final_ign_file="${OUTPUT_DIR}/${host_name}.ign"
 
   echo "  - Transpiling to Ignition: $final_ign_file"
-  butane --pretty --strict "$final_bu_file" >"$final_ign_file"
+  butane --pretty --strict --files-dir="$(pwd -P)" "$final_bu_file" >"$final_ign_file"
 done < <(find "$CONFIG_ROOT" -type f -name "*.yml" -not -name "base.yml")
 
 echo

@@ -41,8 +41,10 @@ PS1+="\[\e[0m\]\$ "        # normal color $
 export EDITOR='micro'
 export VISUAL='micro'
 
-# Startship prompt manager
-command -v starship 2>/dev/null 1>&2 && eval "$(starship init bash)"
+# Startship prompt manager (except when unning under the linux console)
+if [ "$TERM" != "linux" ]; then
+  command -v starship &>/dev/null && eval "$(starship init bash)"
+fi
 
 # Some convenient aliases
 alias ls='ls --color=auto'

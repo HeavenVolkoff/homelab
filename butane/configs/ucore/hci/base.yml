@@ -13,7 +13,7 @@ systemd:
     # --- uCore Autorebase Services ---
     - name: ucore-unsigned-autorebase.service
       enabled: true
-      contents: "!!include systemd/ucore-hci-unsigned-autorebase.service"
+      contents_local: systemd/ucore-hci-unsigned-autorebase.service
     - name: ucore-signed-autorebase.service
       enabled: true
-      contents: "!!include systemd/ucore-hci-signed-autorebase.service"
+      contents_local: systemd/ucore-hci-signed-autorebase.service

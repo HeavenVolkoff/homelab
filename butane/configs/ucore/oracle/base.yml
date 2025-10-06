@@ -1,19 +1,46 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
 storage:
+  disks:
+    - device: /dev/disk/by-id/coreos-boot-disk
+      partitions:
+        - label: root
+          size_mib: 65536 # 64 GiB
+        - label: swap
+          size_mib: 6144 # 6 GiB
+        - label: glusterfs
+          size_mib: 0 # Use remaining space
+      wipe_table: true
   files:
     # --- Distrobox Configuration ---
     - path: /etc/distrobox.ini
       mode: 0644
       contents:
         inline: "!!include files/distrobox.ini;files/distrobox-oracle.ini"
+    # --- ZRAM Configuration ---
+    - path: /etc/systemd/zram-generator.conf
+      mode: 0644
+      contents:
+        inline: |
+          [zram0]
+          zram-size = min(ram / 2, 4096)
+          writeback-device=/dev/disk/by-partlabel/swap
+          compression-algorithm=zstd
+      overwrite: true
+  filesystems:
+    - path: /media/glusterfs
+      label: glusterfs
+      device: /dev/disk/by-partlabel/glusterfs
+      format: btrfs
+      wipe_filesystem: true
+      with_mount_unit: true
 
 systemd:
   units:
     # --- uCore Autorebase Services ---
     - name: ucore-unsigned-autorebase.service
       enabled: true
-      contents: "!!include systemd/ucore-unsigned-autorebase.service"
+      contents_local: systemd/ucore-unsigned-autorebase.service
     - name: ucore-signed-autorebase.service
       enabled: true
-      contents: "!!include systemd/ucore-signed-autorebase.service"
+      contents_local: systemd/ucore-signed-autorebase.service

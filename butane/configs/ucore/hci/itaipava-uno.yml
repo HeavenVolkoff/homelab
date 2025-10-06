@@ -13,12 +13,16 @@ storage:
     - device: /dev/disk/by-id/nvme-SA2000M8_250G_20001
       partitions:
         - label: root-1
-          size_mib: 242688
+          size_mib: 243680 # 238 GiB
       wipe_table: true
     - device: /dev/disk/by-id/nvme-ADATA_SX8200NP_2I2820030266
       partitions:
         - label: root-2
-          size_mib: 242688
+          size_mib: 243680 # 238 GiB
+        - label: swap
+          size_mib: 8192 # 8 GiB
+        - label: data
+          size_mib: 0 # Use remaining space
       wipe_table: true
   files:
     # --- Set Hostname ---
@@ -26,6 +30,16 @@ storage:
       mode: 0644
       contents:
         inline: itaipava-uno
+      overwrite: true
+    # --- ZRAM Configuration ---
+    - path: /etc/systemd/zram-generator.conf
+      mode: 0644
+      contents:
+        inline: |
+          [zram0]
+          zram-size = min(ram / 2, 4096)
+          writeback-device=/dev/disk/by-partlabel/swap
+          compression-algorithm=zstd
       overwrite: true
     # --- NetworkManager Connection Profiles ---
     - path: /etc/NetworkManager/system-connections/enp0s31f6.nmconnection
@@ -51,3 +65,10 @@ storage:
           dns=2620:119:35::35;
           ignore-auto-dns=true
       overwrite: true
+  filesystems:
+    - path: /media/data
+      label: data
+      device: /dev/disk/by-partlabel/data
+      format: btrfs
+      wipe_filesystem: true
+      with_mount_unit: true

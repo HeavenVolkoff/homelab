@@ -68,28 +68,28 @@ storage:
     - path: /usr/local/bin/coreos-live-setup
       mode: 0750
       contents:
-        inline: "!!include files/coreos-live-setup.sh"
+        local: files/coreos-live-setup.sh
     # --- XDG env var configuration ---
     - path: /home/core/.config/environment.d/00-xdg.conf
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        inline: "!!include files/xdg.conf"
+        local: files/xdg.conf
     # --- Sensible Bash configuration ---
     - path: /home/core/.local/share/sensible.bash
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        inline: "!!include files/sensible.bash"
+        local: files/sensible.bash
     # --- User bashrc ---
     - path: /home/core/.bashrc
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        inline: "!!include files/bashrc.sh"
+        local: files/bashrc.sh
       overwrite: true
     # --- Starship configuration ---
     - path: /home/core/.config/starship.toml
@@ -97,14 +97,14 @@ storage:
       user: { name: core }
       group: { name: core }
       contents:
-        inline: "!!include files/starship.toml"
+        local: files/starship.toml
     # --- Python history configuration ---
     - path: /home/core/.config/python/pythonrc
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        inline: "!!include files/rc.py"
+        local: files/rc.py
 
 systemd:
   units:
@@ -119,4 +119,4 @@ systemd:
       enabled: true
     - name: tuned-profile.service
       enabled: true
-      contents: "!!include systemd/tuned-profile.service"
+      contents_local: systemd/tuned-profile.service

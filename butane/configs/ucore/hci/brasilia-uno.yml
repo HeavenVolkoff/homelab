@@ -13,19 +13,39 @@ storage:
     - device: /dev/disk/by-id/nvme-KINGSTON_OM8PDP3256B-A01_50026B7684398C01
       partitions:
         - label: root-1
-          size_mib: 242688
+          size_mib: 235488 # 230 GiB
+        - label: swap-1
+          size_mib: 8192 # 8 GiB
       wipe_table: true
     - device: /dev/disk/by-id/nvme-XPG_GAMMIX_S11_Pro_2L37291Q7CWA
       partitions:
         - label: root-2
-          size_mib: 242688
+          size_mib: 235488 # 230 GiB
+        - label: swap-2
+          size_mib: 8192 # 8 GiB
       wipe_table: true
+  raid:
+    - name: swap
+      level: raid0
+      devices:
+        - /dev/disk/by-partlabel/swap-1
+        - /dev/disk/by-partlabel/swap-2
   files:
+    # --- Set Hostname ---
     - path: /etc/hostname
       mode: 0644
       contents:
         inline: brasilia-uno
       overwrite: true
+    # --- ZRAM Configuration ---
+    - path: /etc/systemd/zram-generator.conf
+      mode: 0644
+      contents:
+        inline: |
+          [zram0]
+          zram-size = min(ram / 2, 4096)
+          writeback-device=/dev/md/swap
+          compression-algorithm=zstd
     # --- NetworkManager Connection Profiles ---
     # This is the main bridge interface that holds the IP configuration.
     - path: /etc/NetworkManager/system-connections/vmbr0.nmconnection
