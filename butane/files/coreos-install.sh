@@ -84,8 +84,8 @@ select OPTION in "${DISK_OPTIONS[@]}"; do
         sort -n -s | cut -d" " -f2-
     )
     if [ "${#ID_PATHS[@]}" -gt 0 ]; then
-      read -r -only -p "Using stable disk path ${ID_PATHS[0]} (Y/n)? " CONFIRM
-      if [[ ! "${CONFIRM:-Y}" =~ ^[Yy]$ ]]; then
+      read -r -p "Using stable disk path ${ID_PATHS[0]} (Y/n)? " CONFIRM
+      if [[ "${CONFIRM:-Y}" =~ ^[Yy]$ ]]; then
         TARGET_DISK="${ID_PATHS[0]}"
       fi
     fi
