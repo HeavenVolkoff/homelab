@@ -80,9 +80,6 @@ HOSTNAME="$(cat /etc/hostname)"
 
 # Check if the default route interface is a bridge
 if [ -d "/sys/class/net/${ROUTE[0]}/bridge" ]; then
-  echo "Warning: Default route interface '${ROUTE[0]}' is a bridge." >&2
-  echo "A physical interface is required for the installation." >&2
-
   # Find all non-bridge, non-virtual interfaces
   interfaces=()
   for iface_path in $(ip --json addr show | jq -r '.[] | .ifname'); do
@@ -96,24 +93,28 @@ if [ -d "/sys/class/net/${ROUTE[0]}/bridge" ]; then
     interfaces+=("$iface")
   done
 
-  if [ ${#interfaces[@]} -eq 0 ]; then
-    echo "Error: No suitable physical network interfaces found." >&2
-    exit 1
-  elif [ ${#interfaces[@]} -gt 1 ]; then
-    echo "Please select a network interface to use:"
-    PS3="Select interface: "
-    selected_iface=""
-    select iface in "${interfaces[@]}"; do
-      if [[ -n "$iface" ]]; then
-        selected_iface="$iface"
-        break
-      else
-        echo "Invalid selection. Please try again." >&2
-      fi
-    done
-  else
-    selected_iface="${interfaces[0]}"
-  fi
+  case "${#interfaces[@]}" in
+    0)
+      echo "Error: No suitable physical network interfaces found." >&2
+      exit 1
+      ;;
+    1) selected_iface="${interfaces[0]}" ;;
+    *)
+      echo "Warning: Default route interface '${ROUTE[0]}' is a bridge." >&2
+      echo "A physical interface is required for the installation." >&2
+      echo "Please select a network interface to use:"
+      PS3="Select interface: "
+      selected_iface=""
+      select iface in "${interfaces[@]}"; do
+        if [[ -n "$iface" ]]; then
+          selected_iface="$iface"
+          break
+        else
+          echo "Invalid selection. Please try again." >&2
+        fi
+      done
+      ;;
+  esac
 
   if [[ -z "$selected_iface" ]]; then
     echo "Error: No interface selected. Aborting." >&2
@@ -122,15 +123,16 @@ if [ -d "/sys/class/net/${ROUTE[0]}/bridge" ]; then
 
   master="$(ip --json addr show "$selected_iface" | jq -r '.[0] | .master')"
   if [ "$master" != "${ROUTE[0]}" ]; then
-    ROUTE[0]="$selected_iface"
-
-    if [ "$master" != "null" ] && [ -n "$master" ]; then
-      selected_iface="$master"
+    if [ -n "$master" ] && [ "$master" != "null" ]; then
+      : # If the selected interface is enslaved to a different bridge, get the bridge IP
+    else
+      # If the selected interface is not enslaved, get its own IP
+      master="$selected_iface"
     fi
 
     # Re-calculate IP_ADDR for the selected interface
     IP_ADDR="$(
-      ip --json addr show "${selected_iface}" |
+      ip --json addr show "${master}" |
         jq -r '.[0] | .addr_info[] | select(.family == "inet") | .local'
     )"
     if [ -z "$IP_ADDR" ]; then
@@ -138,6 +140,8 @@ if [ -d "/sys/class/net/${ROUTE[0]}/bridge" ]; then
       exit 1
     fi
   fi
+
+  ROUTE[0]="$selected_iface"
 fi
 
 echo "Downloading Fedora CoreOS version ${VERSION} for architecture ${ARCH}"
@@ -176,7 +180,7 @@ menuentry 'Fedora CoreOS (Live)' {
 }
 EOF
 
-if has proxmox-boot-tool 2>/dev/null && ! { mount | grep -q '/boot' ;}; then
+if has proxmox-boot-tool 2>/dev/null && ! { mount | grep -q '/boot'; }; then
   echo "WARNING: Proxmox requires extra manual steps to update GRUB2 configuration" >&2
   echo "${GRUB_DIR} is NOT the real grub boot directory!" >&2
   echo "Mount the real boot to /mnt/boot and run:" >&2
