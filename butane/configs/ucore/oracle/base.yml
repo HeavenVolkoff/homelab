@@ -28,7 +28,7 @@ storage:
           compression-algorithm=zstd
       overwrite: true
   filesystems:
-    - path: /media/glusterfs
+    - path: /var/mnt/glusterfs
       label: glusterfs
       device: /dev/disk/by-partlabel/glusterfs
       format: btrfs

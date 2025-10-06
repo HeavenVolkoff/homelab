@@ -66,7 +66,7 @@ storage:
           ignore-auto-dns=true
       overwrite: true
   filesystems:
-    - path: /media/data
+    - path: /var/mnt/data
       label: data
       device: /dev/disk/by-partlabel/data
       format: btrfs
