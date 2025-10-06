@@ -65,7 +65,7 @@ storage:
           nameserver 2620:119:35::35
       overwrite: true
     # --- CoreOS live environment GRUB setup script ---
-    - path: /usr/local/bin/coreos-live-setup
+    - path: /usr/bin/coreos-live-setup
       mode: 0750
       contents:
         local: files/coreos-live-setup.sh

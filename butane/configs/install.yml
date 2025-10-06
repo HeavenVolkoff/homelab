@@ -3,7 +3,7 @@
 storage:
   files:
     # --- CoreOS install script ---
-    - path: /usr/local/bin/coreos-install
+    - path: /usr/bin/coreos-install
       mode: 0750
       contents:
         local: files/coreos-install.sh
