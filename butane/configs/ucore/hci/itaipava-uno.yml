@@ -16,10 +16,6 @@ storage:
           size_mib: 242688
     - device: /dev/disk/by-id/nvme-ADATA_SX8200NP_2I2820030266
       partitions:
-        - number: 1
-          size_mib: 127 # EFI
-        - number: 2
-          size_mib: 384 # /boot
         - label: root-2
           size_mib: 242688
       wipe_table: true
