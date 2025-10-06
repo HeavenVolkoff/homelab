@@ -41,11 +41,7 @@ storage:
     - path: /etc/systemd/zram-generator.conf
       mode: 0644
       contents:
-        inline: |
-          [zram0]
-          zram-size = min(ram / 2, 4096)
-          writeback-device=/dev/md/swap
-          compression-algorithm=zstd
+        inline: "!!include files/zram.conf;files/zram.brasilia-uno.conf"
     # --- NetworkManager Connection Profiles ---
     # This is the main bridge interface that holds the IP configuration.
     - path: /etc/NetworkManager/system-connections/vmbr0.nmconnection

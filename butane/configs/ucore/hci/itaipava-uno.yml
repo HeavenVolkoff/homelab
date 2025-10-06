@@ -35,11 +35,7 @@ storage:
     - path: /etc/systemd/zram-generator.conf
       mode: 0644
       contents:
-        inline: |
-          [zram0]
-          zram-size = min(ram / 2, 4096)
-          writeback-device=/dev/disk/by-partlabel/swap
-          compression-algorithm=zstd
+        inline: "!!include files/zram.conf;files/zram.mount.conf"
       overwrite: true
     # --- NetworkManager Connection Profiles ---
     - path: /etc/NetworkManager/system-connections/enp0s31f6.nmconnection
@@ -70,5 +66,9 @@ storage:
       label: data
       device: /dev/disk/by-partlabel/data
       format: btrfs
+      mount_options:
+        - relatime
+        - lazytime
+        - compress=zstd
       wipe_filesystem: true
       with_mount_unit: true
