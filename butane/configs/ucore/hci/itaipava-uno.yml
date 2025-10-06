@@ -10,10 +10,11 @@ boot_device:
 
 storage:
   disks:
-    - device: /dev/disk/by-id/coreos-boot-disk # /dev/disk/by-id/nvme-SA2000M8_250G_20001
+    - device: /dev/disk/by-id/nvme-SA2000M8_250G_20001
       partitions:
         - label: root-1
           size_mib: 242688
+      wipe_table: true
     - device: /dev/disk/by-id/nvme-ADATA_SX8200NP_2I2820030266
       partitions:
         - label: root-2

@@ -70,11 +70,25 @@ if [ "${#DISK_OPTIONS[@]}" -eq 0 ]; then
 fi
 
 echo "Please select the target disk for installation:"
+echo "WARNING: All data on the selected disk will be lost!"
 PS3="Enter the number of the target disk: "
 select OPTION in "${DISK_OPTIONS[@]}"; do
   if [[ -n "$OPTION" ]]; then
     # Extract the disk name (e.g., /dev/sda) from the selected string
     TARGET_DISK=$(echo "$OPTION" | awk '{print $1}')
+    # Look for a stable path in /dev/disk/by-id
+    mapfile -t ID_PATHS < <(
+      find /dev/disk/by-id -type l -exec readlink -nf {} ';' -exec echo " {}" ';' |
+        awk "\$1 == \"${TARGET_DISK}\" {print \$2}" |
+        awk -F- '$2 ~ /^id\/(ata|nvme|scsi)$/ {print length, $0}' |
+        sort -n -s | cut -d" " -f2-
+    )
+    if [ "${#ID_PATHS[@]}" -gt 0 ]; then
+      read -r -only -p "Using stable disk path ${ID_PATHS[0]} (Y/n)? " CONFIRM
+      if [[ ! "${CONFIRM:-Y}" =~ ^[Yy]$ ]]; then
+        TARGET_DISK="${ID_PATHS[0]}"
+      fi
+    fi
     break
   else
     echo "Invalid selection. Please try again."

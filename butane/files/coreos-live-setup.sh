@@ -186,4 +186,13 @@ if has proxmox-boot-tool 2>/dev/null && ! { mount | grep -q '/boot'; }; then
   echo "Mount the real boot to /mnt/boot and run:" >&2
   echo "$> cp ${GRUB_DIR}/custom.cfg /mnt/boot/grub/custom.cfg" >&2
   echo "$> cp -r /boot/fcos /mnt/boot/fcos" >&2
+
+  # For Proxmox with a Raid1 ZFS root, these are the commands to run:
+  # mkdir -p /mnt/boot{1,2}
+  # mount nvme/nvmen0p2 /mnt/boot1
+  # mount nvme/nvmen1p2 /mnt/boot2
+  # cp /boot/grub/custom.cfg /mnt/boot1/grub/
+  # cp /boot/grub/custom.cfg /mnt/boot2/grub/
+  # cp -r /boot/fcos /mnt/boot1/
+  # cp -r /boot/fcos /mnt/boot2/
 fi
