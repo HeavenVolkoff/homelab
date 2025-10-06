@@ -176,7 +176,7 @@ menuentry 'Fedora CoreOS (Live)' {
 }
 EOF
 
-if has proxmox-boot-tool 2>/dev/null; then
+if has proxmox-boot-tool 2>/dev/null && ! { mount | grep -q '/boot' ;}; then
   echo "WARNING: Proxmox requires extra manual steps to update GRUB2 configuration" >&2
   echo "${GRUB_DIR} is NOT the real grub boot directory!" >&2
   echo "Mount the real boot to /mnt/boot and run:" >&2

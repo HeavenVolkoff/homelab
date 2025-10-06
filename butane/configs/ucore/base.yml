@@ -23,6 +23,10 @@ storage:
       mode: 0750
       user: { name: core }
       group: { name: core }
+    - path: /home/core/.local/gnupg
+      mode: 0700
+      user: { name: core }
+      group: { name: core }
     - path: /home/core/.local/state
       mode: 0750
       user: { name: core }
@@ -32,6 +36,14 @@ storage:
       user: { name: core }
       group: { name: core }
     - path: /home/core/.config
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
+    - path: /home/core/.config/python
+      mode: 0750
+      user: { name: core }
+      group: { name: core }
+    - path: /home/core/.config/readline
       mode: 0750
       user: { name: core }
       group: { name: core }
@@ -86,6 +98,13 @@ storage:
       group: { name: core }
       contents:
         inline: "!!include files/starship.toml"
+    # --- Python history configuration ---
+    - path: /home/core/.config/python/pythonrc
+      mode: 0640
+      user: { name: core }
+      group: { name: core }
+      contents:
+        inline: "!!include files/rc.py"
 
 systemd:
   units:
