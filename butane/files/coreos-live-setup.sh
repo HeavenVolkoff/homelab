@@ -31,7 +31,15 @@ if [ $# -ne 1 ] || [ -z "${1}" ]; then
   exit 1
 fi
 
-if ! GRUB_DIR="$(dirname "$(find /boot -type f -name 'grub.cfg' -print -quit)")"; then
+if ! GRUB_DIR="$(
+  dirname "$(
+    find /boot -type f -name 'grub.cfg' |
+      awk '{print length, $0}' |
+      sort -n -s |
+      cut -d" " -f2- |
+      head -n1
+  )"
+)"; then
   echo "Error: Could not find GRUB directory" 1>&2
   exit 1
 fi
