@@ -84,3 +84,6 @@ systemd:
     # --- Enable and configure time synchronization service ---
     - name: chronyd.service
       enabled: true
+    # ---- Enable SSH Daemon ---
+    - name: sshd.service
+      enabled: true

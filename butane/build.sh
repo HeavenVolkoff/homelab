@@ -18,7 +18,7 @@
 set -euo pipefail
 
 # Ensure the script runs from its own directory to handle relative paths correctly.
-cd "$(cd "$(dirname "$0")" && pwd -P)"
+cd "$(dirname "$0")"
 
 # --- Configuration ---
 TMPDIR="${TMPDIR:-/tmp}"
@@ -99,8 +99,8 @@ while read -r host_file; do
     load_str=()
     for filepath in "${filepaths[@]}"; do
       if ! [ -f "$filepath" ]; then
-        echo "Warning: file $filepath not found, skipping" >&2
-        continue
+        echo "Included file $filepath not found, skipping" >&2
+        exit 1
       fi
       load_str+=("load_str(\"$filepath\")")
     done

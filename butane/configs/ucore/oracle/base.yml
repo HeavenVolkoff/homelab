@@ -2,7 +2,7 @@
 
 storage:
   disks:
-    - device: /dev/disk/by-id/coreos-boot-disk
+    - device: /dev/sda
       partitions:
         - label: root
           size_mib: 65536 # 64 GiB
