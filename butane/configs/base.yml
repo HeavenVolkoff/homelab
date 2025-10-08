@@ -87,18 +87,7 @@ systemd:
     # ---- Enable SSH Daemon ---
     - name: sshd.service
       enabled: true
-    - name: allow-ssh-port-80.service
+    # --- Socat proxy for SSH during initial setup ---
+    - name: initial-setup-ssh-proxy.service
       enabled: true
-      contents: |
-        [Unit]
-        Description=Allow SSH on port 80 for SELinux
-        After=multi-user.target
-        Before=sshd.service
-
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        ExecStart=-/usr/sbin/semanage port -a -t ssh_port_t -p tcp 80
-
-        [Install]
-        WantedBy=multi-user.target
+      contents_local: systemd/initial-setup-ssh-proxy.service

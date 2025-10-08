@@ -31,15 +31,12 @@ if [ $# -ne 1 ] || [ -z "${1}" ]; then
   exit 1
 fi
 
-if ! GRUB_DIR="$(
-  dirname "$(
-    find /boot -type f -name 'grub.cfg' |
-      awk '{print length, $0}' |
-      sort -n -s |
-      cut -d" " -f2- |
-      head -n1
-  )"
-)"; then
+mapfile -t GRUB_CFGS < <(
+  find /boot -type f -name 'grub.cfg' |
+    awk '{print length, $0}' | sort -n -s | cut -d" " -f2-
+)
+GRUB_DIR="$(dirname "${GRUB_CFGS[0]:-/boot/grub/grub.cfg}")"
+if ! [ -d "$GRUB_DIR" ]; then
   echo "Error: Could not find GRUB directory" 1>&2
   exit 1
 fi
@@ -75,7 +72,7 @@ VERSION="$(
 BASEURL="https://builds.coreos.fedoraproject.org/prod/streams/stable/builds"
 
 # Default route information
-DNS="208.67.222.222"
+DNS="208.67.222.222" # OpenDNS
 mapfile -t ROUTE < <(
   ip --json route list |
     jq -r '.[] | select(.dst == "default") | "\(.dev)\n\(.gateway)"'
@@ -188,8 +185,10 @@ menuentry 'Fedora CoreOS (Live)' {
 }
 EOF
 
-if has proxmox-boot-tool 2>/dev/null && ! { mount | grep -q '/boot'; }; then
-  echo "WARNING: Proxmox requires extra manual steps to update GRUB2 configuration" >&2
+if ! { mount | grep -q '/boot'; }; then
+  if has proxmox-boot-tool 2>/dev/null; then
+    echo "WARNING: Proxmox requires extra manual steps to update GRUB2 configuration" >&2
+  fi
   echo "${GRUB_DIR} is NOT the real grub boot directory!" >&2
   echo "Mount the real boot to /mnt/boot and run:" >&2
   echo "$> cp ${GRUB_DIR}/custom.cfg /mnt/boot/grub/custom.cfg" >&2
@@ -197,10 +196,21 @@ if has proxmox-boot-tool 2>/dev/null && ! { mount | grep -q '/boot'; }; then
 
   # For Proxmox with a Raid1 ZFS root, these are the commands to run:
   # mkdir -p /mnt/boot{1,2}
-  # mount nvme/nvmen0p2 /mnt/boot1
-  # mount nvme/nvmen1p2 /mnt/boot2
+  # mount /dev/nvme0n1p2 /mnt/boot1
+  # mount /dev/nvme1n1p2 /mnt/boot2
   # cp /boot/grub/custom.cfg /mnt/boot1/grub/
   # cp /boot/grub/custom.cfg /mnt/boot2/grub/
   # cp -r /boot/fcos /mnt/boot1/
   # cp -r /boot/fcos /mnt/boot2/
+elif has grub-reboot 2>/dev/null; then
+  read -r -p "Do you want to reboot into Fedora CoreOS Live installer now? [y/N] " response
+  if [[ "${response,,}" =~ ^y(es)?$ ]]; then
+    grub-reboot 'Fedora CoreOS (Live)'
+    exec systemctl --force reboot
+  fi
 fi
+
+echo
+echo "You can reboot into Fedora CoreOS Live installer by running:"
+echo "$> grub-reboot 'Fedora CoreOS (Live)'"
+echo "$> systemctl --force reboot"
