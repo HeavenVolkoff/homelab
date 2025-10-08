@@ -4,10 +4,6 @@ storage:
   disks:
     - device: /dev/sda
       partitions:
-        - label: BIOS-BOOT
-          number: 1
-          size_mib: 1
-          type_guid: 21686148-6449-6E6F-744E-656564454649 # BIOS Boot Partition
         - label: EFI-SYSTEM
           number: 2
           size_mib: 127
