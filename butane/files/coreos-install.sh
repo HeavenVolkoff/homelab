@@ -40,7 +40,7 @@ IP_ADDR="$(
 HOSTNAME="$(cat /etc/hostname)"
 
 # Retrieve Ignition URL from kernel command line
-if [ -z "$IGNITION_URL" ]; then
+if [ -z "${IGNITION_URL:-}" ]; then
   IGNITION_URL="$(cat /proc/cmdline | tr ' ' '\n' | awk -F= '$1 == "ignition.config.url" {print $2}')"
 fi
 
