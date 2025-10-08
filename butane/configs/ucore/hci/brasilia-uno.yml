@@ -3,6 +3,7 @@
 boot_device:
   luks:
     tpm2: true
+    discard: true
   mirror:
     devices:
       - /dev/disk/by-id/nvme-KINGSTON_OM8PDP3256B-A01_50026B7684398C01

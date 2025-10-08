@@ -4,6 +4,12 @@ storage:
   disks:
     - device: /dev/sda
       partitions:
+        - number: 1
+          size_mib: 1
+        - label: esp
+          size_mib: 127
+        - label: boot
+          size_mib: 384
         - label: root
           size_mib: 65536 # 64 GiB
         - label: swap

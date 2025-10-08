@@ -3,6 +3,7 @@
 boot_device:
   luks:
     tpm2: true
+    discard: true
   mirror:
     devices:
       - /dev/disk/by-id/nvme-SA2000M8_250G_20001
