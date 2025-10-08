@@ -5,7 +5,6 @@ storage:
     - device: /dev/sda
       partitions:
         - label: EFI-SYSTEM
-          number: 2
           size_mib: 127
           type_guid: C12A7328-F81F-11D2-BA4B-00A0C93EC93B # EFI System Partition
         - label: boot
