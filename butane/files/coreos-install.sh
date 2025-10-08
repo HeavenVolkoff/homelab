@@ -40,7 +40,10 @@ IP_ADDR="$(
 HOSTNAME="$(cat /etc/hostname)"
 
 # Retrieve Ignition URL from kernel command line
-IGNITION_URL="$(cat /proc/cmdline | tr ' ' '\n' | awk -F= '$1 == "ignition.config.url" {print $2}')"
+if [ -z "$IGNITION_URL" ]; then
+  IGNITION_URL="$(cat /proc/cmdline | tr ' ' '\n' | awk -F= '$1 == "ignition.config.url" {print $2}')"
+fi
+
 if ! [[ "$IGNITION_URL" =~ ^https?://.+/[^/]+$ ]]; then
   echo "Error: Invalid Ignition URL" 1>&2
   exit 1
