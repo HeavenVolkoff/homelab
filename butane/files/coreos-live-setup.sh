@@ -48,6 +48,14 @@ if ! IGNITION_VERSION="$(curl -fsSL "$IGNITION_URL" | jq -r '.ignition.version')
   exit 1
 fi
 
+GRUB_REBOOT='grub-reboot'
+if ! has "$GRUB_REBOOT" 2>/dev/null; then
+  GRUB_REBOOT='grub2-reboot'
+  if ! has "$GRUB_REBOOT" 2>/dev/null; then
+    GRUB_REBOOT=''
+  fi
+fi
+
 # --- Main ---
 
 echo "Ignition config version: $IGNITION_VERSION"
@@ -202,10 +210,10 @@ if ! { mount | grep -q '/boot'; }; then
   # cp /boot/grub/custom.cfg /mnt/boot2/grub/
   # cp -r /boot/fcos /mnt/boot1/
   # cp -r /boot/fcos /mnt/boot2/
-elif has grub-reboot 2>/dev/null; then
+elif [ -n "$GRUB_REBOOT" ]; then
   read -r -p "Do you want to reboot into Fedora CoreOS Live installer now? [y/N] " response
   if [[ "${response,,}" =~ ^y(es)?$ ]]; then
-    grub-reboot 'Fedora CoreOS (Live)'
+    "$GRUB_REBOOT" 'Fedora CoreOS (Live)'
     exec systemctl --force reboot
   fi
 fi
