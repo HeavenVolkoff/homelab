@@ -1,11 +1,12 @@
 [Unit]
 Description=socat SSH proxy from port 80 to 22
-After=network.target sshd.service
+After=network.target sshd.service firewalld.service
 Wants=sshd.service
 ConditionPathExists=!/etc/ssh/no_ssh_setup_proxy
 
 [Service]
 Type=simple
+ExecStartPre=-/bin/sh -c 'if $(command -v firewall-cmd >/dev/null); then exec firewall-cmd --add-port=80/tcp; fi' sh
 ExecStart=/usr/bin/socat TCP6-LISTEN:80,fork,reuseaddr TCP:localhost:22
 Restart=always
 RestartSec=5s

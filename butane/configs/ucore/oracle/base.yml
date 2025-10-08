@@ -6,14 +6,17 @@ storage:
       partitions:
         - number: 1
           size_mib: 1
+          type_guid: 21686148-6449-6E6F-744E-656564454649 # BIOS Boot Partition
         - label: esp
           size_mib: 127
+          type_guid: C12A7328-F81F-11D2-BA4B-00A0C93EC93B # EFI System Partition
         - label: boot
           size_mib: 384
         - label: root
           size_mib: 65536 # 64 GiB
         - label: swap
           size_mib: 6144 # 6 GiB
+          type_guid: 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F # Linux Swap
         - label: glusterfs
           size_mib: 0 # Use remaining space
       wipe_table: true

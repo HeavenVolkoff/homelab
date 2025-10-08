@@ -74,5 +74,6 @@
   // YAML
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
-  }
+  },
+  "languageToolLinter.languageTool.ignoredWordsInWorkspace": ["homelab"]
 }

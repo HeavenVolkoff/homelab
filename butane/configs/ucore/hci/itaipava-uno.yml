@@ -22,6 +22,7 @@ storage:
           size_mib: 243680 # 238 GiB
         - label: swap
           size_mib: 8192 # 8 GiB
+          type_guid: 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F # Linux Swap
         - label: data
           size_mib: 0 # Use remaining space
       wipe_table: true

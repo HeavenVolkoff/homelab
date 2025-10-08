@@ -17,6 +17,7 @@ storage:
           size_mib: 235488 # 230 GiB
         - label: swap-1
           size_mib: 8192 # 8 GiB
+          type_guid: 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F # Linux Swap
       wipe_table: true
     - device: /dev/disk/by-id/nvme-XPG_GAMMIX_S11_Pro_2L37291Q7CWA
       partitions:
@@ -24,6 +25,7 @@ storage:
           size_mib: 235488 # 230 GiB
         - label: swap-2
           size_mib: 8192 # 8 GiB
+          type_guid: 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F # Linux Swap
       wipe_table: true
   raid:
     - name: swap
