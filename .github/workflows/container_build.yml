@@ -68,6 +68,22 @@ jobs:
     steps:
       - name: Checkout repository
         uses: *checkout
+      - name: Update Buildah
+        run: &buildah |
+          set -euo pipefail
+
+          case "$(uname -m)" in
+            x86_64) IMAGE_ARCH='amd64' ;;
+            aarch64) IMAGE_ARCH='arm64' ;;
+            *) printf "Invalid architecture" >&2; exit 1 ;;
+          esac
+
+          echo "Installing up to date buildah for $IMAGE_ARCH"
+          curl -fsSL https://github.com/HeavenVolkoff/buildah-static/releases/latest/download/buildah-${IMAGE_ARCH:?}.tar.gz \
+            | tar -xzf - -C /usr/local/bin/
+
+          # Workaround issues between custom buildah installation and apparmor
+          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - id: restore
         name: Restore cached image
         uses: &restore actions/cache/restore@v4
@@ -157,21 +173,7 @@ jobs:
         uses: *metadata_action
         with: *metadata
       - name: Update Buildah
-        run: |
-          set -euo pipefail
-
-          case "$(uname -m)" in
-            x86_64) IMAGE_ARCH='amd64' ;;
-            aarch64) IMAGE_ARCH='arm64' ;;
-            *) printf "Invalid architecture" >&2; exit 1 ;;
-          esac
-
-          echo "Installing up to date buildah for $IMAGE_ARCH"
-          curl -fsSL https://github.com/HeavenVolkoff/buildah-static/releases/latest/download/buildah-${IMAGE_ARCH:?}.tar.gz \
-            | tar -xzf - -C /usr/local/bin/
-
-          # Workaround issues between custom buildah installation and apparmor
-          sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+        run: *buildah
       - id: create_manifest
         name: Create multi-arch manifest
         env:
