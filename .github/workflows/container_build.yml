@@ -6,12 +6,14 @@ on:
     paths:
       - "containers/**"
       - ".github/workflows/container_build.yml"
+      - ".github/workflows/parse_containerfile_label.sh"
     branches:
       - "main"
   pull_request:
     paths:
       - "containers/**"
       - ".github/workflows/container_build.yml"
+      - ".github/workflows/parse_containerfile_label.sh"
 
 env:
   ZSTD_CLEVEL: 9
