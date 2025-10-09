@@ -184,8 +184,8 @@ jobs:
           set -euo pipefail
 
           IMAGE_TAGS=()
-          for IMAGE in ucore-*.tar; do
-            IMAGE_ARCH="${IMAGE#ucore-}"
+          for IMAGE in ${IMAGE_NAME:?}-*.tar; do
+            IMAGE_ARCH="${IMAGE#${IMAGE_NAME:?}-}"
             IMAGE_ARCH="${IMAGE_ARCH%.tar}"
             IMAGE_TAGS+=("${IMAGE_ARCH:?}")
 
