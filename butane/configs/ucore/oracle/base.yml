@@ -6,6 +6,10 @@ storage:
       partitions:
         - number: 1
           size_mib: 1
+          # This is the correct GUID for a BIOS Boot Partition.
+          # However, ignition shits the bed if this GUID is set and can find this partition later.
+          # So we leave it unset and let it be wrong, it doesn't really matter as Oracle VMs are UEFI only.
+          # type_guid: 21686148-6449-6E6F-744E-656564454649 # BIOS Boot Partition
         - label: EFI-SYSTEM
           number: 2
           size_mib: 127

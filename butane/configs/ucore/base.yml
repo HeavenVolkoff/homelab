@@ -111,9 +111,6 @@ systemd:
     # --- Disable systemd-resolved ---
     - name: systemd-resolved.service
       enabled: false
-    # --- Enable Tailscale ---
-    - name: tailscaled.service
-      enabled: true
     # --- Enable tuned ---
     - name: tuned.service
       enabled: true

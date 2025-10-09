@@ -75,5 +75,14 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "languageToolLinter.languageTool.ignoredWordsInWorkspace": ["homelab"]
+  "languageToolLinter.languageTool.ignoredWordsInWorkspace": [
+    "distrobox",
+    "efibootmgr",
+    "firewalld",
+    "glusterfs",
+    "homelab",
+    "tailscale",
+    "technitium",
+    "ucore"
+  ]
 }
