@@ -34,12 +34,20 @@ function parse_containerfile_labels() {
   # Step 2: Parse the consolidated string of labels into key=value pairs.
   # This parsing logic was correct and remains unchanged.
   local -a parsed_labels=()
-  local pair_regex='([a-zA-Z0-9_.-]+)=("([^"]*)"|'\''([^'\'']*)'\''|[^[:space:]]+)'
+  local pair_regex='([a-zA-Z0-9_.-]+)=("([^"]*)"|'\''([^'\'']*)'\''|([^[:space:]]+))'
 
   while [[ "$consolidated_labels" =~ $pair_regex ]]; do
     local key="${BASH_REMATCH[1]}"
-    # Use BASH_REMATCH[2] to capture the value WITH its quotes.
-    local value="${BASH_REMATCH[2]}"
+    local value
+
+    # Check which capture group matched to correctly extract the value content.
+    if [ -n "${BASH_REMATCH[3]}" ]; then
+      value="${BASH_REMATCH[3]}" # Content of double quotes
+    elif [ -n "${BASH_REMATCH[4]}" ]; then
+      value="${BASH_REMATCH[4]}" # Content of single quotes
+    else
+      value="${BASH_REMATCH[5]}" # Unquoted value
+    fi
 
     parsed_labels+=("${key}=${value}")
 
