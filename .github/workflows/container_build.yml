@@ -50,6 +50,7 @@ jobs:
         run: |
           echo "${{ toJSON(steps.date.outputs) }}"
           echo "${{ toJSON(steps.containers.outputs) }}"
+
   build:
     name: Build ${{ matrix.container }} ${{ matrix.architecture }}
     if: '!cancelled()'
@@ -78,11 +79,16 @@ jobs:
             *) printf "Invalid architecture" >&2; exit 1 ;;
           esac
 
-          echo "Installing up to date buildah for $IMAGE_ARCH"
-          curl -fsSL https://github.com/HeavenVolkoff/buildah-static/releases/latest/download/buildah-${IMAGE_ARCH:?}.tar.gz \
-            | tar -xzf - -C /usr/local/bin/
+          echo "Installing up to date podman and buildah for $IMAGE_ARCH"
+          sudo parallel --xapply \
+            curl -fsSL https://github.com/{2}/{1}-static/releases/latest/download/{1}{3}-${IMAGE_ARCH}.tar.gz \
+              '|' tar --strip-component {4} -xzf - -C {5} \
+            ::: podman buildah ::: mgoltzsche HeavenVolkoff ::: -linux '' ::: 1 0 ::: / /usr/local/bin/
 
-          # Workaround issues between custom buildah installation and apparmor
+          # Workaround issues between custom podman installation and apparmor
+          sudo sed -Ei \
+            's!^profile podman /usr/bin/podman !profile podman /usr/{bin,local/bin}/podman !' \
+            /etc/apparmor.d/podman
           sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
       - id: restore
         name: Restore cached image
@@ -137,10 +143,11 @@ jobs:
         with:
           key: *cache_key
           path: *cache_path
-  push_and_sign:
+
+  push:
     name: Push multi-arch ${{ matrix.container }}
     runs-on: ubuntu-latest
-    needs: [prepare]
+    needs: [build, prepare]
     permissions:
       contents: read # for actions/checkout
       packages: write # for pushing to ghcr.io
@@ -228,3 +235,19 @@ jobs:
           registry: ${{ steps.registry_case.outputs.lowercase }}
           username: ${{ env.REGISTRY_USER }}
           password: ${{ env.REGISTRY_PASSWORD }}
+
+  check:
+    name: Check all successful
+    runs-on: ubuntu-latest
+    needs: [push]
+    permissions: {}
+    steps:
+      - name: Exit
+        env:
+          RESULT: ${{ needs.push.result }}
+        run: |
+          if [[ "$RESULT" == "success" || "$RESULT" == "skipped" ]]; then
+            exit 0
+          else
+            exit 1
+          fi
