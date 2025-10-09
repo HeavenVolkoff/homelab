@@ -116,7 +116,7 @@ jobs:
         run: |
           set -euxo pipefail
           echo "Exporting image to tarball"
-          buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}.tar"
+          buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}"
       - name: Cache image artifact
         if: '!steps.restore.outputs.cache-hit'
         uses: actions/cache/save@v4
