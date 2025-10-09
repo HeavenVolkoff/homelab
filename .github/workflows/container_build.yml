@@ -54,6 +54,8 @@ jobs:
   build:
     name: Build ${{ matrix.container }} ${{ matrix.architecture }}
     if: '!cancelled()'
+    env:
+      CONATINER: containers/${{ matrix.container }}
     needs: [prepare]
     runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     permissions:
@@ -73,13 +75,13 @@ jobs:
         name: Restore cached image
         uses: &restore actions/cache/restore@v4
         with:
-          key: &cache_key ${{ matrix.container }}-${{ matrix.architecture }}-${{ needs.prepare.outputs.date }}-${{ hashFiles('ucore/**/*') }}
+          key: &cache_key ${{ matrix.container }}-${{ matrix.architecture }}-${{ needs.prepare.outputs.date }}-${{ hashFiles(env.CONTAINER + '/*') }}
           path: &cache_path ${{ matrix.container }}-${{ matrix.architecture }}.tar
           lookup-only: true
       - id: labels
         name: Extract labels from Containerfile
         env: &labels_env
-          CONTAINERFILE: containers/${{ matrix.container }}/Containerfile
+          CONTAINERFILE: ${{ env.CONTAINER }}/Containerfile
         run: &labels_run |
           set -euo pipefail
 
@@ -101,8 +103,8 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           containerfiles: |
-            containers/${{ matrix.container }}/Containerfile
-          context: containers/${{ matrix.container }}
+            ${{ env.CONTAINER }}/Containerfile
+          context: ${{ env.CONTAINER }}
           image: ${{ matrix.container }}
           tags: ${{ matrix.architecture }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -114,6 +116,7 @@ jobs:
           IMAGE_NAME: ${{ matrix.container }}
           IMAGE_PATH: *cache_path
         run: |
+          set -euxo pipefail
           echo "Exporting image to tarball"
           buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}.tar"
       - name: Cache image artifact
@@ -142,13 +145,13 @@ jobs:
         uses: *restore
         with:
           path: ${{ matrix.container }}-x86_64.tar
-          key: ${{ matrix.container }}-x86_64-${{ needs.prepare.outputs.date }}-${{ hashFiles('ucore/**/*') }}
+          key: ${{ matrix.container }}-x86_64-${{ needs.prepare.outputs.date }}-${{ hashFiles(matrix.container + '/*') }}
           fail-on-cache-miss: true
       - name: Restore image artifact aarch64
         uses: *restore
         with:
           path: ${{ matrix.container }}-aarch64.tar
-          key: ${{ matrix.container }}-aarch64-${{ needs.prepare.outputs.date }}-${{ hashFiles('ucore/**/*') }}
+          key: ${{ matrix.container }}-aarch64-${{ needs.prepare.outputs.date }}-${{ hashFiles(matrix.container + '/*') }}
           fail-on-cache-miss: true
       - id: labels
         name: Extract labels from Containerfile
