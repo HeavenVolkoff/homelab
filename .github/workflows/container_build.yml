@@ -54,8 +54,6 @@ jobs:
   build:
     name: Build ${{ matrix.container }} ${{ matrix.architecture }}
     if: '!cancelled()'
-    env:
-      CONATINER: containers/${{ matrix.container }}
     needs: [prepare]
     runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     permissions:
@@ -75,13 +73,13 @@ jobs:
         name: Restore cached image
         uses: &restore actions/cache/restore@v4
         with:
-          key: &cache_key ${{ matrix.container }}-${{ matrix.architecture }}-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('{0}/*', env.CONTAINER)) }}
+          key: &cache_key ${{ matrix.container }}-${{ matrix.architecture }}-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('containers/{0}/*', matrix.container)) }}
           path: &cache_path ${{ matrix.container }}-${{ matrix.architecture }}.tar
           lookup-only: true
       - id: labels
         name: Extract labels from Containerfile
         env: &labels_env
-          CONTAINERFILE: ${{ env.CONTAINER }}/Containerfile
+          CONTAINERFILE: containers/${{ matrix.container }}/Containerfile
         run: &labels_run |
           set -euo pipefail
 
@@ -103,8 +101,8 @@ jobs:
         uses: redhat-actions/buildah-build@v2
         with:
           containerfiles: |
-            ${{ env.CONTAINER }}/Containerfile
-          context: ${{ env.CONTAINER }}
+            containers/${{ matrix.container }}/Containerfile
+          context: containers/${{ matrix.container }}
           image: ${{ matrix.container }}
           tags: ${{ matrix.architecture }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -145,13 +143,13 @@ jobs:
         uses: *restore
         with:
           path: ${{ matrix.container }}-x86_64.tar
-          key: ${{ matrix.container }}-x86_64-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('{0}/*', matrix.container)) }}
+          key: ${{ matrix.container }}-x86_64-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('containers/{0}/*', matrix.container)) }}
           fail-on-cache-miss: true
       - name: Restore image artifact aarch64
         uses: *restore
         with:
           path: ${{ matrix.container }}-aarch64.tar
-          key: ${{ matrix.container }}-aarch64-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('{0}/*', matrix.container)) }}
+          key: ${{ matrix.container }}-aarch64-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('containers/{0}/*', matrix.container)) }}
           fail-on-cache-miss: true
       - id: labels
         name: Extract labels from Containerfile
