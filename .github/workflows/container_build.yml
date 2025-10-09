@@ -40,6 +40,8 @@ jobs:
       - id: containers
         name: List containers to build
         run: |
+          set -euo pipefail
+
           echo "containers=[$(
             find containers -maxdepth 2 -type f -name Containerfile -exec dirname {} \; |
             sort | head -c -1 | xargs basename | xargs printf '"%s"' | tr '\n' ','
@@ -50,7 +52,7 @@ jobs:
           echo "${{ toJSON(steps.containers.outputs) }}"
   build:
     name: Build ${{ matrix.container }} ${{ matrix.architecture }}
-    if: always() && !cancelled()
+    if: '!cancelled()'
     needs: [prepare]
     runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     permissions:
@@ -73,14 +75,27 @@ jobs:
           key: &cache_key ${{ matrix.container }}-${{ matrix.architecture }}-${{ needs.prepare.outputs.date }}-${{ hashFiles('ucore/**/*') }}
           path: &cache_path ${{ matrix.container }}-${{ matrix.architecture }}.tar
           lookup-only: true
+      - id: labels
+        name: Extract labels from Containerfile
+        env: &labels_env
+          CONTAINERFILE: containers/${{ matrix.container }}/Containerfile
+        run: &labels_run |
+          set -euo pipefail
+
+          {
+            echo 'labels<<EOF'
+            .github/workflows/parse_containerfile_label.sh "$CONTAINERFILE"
+            echo 'EOF'
+          } >> $GITHUB_OUTPUT
       - id: meta
-        if: always() && !steps.restore.outputs.cache-hit
+        if: '!steps.restore.outputs.cache-hit'
         name: Gather image metadata
         uses: &metadata_action docker/metadata-action@v5
         with: &metadata
           images: ${{ matrix.container }}
+          labels: ${{ steps.labels.outputs.labels }}
       - id: build_image
-        if: always() && !steps.restore.outputs.cache-hit
+        if: '!steps.restore.outputs.cache-hit'
         name: Build image
         uses: redhat-actions/buildah-build@v2
         with:
@@ -91,10 +106,8 @@ jobs:
           tags: ${{ matrix.architecture }}
           labels: ${{ steps.meta.outputs.labels }}
           oci: false
-          extra-args: |
-            --target=${{ matrix.container }}
       - name: Export image
-        if: always() && !steps.restore.outputs.cache-hit
+        if: '!steps.restore.outputs.cache-hit'
         env:
           IMAGE_TAG: ${{ matrix.architecture }}
           IMAGE_NAME: ${{ matrix.container }}
@@ -103,7 +116,7 @@ jobs:
           echo "Exporting image to tarball"
           buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}.tar"
       - name: Cache image artifact
-        if: always() && !steps.restore.outputs.cache-hit
+        if: '!steps.restore.outputs.cache-hit'
         uses: actions/cache/save@v4
         with:
           key: *cache_key
@@ -135,6 +148,10 @@ jobs:
           path: ${{ matrix.container }}-aarch64.tar
           key: ${{ matrix.container }}-aarch64-${{ needs.prepare.outputs.date }}-${{ hashFiles('ucore/**/*') }}
           fail-on-cache-miss: true
+      - id: labels
+        name: Extract labels from Containerfile
+        env: *labels_env
+        run: *labels_run
       - id: meta
         name: Gather image metadata
         uses: *metadata_action
