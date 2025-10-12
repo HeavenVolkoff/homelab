@@ -1,0 +1,4 @@
+# Defines the persistent storage volume for the Docker-in-Podman service.
+
+[Volume]
+# This creates a Podman named volume that will be referenced by the container file.

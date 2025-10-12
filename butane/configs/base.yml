@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
+# cSpell:ignore fcos vconsole XKBLAYOUT XKBMODEL nistp256 chronyd
+
 variant: fcos
 version: 1.6.0
 
@@ -74,7 +76,7 @@ storage:
           net.ipv6.conf.all.forwarding=1
           net.ipv6.conf.default.forwarding=1
     # --- SSH Daemon Configuration ---
-    - path: /etc/ssh/sshd_config.d/00-custom.conf
+    - path: /etc/ssh/sshd_config.d/99-custom.conf
       mode: 0600
       contents:
         local: files/sshd.conf

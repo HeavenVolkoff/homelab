@@ -1,0 +1,67 @@
+# /etc/containers/systemd/dinp.container
+# Defines the Docker-in-Podman (DinP) service.
+
+# cSpell:ignore pids devpts rslave
+
+[Unit]
+Description=Docker-in-Podman Service
+# Ensures the service starts after the network is fully initialized.
+After=network-online.target
+
+[Container]
+# --- Image and Naming ---
+Image=ghcr.io/heavenvolkoff/dind:latest
+Network=dualstack.network
+HostName=dinp.%H
+AutoUpdate=registry
+ContainerName=dinp
+
+# --- Resource Management ---
+Memory=%i
+
+# --- Privileges & Security ---
+User=root
+Ulimit=host
+PidsLimit=-1
+StopSignal=SIGINT
+# Equivalent to --security-opt=seccomp=unconfined
+SeccompProfile=unconfined
+# Equivalent to --security-opt=label=disable
+SecurityLabelDisable=true
+
+# --- User Mapping ---
+# Map container UID to host UID.
+UIDMap=%U:%U:1
+# Map container GID to host GID.
+GIDMap=%G:%G:1
+
+# ---- Exec Commands ----
+Exec=%u %U %g %G %h
+
+# --- Volumes & Mounts ---
+Volume=dinp.volume:/var/lib/docker:z
+Volume=/tmp:/tmp:rslave
+Volume=/sys/fs/selinux:/sys/fs/selinux
+Volume=%h:%h:rslave
+Mount=type=devpts,gid=5,mode=0620,destination=/dev/pts
+
+# --- Networking (User-requested) ---
+PublishPort=80:80/tcp
+PublishPort=443:443/tcp
+PublishPort=2377:2377/tcp
+PublishPort=7946:7946/tcp
+PublishPort=7946:7946/udp
+PublishPort=4789:4789/udp
+
+# --- Health Check ---
+HealthOnFailure=kill
+HealthCmd=/usr/bin/docker info
+
+# --- Additional Settings ---
+PodmanArgs=--privileged
+PodmanArgs=--security-opt=apparmor=unconfined
+PodmanArgs=--systemd=always
+
+[Install]
+# Allows the service to be enabled to start on system boot.
+WantedBy=multi-user.target

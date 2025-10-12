@@ -74,6 +74,16 @@
     }
   },
 
+  // Systemd
+  "systemd.style.boolean": "on-off",
+  "systemd.podman.completion": true,
+  "systemd.directive-keys.custom": [
+    // https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#memory
+    "Memory",
+    // https://docs.podman.io/en/latest/markdown/podman-systemd.unit.5.html#networkdeleteonstop-defaults-to-false
+    "NetworkDeleteOnStop"
+  ],
+
   // YAML
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -95,6 +105,8 @@
     "chrony",
     "cmdline",
     "cpus",
+    "dind",
+    "dinp",
     "debian",
     "distroless",
     "dorny",
@@ -151,6 +163,7 @@
     "oracle-seis",
     "oracle-tres",
     "oracle-uno",
+    "ostree",
     "PiKVM",
     "uClibc",
     "ucore",

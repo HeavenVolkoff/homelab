@@ -26,11 +26,6 @@ storage:
           size_mib: 0 # Use remaining space
       wipe_table: true
   files:
-    # --- Distrobox Configuration ---
-    - path: /etc/distrobox.ini
-      mode: 0644
-      contents:
-        inline: "!!include files/distrobox.ini;files/distrobox-oracle.ini"
     # --- ZRAM Configuration ---
     - path: /etc/systemd/zram-generator.conf
       mode: 0644

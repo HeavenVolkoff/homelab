@@ -1,0 +1,6 @@
+# Define a dual-stack (IPv4 & IPv6) network for Podman containers.
+
+[Network]
+# This creates a Podman named network that can be referenced by container files.
+IPv6=true
+NetworkDeleteOnStop=true

@@ -1,5 +1,7 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
+# cSpell:ignore nowatchdog dinp pythonrc
+
 kernel_arguments:
   should_exist:
     # --- Performance, Low-Latency & High Availability ---
@@ -69,6 +71,24 @@ storage:
       mode: 0750
       contents:
         local: files/coreos-live-setup.sh
+    # --- Firewall setup script ---
+    - path: /usr/local/bin/setup-firewall
+      mode: 0750
+      contents:
+        local: files/setup-firewall.sh
+    # --- Docker-in-Podman container ---
+    - path: /etc/containers/systemd/dualstack.network
+      mode: 0750
+      contents:
+        local: files/dualstack.network
+    - path: /etc/containers/systemd/dinp.volume
+      mode: 0750
+      contents:
+        local: files/dinp.volume
+    - path: /etc/containers/systemd/dinp.container
+      mode: 0750
+      contents:
+        local: files/dinp.container
     # --- XDG env var configuration ---
     - path: /home/core/.config/environment.d/00-xdg.conf
       mode: 0640

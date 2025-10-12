@@ -1,13 +1,5 @@
 # yaml-language-server: $schema=https://github.com/Relativ-IT/Butane-Schemas/raw/refs/heads/main/v1.6.0/butane-v1.6.0.json
 
-storage:
-  files:
-    # --- Distrobox Configuration ---
-    - path: /etc/distrobox.ini
-      mode: 0644
-      contents:
-        inline: "!!include files/distrobox.ini;files/distrobox-hc.ini"
-
 systemd:
   units:
     # --- uCore Autorebase Services ---

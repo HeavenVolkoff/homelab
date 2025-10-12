@@ -249,6 +249,7 @@ jobs:
       # Workaround bug where capital letters in your GitHub username make it impossible to push to GHCR.
       # https://github.com/macbre/push-to-ghcr/issues/12
       - id: registry_case
+        if: github.event_name != 'pull_request'
         name: Lowercase registry
         uses: ASzc/change-string-case-action@v6
         with:
