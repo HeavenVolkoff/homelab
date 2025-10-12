@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+# cSpell:ignore iface ifname fcos rootfs GRUB_CFGS
+
 # --- Function ---
 
 has() {
@@ -32,8 +34,8 @@ if [ $# -ne 1 ] || [ -z "${1}" ]; then
 fi
 
 mapfile -t GRUB_CFGS < <(
-  find /boot -type f -name 'grub.cfg' |
-    awk '{print length, $0}' | sort -n -s | cut -d" " -f2-
+  find /boot -type f -name 'grub.cfg' \
+    | awk '{print length, $0}' | sort -n -s | cut -d" " -f2-
 )
 GRUB_DIR="$(dirname "${GRUB_CFGS[0]:-/boot/grub/grub.cfg}")"
 if ! [ -d "$GRUB_DIR" ]; then
@@ -42,8 +44,8 @@ if ! [ -d "$GRUB_DIR" ]; then
 fi
 
 IGNITION_URL="$1"
-if ! IGNITION_VERSION="$(curl -fsSL "$IGNITION_URL" | jq -r '.ignition.version')" ||
-  ! [[ "$IGNITION_VERSION" =~ ^[0-9]+(\.[0-9]+)+$ ]]; then
+if ! IGNITION_VERSION="$(curl -fsSL "$IGNITION_URL" | jq -r '.ignition.version')" \
+  || ! [[ "$IGNITION_VERSION" =~ ^[0-9]+(\.[0-9]+)+$ ]]; then
   echo "Error: Invalid Ignition URL" 1>&2
   exit 1
 fi
@@ -74,20 +76,20 @@ mkdir -p /boot/fcos
 ARCH="$(uname -m)"
 VERSION="$(
   curl -fsSL \
-    'https://builds.coreos.fedoraproject.org/prod/streams/stable/releases.json' |
-    jq -r '.releases[-1].version'
+    'https://builds.coreos.fedoraproject.org/prod/streams/stable/releases.json' \
+    | jq -r '.releases[-1].version'
 )"
 BASEURL="https://builds.coreos.fedoraproject.org/prod/streams/stable/builds"
 
 # Default route information
 DNS="208.67.222.222" # OpenDNS
 mapfile -t ROUTE < <(
-  ip --json route list |
-    jq -r '.[] | select(.dst == "default") | "\(.dev)\n\(.gateway)"'
+  ip --json route list \
+    | jq -r '.[] | select(.dst == "default") | "\(.dev)\n\(.gateway)"'
 )
 IP_ADDR="$(
-  ip --json addr show "${ROUTE[0]}" |
-    jq -r '.[0] | .addr_info[] | select(.family == "inet") | .local'
+  ip --json addr show "${ROUTE[0]}" \
+    | jq -r '.[0] | .addr_info[] | select(.family == "inet") | .local'
 )"
 HOSTNAME="$(cat /etc/hostname)"
 
@@ -98,9 +100,9 @@ if [ -d "/sys/class/net/${ROUTE[0]}/bridge" ]; then
   for iface_path in $(ip --json addr show | jq -r '.[] | .ifname'); do
     iface=$(basename "$iface_path")
     # Skip loopback, bridges, and virtual interfaces
-    if [ "$iface" = "lo" ] ||
-      [ -d "/sys/class/net/${iface_path}/bridge" ] ||
-      [[ "$(readlink -f "/sys/class/net/${iface_path}/device" 2>/dev/null)" == *"/virtual/"* ]]; then
+    if [ "$iface" = "lo" ] \
+      || [ -d "/sys/class/net/${iface_path}/bridge" ] \
+      || [[ "$(readlink -f "/sys/class/net/${iface_path}/device" 2>/dev/null)" == *"/virtual/"* ]]; then
       continue
     fi
     interfaces+=("$iface")
@@ -145,8 +147,8 @@ if [ -d "/sys/class/net/${ROUTE[0]}/bridge" ]; then
 
     # Re-calculate IP_ADDR for the selected interface
     IP_ADDR="$(
-      ip --json addr show "${master}" |
-        jq -r '.[0] | .addr_info[] | select(.family == "inet") | .local'
+      ip --json addr show "${master}" \
+        | jq -r '.[0] | .addr_info[] | select(.family == "inet") | .local'
     )"
     if [ -z "$IP_ADDR" ]; then
       echo "Error: Could not determine IPv4 address for interface '${ROUTE[0]}'." >&2

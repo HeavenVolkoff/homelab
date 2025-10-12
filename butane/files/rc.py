@@ -2,6 +2,8 @@
 # This entire thing is unnecessary post v3.13.0a3
 # https://github.com/python/cpython/issues/73965
 
+# cSpell:ignore bpython
+
 def is_vanilla() -> bool:
     """ :return: whether running "vanilla" Python <3.13 """
     import sys

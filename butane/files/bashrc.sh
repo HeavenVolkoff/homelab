@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# cSpell:ignore hsts lahc
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
   . /etc/bashrc
@@ -31,7 +33,7 @@ _sensible="${XDG_DATA_HOME:-$HOME/.local/share}/sensible.bash"
 [ -f "$_sensible" ] && . "$_sensible"
 unset _sensible
 
-# Set fancy PROMPT with colors in the case we dont have starship
+# Set fancy PROMPT with colors in the case we don't have starship
 PS1='\[\e]0;\u@\h: \w\a\]' # set window title
 PS1+="\[\e[0;32m\]\u@\h "  # green user@host
 PS1+="\[\e[0;34m\]\w"      # blue working directory
@@ -41,19 +43,19 @@ PS1+="\[\e[0m\]\$ "        # normal color $
 export EDITOR='micro'
 export VISUAL='micro'
 
-# Startship prompt manager (except when unning under the linux console)
+# Startship prompt manager (except when running under the linux console)
 if [ "$TERM" != "linux" ]; then
   command -v starship &>/dev/null && eval "$(starship init bash)"
 fi
 
 # Some convenient aliases
 alias ls='ls --color=auto'
-alias ll='ls --color=auto -lahc'
+alias ll='ls --color=auto -lahc' #
 alias grep='grep --color=auto'
 alias nano='micro'
 alias wget='wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"'
 
-# Some convienient functions
+# Some convenient functions
 man() {
   local width
   width=$(tput cols)

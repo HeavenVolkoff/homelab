@@ -66,8 +66,8 @@ has ip
 # --- Main ---
 
 eval "$(
-  cat /proc/cmdline | tr ' ' '\n' | grep '^ip=' | cut -c4- |
-    awk -F: '{ printf "IP=%s;GATEWAY=%s;MASK=%s;HOSTNAME=%s;DEVICE=%s;DNS=%s",$1,$3,$4,$5,$6,$8 }'
+  cat /proc/cmdline | tr ' ' '\n' | grep '^ip=' | cut -c4- \
+    | awk -F: '{ printf "IP=%s;GATEWAY=%s;MASK=%s;HOSTNAME=%s;DEVICE=%s;DNS=%s",$1,$3,$4,$5,$6,$8 }'
 )"
 
 IP="${IP:?}"

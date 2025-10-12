@@ -2,7 +2,7 @@
 
 set -eu
 
-# Shortcircuit for non-default commands.
+# Short-circuit for non-default commands.
 # The last part inside the "{}" is a workaround for the following bug in ash/dash:
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=874264
 if [ -n "${1:-}" ] \
@@ -271,7 +271,7 @@ done
 # Start transmission
 su transmission -s /usr/bin/transmission-daemon -- -f -g "$TRANSMISSION_CONF_DIR" "${@}" &
 _transmission_pid=$!
-for _i in 1 2 3 6 9 14 15; do # signal fowarding (Only POSIX specified signals)
+for _i in 1 2 3 6 9 14 15; do # signal forwarding (Only POSIX specified signals)
   if ! _signal="$(kill -l "$_i" 2>/dev/null)"; then
     echo "kill: invalid signal number or exit status: ${_i}" >&2
   else

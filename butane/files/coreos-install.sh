@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+# cSpell:ignore karg
+
 # --- Function ---
 
 has() {

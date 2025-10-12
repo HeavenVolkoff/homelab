@@ -32,7 +32,7 @@ RUN --mount=type=cache,sharing=locked,target=/var/cache/apt \
     && \
     apt-get full-upgrade
 
-# Patch healtcheck.sh to use wget instead of curl
+# Patch healthcheck.sh to use wget instead of curl
 RUN sed -i 's/curl --insecure --fail --silent --show-error/wget --no-check-certificate --timeout=1 --tries=1 -q -O \/dev\/null/g' /healthcheck.sh
 
 COPY --from=disambiguation /libs.txt ./

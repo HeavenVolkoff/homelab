@@ -10,8 +10,8 @@ COPY entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT [ "/usr/local/bin/entrypoint.sh" ]
 
-LABEL org.opencontainers.image.title="dind" \
+LABEL org.opencontainers.image.title="dinp" \
       org.opencontainers.image.authors="Vítor Vasconcellos <vasconcellos.dev@gmail.com>" \
       org.opencontainers.image.revision="1" \
       org.opencontainers.image.licenses="GPL-3.0" \
-      org.opencontainers.image.description="Alpine based Docker-in-Docker (DinD) service container with Docker CLI, Docker Compose v2 and GlusterFS client"
+      org.opencontainers.image.description="Alpine based Docker-in-Podman (DinP) service container with Docker CLI, Docker Compose v2 and GlusterFS client"

@@ -1,5 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
+# cSpell:ignore nossl
+
 # renovate: datasource=github-releases depName=HeavenVolkoff/minidlna-build versioning=semver-coerced
 ARG MINIDLNA_VERSION='1.3.3+p.1'
 

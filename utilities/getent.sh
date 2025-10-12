@@ -15,31 +15,38 @@ export PATH="${PATH}:/bin:/usr/bin"
 
 file="/etc/$1"
 case $1 in
-	passwd|group)
-		match="^$2:\|^[^:]*:[^:]*:$2:" ;;
-	shadow)
-		match="^$2:" ;;
-	networks|netgroup)
-		match="^[[:space:]]*$2\>" ;;
-	hosts|protocols|rpc|services|ethers)
-		match="\<$2\>" ;;
-	aliases)
-		match="^[[:space:]]*$2[[:space:]]*:" ;;
-	""|-h|--help)
-		echo "USAGE: $0 database [key]"
-		exit 0 ;;
-	*)
-		echo "$0: Unknown database: $1" 1>&2
-		exit 1 ;;
+  passwd | group)
+    match="^$2:\|^[^:]*:[^:]*:$2:"
+    ;;
+  shadow)
+    match="^$2:"
+    ;;
+  networks | netgroup)
+    match="^[[:space:]]*$2\>"
+    ;;
+  hosts | protocols | rpc | services | ethers)
+    match="\<$2\>"
+    ;;
+  aliases)
+    match="^[[:space:]]*$2[[:space:]]*:"
+    ;;
+  "" | -h | --help)
+    echo "USAGE: $0 database [key]"
+    exit 0
+    ;;
+  *)
+    echo "$0: Unknown database: $1" 1>&2
+    exit 1
+    ;;
 esac
 
-if [ ! -f "$file" ] ; then
-	echo "$0: Could not find database file for $1" 1>&2
-	exit 1
+if [ ! -f "$file" ]; then
+  echo "$0: Could not find database file for $1" 1>&2
+  exit 1
 fi
 
-if [ $# -eq 1 ] ; then
-	exec cat "$file"
+if [ $# -eq 1 ]; then
+  exec cat "$file"
 else
-	sed "s/#.*//; /$match/q; d" "$file" | grep . || exit 2
+  sed "s/#.*//; /$match/q; d" "$file" | grep . || exit 2
 fi

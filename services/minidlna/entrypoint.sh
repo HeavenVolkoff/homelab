@@ -1,8 +1,10 @@
 #!/usr/bin/env sh
 
+# cSpell:ignore minidlnad
+
 set -eu
 
-# Shortcircuit for non-default commands.
+# Short-circuit for non-default commands.
 # The last part inside the "{}" is a workaround for the following bug in ash/dash:
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=874264
 if [ -n "${1:-}" ] \
