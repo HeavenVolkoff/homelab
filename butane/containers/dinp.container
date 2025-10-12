@@ -29,12 +29,6 @@ SeccompProfile=unconfined
 # Equivalent to --security-opt=label=disable
 SecurityLabelDisable=true
 
-# --- User Mapping ---
-# Map container UID to host UID.
-UIDMap=%U:%U:1
-# Map container GID to host GID.
-GIDMap=%G:%G:1
-
 # ---- Exec Commands ----
 Exec=%u %U %g %G %h
 
