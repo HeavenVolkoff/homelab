@@ -1,42 +1,75 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
 name: Bake and Push Docker Images
+
+# cSpell:dictionaries docker shellscript
 
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "services/**"
-      - "utilities/**"
-      - ".env.example"
-      - "compose.yml"
-      - "compose.override.yml"
-      - ".github/workflows/docker_build.yml"
     branches:
       - "main"
   pull_request:
-    paths:
-      - "services/**"
-      - "utilities/**"
-      - ".env.example"
-      - "compose.yml"
-      - "compose.override.yml"
-      - ".github/workflows/docker_build.yml"
+
+env:
+  ZSTD_CLEVEL: 9
+  ZSTD_NBTHREADS: 0
 
 # Cancel previous runs of the same workflow on the same branch.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-env:
-  REGISTRY_IMAGE: ghcr.io/heavenvolkoff/homelab
-
 jobs:
+  filter:
+    name: Filter unnecessary runs
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      github: ${{ steps.changes.outputs.github }}
+      continue: ${{ steps.continue.outputs.continue }}
+      container: ${{ steps.changes.outputs.container }}
+    steps:
+      - name: Checkout repository
+        uses: &checkout actions/checkout@v5
+      - id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            github:
+              - '.github/workflows/docker_build.yml'
+            container:
+              - 'services/**'
+              - 'utilities/**'
+              - '.env.example'
+              - 'compose.yml'
+              - 'compose.override.yml'
+      - id: continue
+        name: Determine if build is needed
+        env:
+          CHANGED_GITHUB: ${{ steps.changes.outputs.github }}
+          CHANGED_CONTAINER: ${{ steps.changes.outputs.container }}
+        run: |
+          set -euo pipefail
+
+          if [ "$CHANGED_GITHUB" == 'true' ]
+            || [ "$CHANGED_CONTAINER" == 'true' ]; then
+            echo "Changes detected, proceed with build"
+            echo "continue=true" >> $GITHUB_OUTPUT
+          else
+            echo "No relevant changes detected, skip build"
+            echo "continue=false" >> $GITHUB_OUTPUT
+          fi
+
   prepare:
+    if: needs.filter.outputs.continue == 'true'
+    needs: [filter]
     runs-on: ubuntu-latest
     outputs:
       targets: ${{ steps.generate.outputs.targets }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: *checkout
       - name: Symlink .env
         run: ln -s .env.example .env
       - name: List targets
@@ -46,10 +79,10 @@ jobs:
           target: default
 
   build-containers:
-    name: Build Containers
+    if: needs.filter.outputs.continue == 'true' && needs.prepare.success == 'success' && !cancelled()
+    name: Build ${{ matrix.target }}
+    needs: [filter, prepare]
     runs-on: ubuntu-latest
-    needs:
-      - prepare
     strategy:
       fail-fast: false
       matrix:
@@ -58,7 +91,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: *checkout
       - name: Symlink .env
         run: ln -s .env.example .env
       - name: Login to GitHub Container Registry
@@ -72,9 +105,16 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+      - id: registry_case
+        name: Lowercase registry
+        uses: ASzc/change-string-case-action@v6
+        with:
+          string: ${{ github.repository_owner }}
       - name: Build and Push (PRs)
         if: ${{ github.event_name == 'pull_request' }}
-        uses: docker/bake-action@v6
+        uses: &bake docker/bake-action@v6
+        env: &bake_env
+          REGISTRY_USER: ${{ steps.registry_case.outputs.lowercase }}
         with:
           source: .
           targets: ${{ matrix.target }}
@@ -82,7 +122,8 @@ jobs:
           push: false
       - name: Build and Push (main)
         if: ${{ github.ref == 'refs/heads/main' }}
-        uses: docker/bake-action@v6
+        uses: *bake
+        env: *bake_env
         with:
           source: .
           targets: ${{ matrix.target }}
@@ -92,15 +133,18 @@ jobs:
             *.cache-from=type=gha,scope=${{ matrix.target }}
             *.cache-to=type=gha,mode=max,scope=${{ matrix.target }}
 
-  result:
+  check:
     if: ${{ always() }}
-    runs-on: ubuntu-latest
-    name: Build Result
+    name: DOcker bake result
     needs: [build-containers]
+    runs-on: ubuntu-latest
+    permissions: {}
     steps:
-      - run: |
-          result="${{ needs.build-containers.result }}"
-          if [[ $result == "success" || $result == "skipped" ]]; then
+      - name: Check result
+        env:
+          RESULT: ${{ needs.build-containers.result }}
+        run: |
+          if [ "$RESULT" == "success" ] || [ "$RESULT" == "skipped" ]; then
             exit 0
           else
             exit 1

@@ -1,19 +1,16 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
 name: Build and Push Container Images
+
+# cSpell:ignore ZSTD_CLEVEL ZSTD_NBTHREADS apparmor_restrict_unprivileged_userns
+# cSpell:dictionaries docker shellscript
 
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "containers/**"
-      - ".github/workflows/container_build.yml"
-      - ".github/workflows/parse_containerfile_label.sh"
     branches:
       - "main"
   pull_request:
-    paths:
-      - "containers/**"
-      - ".github/workflows/container_build.yml"
-      - ".github/workflows/parse_containerfile_label.sh"
 
 env:
   ZSTD_CLEVEL: 9
@@ -26,7 +23,46 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  filter:
+    name: Filter unnecessary runs
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      github: ${{ steps.changes.outputs.github }}
+      continue: ${{ steps.continue.outputs.continue }}
+      container: ${{ steps.changes.outputs.container }}
+    steps:
+      - name: Checkout repository
+        uses: &checkout actions/checkout@v5
+      - id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            github:
+              - '.github/workflows/container_build.yml'
+              - '.github/workflows/parse_containerfile_label.sh'
+            container:
+              - 'containers/**'
+      - id: continue
+        name: Determine if build is needed
+        env:
+          CHANGED_GITHUB: ${{ steps.changes.outputs.github }}
+          CHANGED_CONTAINER: ${{ steps.changes.outputs.container }}
+        run: |
+          set -euo pipefail
+
+          if [ "$CHANGED_GITHUB" == 'true' ]
+            || [ "$CHANGED_CONTAINER" == 'true' ]; then
+            echo "Changes detected, proceed with build"
+            echo "continue=true" >> $GITHUB_OUTPUT
+          else
+            echo "No relevant changes detected, skip build"
+            echo "continue=false" >> $GITHUB_OUTPUT
+          fi
+
   prepare:
+    if: needs.filter.outputs.continue == 'true'
+    needs: [filter]
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,7 +71,7 @@ jobs:
       containers: ${{ steps.containers.outputs.containers }}
     steps:
       - name: Checkout repository
-        uses: &checkout actions/checkout@v5
+        uses: *checkout
       - id: date
         name: Get current date
         run: echo "date=$(date +'%Y%m%d')" >> $GITHUB_OUTPUT
@@ -54,9 +90,9 @@ jobs:
           echo "${{ toJSON(steps.containers.outputs) }}"
 
   build:
+    if: needs.filter.outputs.continue == 'true' && needs.prepare.success == 'success' && !cancelled()
     name: Build ${{ matrix.container }} ${{ matrix.architecture }}
-    if: '!cancelled()'
-    needs: [prepare]
+    needs: [filter, prepare]
     runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
     permissions:
       contents: read # for actions/checkout
@@ -78,11 +114,12 @@ jobs:
           key: &cache_key ${{ matrix.container }}-${{ matrix.architecture }}-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('containers/{0}/*', matrix.container)) }}
           path: &cache_path ${{ matrix.container }}-${{ matrix.architecture }}.tar
           lookup-only: true
-      - id: labels
+      - &labels_step
+        id: labels
         name: Extract labels from Containerfile
-        env: &labels_env
+        env:
           CONTAINERFILE: containers/${{ matrix.container }}/Containerfile
-        run: &labels_run |
+        run: |
           set -euo pipefail
 
           {
@@ -90,15 +127,16 @@ jobs:
             .github/workflows/parse_containerfile_label.sh "$CONTAINERFILE"
             echo 'EOF'
           } >> $GITHUB_OUTPUT
-      - id: meta
-        if: '!steps.restore.outputs.cache-hit'
+      - &meta_step
+        id: meta
+        if: "!steps.restore.outputs.cache-hit"
         name: Gather image metadata
-        uses: &metadata_action docker/metadata-action@v5
-        with: &metadata
+        uses: docker/metadata-action@v5
+        with:
           images: ${{ matrix.container }}
           labels: ${{ steps.labels.outputs.labels }}
       - id: build_image
-        if: '!steps.restore.outputs.cache-hit'
+        if: "!steps.restore.outputs.cache-hit"
         name: Build image
         uses: redhat-actions/buildah-build@v2
         with:
@@ -110,26 +148,27 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           oci: false
       - name: Export image
-        if: '!steps.restore.outputs.cache-hit'
+        if: "!steps.restore.outputs.cache-hit"
         env:
           IMAGE_TAG: ${{ matrix.architecture }}
           IMAGE_NAME: ${{ matrix.container }}
           IMAGE_PATH: *cache_path
         run: |
-          set -euxo pipefail
+          set -euo pipefail
           echo "Exporting image to tarball"
           buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}"
       - name: Cache image artifact
-        if: '!steps.restore.outputs.cache-hit'
+        if: "!steps.restore.outputs.cache-hit"
         uses: actions/cache/save@v4
         with:
           key: *cache_key
           path: *cache_path
 
   push:
+    if: needs.filter.outputs.continue == 'true' && needs.build.success == 'success' && !cancelled()
     name: Push multi-arch ${{ matrix.container }}
     runs-on: ubuntu-latest
-    needs: [build, prepare]
+    needs: [filter, build, prepare]
     permissions:
       contents: read # for actions/checkout
       packages: write # for pushing to ghcr.io
@@ -153,14 +192,8 @@ jobs:
           path: ${{ matrix.container }}-aarch64.tar
           key: ${{ matrix.container }}-aarch64-${{ needs.prepare.outputs.date }}-${{ hashFiles(format('containers/{0}/*', matrix.container)) }}
           fail-on-cache-miss: true
-      - id: labels
-        name: Extract labels from Containerfile
-        env: *labels_env
-        run: *labels_run
-      - id: meta
-        name: Gather image metadata
-        uses: *metadata_action
-        with: *metadata
+      - *labels_step
+      - *meta_step
       - name: Update Buildah
         run: |
           set -euo pipefail
@@ -233,16 +266,17 @@ jobs:
           password: ${{ env.REGISTRY_PASSWORD }}
 
   check:
-    name: Check all successful
-    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    name: Container build result
     needs: [push]
+    runs-on: ubuntu-latest
     permissions: {}
     steps:
-      - name: Exit
+      - name: Check result
         env:
           RESULT: ${{ needs.push.result }}
         run: |
-          if [[ "$RESULT" == "success" || "$RESULT" == "skipped" ]]; then
+          if [ "$RESULT" == "success" ] || [ "$RESULT" == "skipped" ]; then
             exit 0
           else
             exit 1

@@ -43,6 +43,9 @@
     "README.md": "CONTRIBUTING.md, CODE_OF_CONDUCT.md, SECURITY.md"
   },
 
+  // Docker
+  "docker.languageserver.formatter.ignoreMultilineInstructions": true,
+
   // Git
   "git.ignoreSubmodules": true,
   "git.detectSubmodules": false,
@@ -75,14 +78,85 @@
   "[yaml]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
-  "languageToolLinter.languageTool.ignoredWordsInWorkspace": [
-    "distrobox",
-    "efibootmgr",
+
+  // Spell Checker
+  "cSpell.allowCompoundWords": true,
+  "cSpell.language": "en_US,pt_PT",
+  "cSpell.ignoreWords": [
+    "APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE",
+    "DontWarn",
+    "PGID",
+    "PUID",
+    "TMPDIR",
+    "XBOOTLDR",
+    "autorebase",
+    "avdump",
+    "buildah",
+    "chrony",
+    "cmdline",
+    "cpus",
+    "debian",
+    "distroless",
+    "dorny",
+    "ecdsa",
     "firewalld",
+    "getent",
+    "gnupg",
+    "heavenvolkoff",
+    "igmp",
+    "inet",
+    "innodb",
+    "inotify",
+    "jesec",
+    "linux",
+    "lucaslorentz",
+    "luks",
+    "mariadb",
+    "mikefarah",
+    "minidlna",
+    "mkfifo",
+    "mysql",
+    "nftables",
+    "nmconnection",
+    "nvme",
+    "openrc",
+    "pberkel",
+    "pigz",
+    "proxmox",
+    "redis",
+    "relatime",
+    "reno",
+    "resolv.conf",
+    "shlib",
+    "shoko",
+    "shokoanime",
+    "socat",
+    "stribika",
+    "tonistiigi",
+    "xorg",
+    "zram",
+    "zstd"
+  ],
+  "cSpell.words": [
+    "Adata",
+    "HeavenVolkoff",
+    "UEFI",
+    "brasilia-uno",
+    "btrfs",
+    "coreutils",
+    "distrobox",
     "glusterfs",
-    "homelab",
-    "tailscale",
-    "technitium",
-    "ucore"
-  ]
+    "itaipava-uno",
+    "oracle-nueve",
+    "oracle-seis",
+    "oracle-tres",
+    "oracle-uno",
+    "PiKVM",
+    "uClibc",
+    "ucore",
+    "vaultwarden"
+  ],
+  "ltex.dictionary": {
+    "en-US": ["Distrobox", "GlusterFS", "PiKVM", "Podman", "Tailscale", "Technitium", "uCore"]
+  }
 }

@@ -1,17 +1,16 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
+
 name: Build butane files
+
+# cSpell:ignore xapply
+# cSpell:dictionaries shellscript
 
 on:
   workflow_dispatch:
   push:
-    paths:
-      - "butane/**"
-      - ".github/workflows/butane.yml"
     branches:
       - "main"
   pull_request:
-    paths:
-      - "butane/**"
-      - ".github/workflows/butane.yml"
 
 # Cancel previous runs of the same workflow on the same branch.
 concurrency:
@@ -19,11 +18,49 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  filter:
+    name: Filter unnecessary runs
+    runs-on: ubuntu-latest
+    permissions: {}
+    outputs:
+      butane: ${{ steps.changes.outputs.butane }}
+      github: ${{ steps.changes.outputs.github }}
+      continue: ${{ steps.continue.outputs.continue }}
+    steps:
+      - name: Checkout repository
+        uses: &checkout actions/checkout@v5
+      - id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            github:
+              - '.github/workflows/butane.yml'
+            butane:
+              - 'butane/**'
+      - id: continue
+        name: Determine if build is needed
+        env:
+          CHANGED_GITHUB: ${{ steps.changes.outputs.github }}
+          CHANGED_CONTAINER: ${{ steps.changes.outputs.butane }}
+        run: |
+          set -euo pipefail
+
+          if [ "$CHANGED_GITHUB" == 'true' ]
+            || [ "$CHANGED_CONTAINER" == 'true' ]; then
+            echo "Changes detected, proceed with build"
+            echo "continue=true" >> $GITHUB_OUTPUT
+          else
+            echo "No relevant changes detected, skip build"
+            echo "continue=false" >> $GITHUB_OUTPUT
+          fi
+
   build-ignition:
+    if: needs.filter.outputs.continue == 'true' && !cancelled()
+    needs: [filter]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: *checkout
       - name: Install dependencies
         shell: bash
         run: |
@@ -63,4 +100,21 @@ jobs:
           if ! git diff-index --quiet HEAD --; then
             git commit -am "Update ignition files"
             git push -u origin main
+          fi
+
+  check:
+    if: ${{ always() }}
+    name: Butane result
+    needs: [build-ignition]
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - name: Check result
+        env:
+          RESULT: ${{ needs.build-ignition.result }}
+        run: |
+          if [ "$RESULT" == "success" ] || [ "$RESULT" == "skipped" ]; then
+            exit 0
+          else
+            exit 1
           fi

@@ -21,25 +21,15 @@
   "platformAutomerge": true,
   "rebaseLabel": "renovate/rebase",
   "stopUpdatingLabel": "renovate/stop-updating",
-  "major": {
-    "labels": ["bump/major"]
-  },
-  "minor": {
-    "labels": ["bump/minor"]
-  },
-  "patch": {
-    "labels": ["bump/patch"]
-  },
-  "pin": {
-    "labels": ["bump/pin"]
-  },
-  "digest": {
-    "labels": ["bump/digest"]
-  },
+  "major": { "labels": ["bump/major"] },
+  "minor": { "labels": ["bump/minor"] },
+  "patch": { "labels": ["bump/patch"] },
+  "pin": { "labels": ["bump/pin"] },
+  "digest": { "labels": ["bump/digest"] },
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["(^|/|\\.)Dockerfile$"],
+       "fileMatch": ["^(Dockerfile|Containerfile)$"],
       "matchStrings": [
         "#\\s*renovate:\\s*datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*?))?( registryUrl=(?<registryUrl>.*?))?\\n(ENV|ARG) .*?_VERSION='(?<currentValue>.*)'\\s"
       ],

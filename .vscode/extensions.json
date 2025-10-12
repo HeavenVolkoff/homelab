@@ -10,6 +10,7 @@
     "redhat.vscode-yaml",
     "mads-hartmann.bash-ide-vscode",
     "hangxingliu.vscode-systemd-support",
-    "docker.docker"
+    "docker.docker",
+    "ms-azuretools.vscode-containers",
   ]
 }

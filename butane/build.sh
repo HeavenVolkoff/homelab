@@ -89,12 +89,14 @@ while read -r host_file; do
   echo "  - Merge order: ${merge_list[*]}"
   temp_bu_file="$(mktemp "${TMPDIR}/butane.XXXXXX")"
   trap 'rm -f "$temp_bu_file"' EXIT
+
   # Use '*+' for a deep merge that concatenates arrays
+  # shellcheck disable=SC2016
   yq eval-all '. as $item ireduce ({}; . *+ $item)' "${merge_list[@]}" >"$temp_bu_file"
 
   echo "  - Inlining external files..."
   while read -r include; do
-    IFS=";" read -r -a filepaths <<<"$(echo "$include" | sed 's/^!!include //')"
+    IFS=";" read -r -a filepaths <<<"${include//^\!\!'include' /}"
 
     load_str=()
     for filepath in "${filepaths[@]}"; do
@@ -116,8 +118,7 @@ while read -r host_file; do
 
   echo "  - Inlining environment variables..."
   while read -r envvar; do
-    envname="$(echo "$envvar" | sed 's/^!!env //')"
-    yq eval-all -i "(.. | select(. == \"$envvar\")) |= env($envname)" "$temp_bu_file"
+    yq eval-all -i "(.. | select(. == \"$envvar\")) |= env(${envvar//\!\!'env' /})" "$temp_bu_file"
   done < <(yq -r '.. | select(tag == "!!str") | select(test("^!!env "))' "$temp_bu_file")
 
   yq -i 'with(.. | select(tag == "!!str"); . style="literal")' "$temp_bu_file"

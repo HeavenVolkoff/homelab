@@ -1,3 +1,5 @@
+# cSpell:ignore sysctls
+
 services:
   transmission:
     build:
@@ -10,7 +12,7 @@ services:
           - linux/arm64
       context: .
       network: host
-    image: ghcr.io/heavenvolkoff/homelab/transmission:latest
+    image: ghcr.io/${REGISTRY_USER:-heavenvolkoff}/homelab/transmission:latest
     sysctls:
       net.ipv4.tcp_allowed_congestion_control: "cubic reno lp"
     deploy:

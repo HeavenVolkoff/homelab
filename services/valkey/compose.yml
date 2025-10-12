@@ -1,3 +1,5 @@
+# cSpell:ignore dbfilename rdbcompression gecos reuid regid
+
 volumes:
   valkey_data:
     driver: glusterfs

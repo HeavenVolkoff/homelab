@@ -1,3 +1,5 @@
+# cSpell:ignore trurl truser trpass
+
 services:
   flood:
     build:
@@ -10,7 +12,7 @@ services:
           - linux/arm64
       context: .
       network: host
-    image: ghcr.io/heavenvolkoff/homelab/flood:latest
+    image: ghcr.io/${REGISTRY_USER:-heavenvolkoff}/homelab/flood:latest
     deploy:
       resources:
         limits:

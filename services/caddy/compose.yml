@@ -17,7 +17,7 @@ networks:
 
 services:
   caddy_controller:
-    image: &image ghcr.io/heavenvolkoff/homelab/caddy:latest
+    image: &image ghcr.io/${REGISTRY_USER:-heavenvolkoff}/homelab/caddy:latest
     deploy:
       resources:
         limits:

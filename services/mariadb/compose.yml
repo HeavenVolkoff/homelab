@@ -1,3 +1,5 @@
+# cSpell:ignore initdb
+
 volumes:
   maria_db_data:
     driver: glusterfs
