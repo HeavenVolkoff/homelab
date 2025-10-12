@@ -81,7 +81,7 @@ jobs:
           target: default
 
   build-containers:
-    if: needs.filter.outputs.continue == 'true' && needs.prepare.success == 'success' && !cancelled()
+    if: needs.filter.outputs.continue == 'true' && needs.prepare.result == 'success' && !cancelled()
     name: Build ${{ matrix.target }}
     needs: [filter, prepare]
     runs-on: ubuntu-latest
@@ -137,7 +137,7 @@ jobs:
 
   check:
     if: ${{ always() }}
-    name: DOcker bake result
+    name: Docker bake result
     needs: [build-containers]
     runs-on: ubuntu-latest
     permissions: {}

@@ -92,7 +92,7 @@ jobs:
           echo "${{ toJSON(steps.containers.outputs) }}"
 
   build:
-    if: needs.filter.outputs.continue == 'true' && needs.prepare.success == 'success' && !cancelled()
+    if: needs.filter.outputs.continue == 'true' && needs.prepare.result == 'success' && !cancelled()
     name: Build ${{ matrix.container }} ${{ matrix.architecture }}
     needs: [filter, prepare]
     runs-on: ${{ matrix.architecture == 'x86_64' && 'ubuntu-24.04' || 'ubuntu-24.04-arm' }}
@@ -167,7 +167,7 @@ jobs:
           path: *cache_path
 
   push:
-    if: needs.filter.outputs.continue == 'true' && needs.build.success == 'success' && !cancelled()
+    if: needs.filter.outputs.continue == 'true' && needs.build.result == 'success' && !cancelled()
     name: Push multi-arch ${{ matrix.container }}
     runs-on: ubuntu-latest
     needs: [filter, build, prepare]
