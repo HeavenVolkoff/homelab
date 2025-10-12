@@ -47,11 +47,13 @@ jobs:
         name: Determine if build is needed
         env:
           CHANGED_GITHUB: ${{ steps.changes.outputs.github }}
+          WORKFLOW_DISPATCH: ${{ github.event_name == 'workflow_dispatch' }}
           CHANGED_CONTAINER: ${{ steps.changes.outputs.container }}
         run: |
           set -euo pipefail
 
-          if [ "$CHANGED_GITHUB" == 'true' ] \
+          if [ WORKFLOW_DISPATCH == 'true' ] \
+            || [ "$CHANGED_GITHUB" == 'true' ] \
             || [ "$CHANGED_CONTAINER" == 'true' ]; then
             echo "Changes detected, proceed with build"
             echo "continue=true" >> $GITHUB_OUTPUT
