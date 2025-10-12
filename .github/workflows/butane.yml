@@ -45,7 +45,7 @@ jobs:
         run: |
           set -euo pipefail
 
-          if [ "$CHANGED_GITHUB" == 'true' ]
+          if [ "$CHANGED_GITHUB" == 'true' ] \
             || [ "$CHANGED_CONTAINER" == 'true' ]; then
             echo "Changes detected, proceed with build"
             echo "continue=true" >> $GITHUB_OUTPUT
