@@ -96,7 +96,8 @@ while read -r host_file; do
 
   echo "  - Inlining external files..."
   while read -r include; do
-    IFS=";" read -r -a filepaths <<<"${include//^\!\!'include' /}"
+    # shellcheck disable=SC2001
+    IFS=";" read -r -a filepaths <<<"$(echo "$include" | sed 's/^!!include //')"
 
     load_str=()
     for filepath in "${filepaths[@]}"; do
@@ -108,8 +109,8 @@ while read -r host_file; do
     done
 
     if [ ${#load_str[@]} -eq 0 ]; then
-      echo "Warning: no valid files found for include directive '$include', skipping" >&2
-      continue
+      echo "No valid files found for include directive '$include', skipping" >&2
+      exit 1
     fi
 
     include_expr=$(join_by + "${load_str[@]}")
@@ -118,7 +119,9 @@ while read -r host_file; do
 
   echo "  - Inlining environment variables..."
   while read -r envvar; do
-    yq eval-all -i "(.. | select(. == \"$envvar\")) |= env(${envvar//\!\!'env' /})" "$temp_bu_file"
+    # shellcheck disable=SC2001
+    env_name="$(echo "$envvar" | sed 's/^!!env //')"
+    yq eval-all -i "(.. | select(. == \"$envvar\")) |= env(${env_name})" "$temp_bu_file"
   done < <(yq -r '.. | select(tag == "!!str") | select(test("^!!env "))' "$temp_bu_file")
 
   yq -i 'with(.. | select(tag == "!!str"); . style="literal")' "$temp_bu_file"
