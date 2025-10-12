@@ -105,7 +105,6 @@
     "chrony",
     "cmdline",
     "cpus",
-    "dind",
     "dinp",
     "debian",
     "distroless",

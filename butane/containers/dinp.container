@@ -10,7 +10,7 @@ After=network-online.target
 
 [Container]
 # --- Image and Naming ---
-Image=ghcr.io/heavenvolkoff/dind:latest
+Image=ghcr.io/heavenvolkoff/dinp:latest
 Network=dualstack.network
 HostName=dinp.%H
 AutoUpdate=registry

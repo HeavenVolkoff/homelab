@@ -80,15 +80,15 @@ storage:
     - path: /etc/containers/systemd/dualstack.network
       mode: 0750
       contents:
-        local: files/dualstack.network
+        local: containers/dualstack.network
     - path: /etc/containers/systemd/dinp.volume
       mode: 0750
       contents:
-        local: files/dinp.volume
+        local: containers/dinp.volume
     - path: /etc/containers/systemd/dinp.container
       mode: 0750
       contents:
-        local: files/dinp.container
+        local: containers/dinp.container
     # --- XDG env var configuration ---
     - path: /home/core/.config/environment.d/00-xdg.conf
       mode: 0640
