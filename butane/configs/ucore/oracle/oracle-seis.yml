@@ -8,6 +8,11 @@ storage:
       contents:
         inline: oracle-seis
       overwrite: true
+    - path: /etc/machine-info
+      mode: 0644
+      contents:
+        inline: |
+          PRETTY_HOSTNAME=Oracle Server Seis
     # --- NetworkManager Connection Profiles ---
     - path: /etc/NetworkManager/system-connections/enp0s6.nmconnection
       mode: 0600

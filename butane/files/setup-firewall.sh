@@ -76,8 +76,11 @@ firewall-cmd --permanent --zone=tailscale --add-service=ssh
 firewall-cmd --permanent --zone=tailscale --add-service=cockpit
 firewall-cmd --permanent --zone=tailscale --add-service=http
 firewall-cmd --permanent --zone=tailscale --add-service=https
+firewall-cmd --permanent --zone=tailscale --add-service=dns
+# Some common http alternative ports
 firewall-cmd --permanent --zone=tailscale --add-port=8000/tcp
 firewall-cmd --permanent --zone=tailscale --add-port=8080/tcp
+# Allow all ICMP traffic
 firewall-cmd --permanent --zone=tailscale --add-rich-rule='rule protocol value="icmp" accept'
 firewall-cmd --permanent --zone=tailscale --add-rich-rule='rule protocol value="ipv6-icmp" accept'
 

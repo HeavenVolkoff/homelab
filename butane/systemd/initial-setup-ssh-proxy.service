@@ -1,3 +1,5 @@
+# cSpell:ignore reuseaddr
+
 [Unit]
 Description=socat SSH proxy from port 80 to 22
 After=network.target sshd.service firewalld.service

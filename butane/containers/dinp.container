@@ -5,8 +5,6 @@
 
 [Unit]
 Description=Docker-in-Podman Service
-# Ensures the service starts after the network is fully initialized.
-After=network-online.target
 
 [Container]
 # --- Image and Naming ---
@@ -18,12 +16,14 @@ ContainerName=dinp
 
 # --- Resource Management ---
 Memory=%i
+PidsLimit=0
 
 # --- Privileges & Security ---
 User=root
 Ulimit=host
 PidsLimit=-1
 StopSignal=SIGINT
+StopTimeout=120
 # Equivalent to --security-opt=seccomp=unconfined
 SeccompProfile=unconfined
 # Equivalent to --security-opt=label=disable
@@ -36,10 +36,12 @@ Exec=%u %U %g %G %h
 Volume=dinp.volume:/var/lib/docker:z
 Volume=/tmp:/tmp:rslave
 Volume=/sys/fs/selinux:/sys/fs/selinux
+Volume=/etc/localtime:/etc/localtime:ro
+Volume=/etc/locale.conf:/etc/locale.conf:ro
 Volume=%h:%h:rslave
 Mount=type=devpts,gid=5,mode=0620,destination=/dev/pts
 
-# --- Networking (User-requested) ---
+# --- Networking ---
 PublishPort=80:80/tcp
 PublishPort=443:443/tcp
 PublishPort=2377:2377/tcp
@@ -55,6 +57,13 @@ HealthCmd=/usr/bin/docker info
 PodmanArgs=--privileged
 PodmanArgs=--security-opt=apparmor=unconfined
 PodmanArgs=--systemd=always
+
+[Service]
+Restart=on-failure
+ExecStop=/usr/bin/podman exec dinp /sbin/poweroff
+TimeoutStopSec=120
+SuccessExitStatus=129 130
+RestartPreventExitStatus=129 130
 
 [Install]
 # Allows the service to be enabled to start on system boot.

@@ -26,6 +26,15 @@ storage:
           size_mib: 0 # Use remaining space
       wipe_table: true
   files:
+    # --- Technitium DNS container ---
+    - path: /etc/containers/systemd/technitium.volume
+      mode: 0640
+      contents:
+        local: containers/technitium.volume
+    - path: /etc/containers/systemd/technitium.container
+      mode: 0640
+      contents:
+        local: containers/technitium.container
     # --- ZRAM Configuration ---
     - path: /etc/systemd/zram-generator.conf
       mode: 0644
@@ -47,9 +56,7 @@ storage:
 systemd:
   units:
     # --- uCore Autorebase Services ---
-    - name: ucore-unsigned-autorebase.service
+    - name: unsigned-autorebase@ucore-hci:stable.service
       enabled: true
-      contents_local: systemd/ucore-unsigned-autorebase.service
-    - name: ucore-signed-autorebase.service
+    - name: signed-autorebase@ucore-hci:stable.service
       enabled: true
-      contents_local: systemd/ucore-signed-autorebase.service

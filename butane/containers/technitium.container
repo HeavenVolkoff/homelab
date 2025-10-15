@@ -1,0 +1,82 @@
+# /etc/containers/systemd/technitium.container
+# Defines Technitium DNS Server service.
+
+# cSpell:ignore PidsLimit systemd-creds
+
+[Unit]
+Description=Technitium DNS Server
+
+[Container]
+# --- Image and Naming ---
+Image=docker.io/technitium/dns-server:latest
+Network=dualstack.network
+HostName=technitium.%H
+AutoUpdate=registry
+ContainerName=technitium
+
+# --- Privileges & Security ---
+UIDMap=0:10000:10
+GIDMap=0:10000:10
+
+# --- Resource Management ---
+Memory=4G
+
+# --- Volumes & Mounts ---
+Volume=technitium.volume:/etc/dns:z
+Volume=/etc/localtime:/etc/localtime:ro
+Volume=/etc/locale.conf:/etc/locale.conf:ro
+
+# --- Networking (User-requested) ---
+PublishPort=53:53/tcp
+PublishPort=53:53/udp
+PublishPort=127.0.0.1:5380:80/tcp
+NetworkAlias=technitium
+
+# --- Health Check ---
+HealthOnFailure=kill
+HealthCmd=/usr/bin/host google.com 127.0.0.1
+
+# --- Environment Variables ---
+# Encrypted credential file that contains the plain text password for the DNS web console admin user.
+Environment=DNS_SERVER_ADMIN_PASSWORD_FILE=%d/technitium.pass
+# DNS Server will use IPv6 for querying whenever possible with this option enabled.
+Environment=DNS_SERVER_PREFER_IPV6=true
+# The TCP port number for the DNS web console over HTTP protocol. console.
+Environment=DNS_SERVER_WEB_SERVICE_HTTP_PORT=80
+# The TCP port number for the DNS web console over HTTPS protocol.
+Environment=DNS_SERVER_WEB_SERVICE_HTTPS_PORT=443
+# Enables HTTPS for the DNS web console.
+Environment=DNS_SERVER_WEB_SERVICE_ENABLE_HTTPS=true
+# Enables self signed TLS certificate for the DNS web console.
+Environment=DNS_SERVER_WEB_SERVICE_USE_SELF_SIGNED_CERT=true
+# Recursion options: Allow, Deny, AllowOnlyForPrivateNetworks, UseSpecifiedNetworkACL.
+Environment=DNS_SERVER_RECURSION=AllowOnlyForPrivateNetworks
+# Sets the DNS server to block domain names using Blocked Zone and Block List Zone.
+Environment=DNS_SERVER_ENABLE_BLOCKING=true
+# Specifies if the DNS Server should respond with TXT records containing a blocked domain report for TXT type requests.
+Environment=DNS_SERVER_ALLOW_TXT_BLOCKING_REPORT=true
+# A comma separated list of block list URLs.
+Environment=DNS_SERVER_BLOCK_LIST_URLS=https://big.oisd.nl,https://raw.githubusercontent.com/dibdot/DoH-IP-blocklists/master/doh-domains.txt,https://a.dove.isdumb.one/pihole.txt,https://shreshtait.com/newly-registered-domains/nrd-1w
+# Comma separated list of forwarder addresses.
+Environment=DNS_SERVER_FORWARDERS=https://doh.opendns.com/dns-query
+# Forwarder protocol options: Udp, Tcp, Tls, Https, HttpsJson.
+Environment=DNS_SERVER_FORWARDER_PROTOCOL=Https
+# Enable this option to use local time instead of UTC for logging.
+Environment=DNS_SERVER_LOG_USING_LOCAL_TIME=true
+# Extra sensitive environment variables are loaded as encrypted credentials.
+EnvironmentFile=%d/technitium.env
+
+[Service]
+Restart=on-failure
+# cat << EOF | sudo systemd-creds encrypt - /etc/credstore/technitium.env
+# ENV_VAR_HERE=VALUE_HERE
+# EOF
+LoadCredentialEncrypted=technitium.env
+# cat << EOF | sudo systemd-creds encrypt - /etc/credstore/technitium.pass
+# PASWORD_HERE
+# EOF
+LoadCredentialEncrypted=technitium.pass
+
+[Install]
+# Allows the service to be enabled to start on system boot.
+WantedBy=multi-user.target

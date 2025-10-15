@@ -42,6 +42,12 @@ storage:
       contents:
         inline: brasilia-uno
       overwrite: true
+    - path: /etc/machine-info
+      mode: 0644
+      contents:
+        inline: |
+          CHASSIS=server
+          PRETTY_HOSTNAME=Brasilia Server Uno
     # --- ZRAM Configuration ---
     - path: /etc/systemd/zram-generator.conf
       mode: 0644

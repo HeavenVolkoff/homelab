@@ -1,13 +1,15 @@
 #!/bin/sh
 
-# cSpell:ignore tzdata getent userns subuid
+# cSpell:ignore gecos getent subuid tcmalloc tzdata userns
 
 set -eu
+
+# Enable testing repository for tcmalloc-minimal
+echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >>/etc/apk/repositories
 
 # Enable custom repositories for GlusterFS
 wget -O /etc/apk/keys/ck-6787e0df.rsa.pub https://kohlschuetter.github.io/alpine-repo/keys/ck-6787e0df.rsa.pub
 echo "https://kohlschuetter.github.io/alpine-repo" >>/etc/apk/repositories
-echo "https://dl-cdn.alpinelinux.org/alpine/edge/testing" >>/etc/apk/repositories
 
 # Install basic packages
 apk add \
@@ -17,6 +19,7 @@ apk add \
   docker-cli-compose \
   glusterfs \
   kitty-terminfo \
+  lang \
   micro \
   nftables \
   openrc \
@@ -36,14 +39,20 @@ sed -i \
 # Enable cgroups in openrc
 rc-update add cgroups
 
-# Configure docker remap user
-id -u dockremap 2>/dev/null || adduser -SDHs /sbin/nologin dockremap
 # Configure docker remap group
-getent group dockremap 2>/dev/null || addgroup -S dockremap
+getent group dockremap 2>/dev/null || addgroup --system dockremap
+# Configure docker remap user
+id -u dockremap 2>/dev/null \
+  || adduser -SDH \
+    --home /var/empty \
+    --shell /sbin/nologin \
+    --gecos "docker remap user" \
+    --ingroup dockremap \
+    dockremap
 
 # Configure dockremap user and group ids
-echo "dockremap:$(cat /etc/passwd | grep dockremap | cut -d: -f3):65536" >/etc/subuid
-echo "dockremap:$(cat /etc/passwd | grep dockremap | cut -d: -f4):65536" >/etc/subgid
+echo "dockremap:$(getent passwd dockremap | cut -d: -f3):65536" >/etc/subuid
+echo "dockremap:$(getent group dockremap | cut -d: -f3):65536" >/etc/subgid
 
 # Configure docker daemon
 mkdir -p /etc/docker
@@ -68,6 +77,9 @@ chmod +x /etc/init.d/dev
 
 # Enable nftables in openrc
 rc-update add nftables boot
+
+# Enable syslog in openrc
+rc-update add syslog boot
 
 # Enable docker in openrc
 rc-update add docker default

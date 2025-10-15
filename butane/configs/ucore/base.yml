@@ -76,17 +76,27 @@ storage:
       mode: 0750
       contents:
         local: files/setup-firewall.sh
+    # --- Podman configuration ---
+    - path: /etc/containers/containers.conf
+      mode: 0640
+      contents:
+        inline: |
+          [containers]
+          tz="local"
+
+          [network]
+          dns_bind_port=1153
     # --- Docker-in-Podman container ---
     - path: /etc/containers/systemd/dualstack.network
-      mode: 0750
+      mode: 0640
       contents:
         local: containers/dualstack.network
     - path: /etc/containers/systemd/dinp.volume
-      mode: 0750
+      mode: 0640
       contents:
         local: containers/dinp.volume
-    - path: /etc/containers/systemd/dinp.container
-      mode: 0750
+    - path: /etc/containers/systemd/dinp@.container
+      mode: 0640
       contents:
         local: containers/dinp.container
     # --- XDG env var configuration ---
@@ -137,3 +147,8 @@ systemd:
     - name: tuned-profile.service
       enabled: true
       contents_local: systemd/tuned-profile.service
+    # --- uCore rebase ---
+    - name: unsigned-autorebase@.service
+      contents_local: unsigned-autorebase.service
+    - name: signed-autorebase@.service
+      contents_local: systemd/signed-autorebase.service

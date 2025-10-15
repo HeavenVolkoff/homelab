@@ -8,7 +8,7 @@ Wants=network-online.target
 [Service]
 Type=oneshot
 StandardOutput=journal+console
-ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-image-signed:docker://ghcr.io/heavenvolkoff/ucore-hci:stable
+ExecStart=/usr/bin/rpm-ostree rebase --bypass-driver ostree-image-signed:docker://ghcr.io/heavenvolkoff/%i
 ExecStart=/usr/bin/touch /etc/ucore-autorebase/signed
 ExecStart=/usr/bin/systemctl disable ucore-signed-autorebase.service
 ExecStart=/usr/bin/systemctl reboot

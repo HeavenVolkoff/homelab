@@ -3,9 +3,7 @@
 systemd:
   units:
     # --- uCore Autorebase Services ---
-    - name: ucore-unsigned-autorebase.service
+    - name: unsigned-autorebase@ucore:stable.service
       enabled: true
-      contents_local: systemd/ucore-hci-unsigned-autorebase.service
-    - name: ucore-signed-autorebase.service
+    - name: signed-autorebase@ucore:stable.service
       enabled: true
-      contents_local: systemd/ucore-hci-signed-autorebase.service
