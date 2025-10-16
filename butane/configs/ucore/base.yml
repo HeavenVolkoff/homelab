@@ -78,7 +78,7 @@ storage:
         local: files/setup-firewall.sh
     # --- Podman configuration ---
     - path: /etc/containers/containers.conf
-      mode: 0640
+      mode: 0644
       contents:
         inline: |
           [containers]
@@ -149,6 +149,6 @@ systemd:
       contents_local: systemd/tuned-profile.service
     # --- uCore rebase ---
     - name: unsigned-autorebase@.service
-      contents_local: unsigned-autorebase.service
+      contents_local: systemd/unsigned-autorebase.service
     - name: signed-autorebase@.service
       contents_local: systemd/signed-autorebase.service

@@ -13,6 +13,7 @@ echo "https://kohlschuetter.github.io/alpine-repo" >>/etc/apk/repositories
 
 # Install basic packages
 apk add \
+  alpine-base \
   bash \
   bash-completion \
   docker \
@@ -22,7 +23,6 @@ apk add \
   lang \
   micro \
   nftables \
-  openrc \
   tzdata \
   util-linux-misc
 
