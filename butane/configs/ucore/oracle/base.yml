@@ -39,7 +39,7 @@ storage:
     - path: /etc/systemd/zram-generator.conf
       mode: 0644
       contents:
-        inline: "!!include files/zram.conf;files/zram.mount.conf"
+        inline: "!!include etc/zram.conf;etc/zram.mount.conf"
       overwrite: true
   filesystems:
     - path: /var/mnt/glusterfs

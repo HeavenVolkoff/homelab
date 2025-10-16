@@ -56,7 +56,7 @@ https://docs.pikvm.org/flashing_os
 
 1. Configure ssh
 
-   - Copy [`sshd.conf`](butane/files/sshd.conf) to `/etc/ssh/sshd_config.d/99-custom.conf`
+   - Copy [`sshd.conf`](butane/etc/sshd.conf) to `/etc/ssh/sshd_config.d/99-custom.conf`
 
    - Add specific settings for PiKVM
 

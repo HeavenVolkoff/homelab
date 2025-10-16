@@ -43,7 +43,7 @@ storage:
     - path: /etc/systemd/zram-generator.conf
       mode: 0644
       contents:
-        inline: "!!include files/zram.conf;files/zram.mount.conf"
+        inline: "!!include etc/zram.conf;etc/zram.mount.conf"
       overwrite: true
     # --- NetworkManager Connection Profiles ---
     - path: /etc/NetworkManager/system-connections/enp0s31f6.nmconnection

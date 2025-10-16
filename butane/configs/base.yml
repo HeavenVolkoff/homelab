@@ -63,7 +63,7 @@ storage:
     - path: /etc/chrony.conf
       mode: 0644
       contents:
-        local: files/chrony.conf
+        local: etc/chrony.conf
       overwrite: true
     # --- Sysctl settings for IP forwarding ---
     - path: /etc/sysctl.d/99-networking.conf
@@ -79,7 +79,7 @@ storage:
     - path: /etc/ssh/sshd_config.d/99-custom.conf
       mode: 0600
       contents:
-        local: files/sshd.conf
+        local: etc/sshd.conf
 
 systemd:
   units:

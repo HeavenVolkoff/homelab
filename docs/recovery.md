@@ -26,7 +26,7 @@ Now, back to the recovery terminal, first thing is getting an internet connectio
 
 - Enter editable mode: Press `i`.
 
-- Copy the content of script [utilities/ip.sh](../butane/files/ip.sh) and paste it onto `vi`
+- Copy the content of script [utilities/ip.sh](../butane/bin/ip.sh) and paste it onto `vi`
 
 - Exit editable mode: Press `[ESC]`
 
@@ -62,7 +62,7 @@ Now, with internet, let's set up a CoreOS live environment:
   mount /dev/<BOOT_PARTITION> /boot
   ```
 
-- Repeat the vi instruction above to create the script [coreos-live-setup.sh](../butane/files/coreos-live-setup.sh)
+- Repeat the vi instruction above to create the script [coreos-live-setup.sh](../butane/bin/coreos-live-setup.sh)
 
 - Run the script with the URL for the fixed ignition file
 

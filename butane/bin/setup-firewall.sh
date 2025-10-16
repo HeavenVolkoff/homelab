@@ -58,11 +58,16 @@ echo ">>> Configuring the public zone (FedoraServer)..."
 
 # Set the default target to DROP for a default-deny policy.
 firewall-cmd --permanent --zone=FedoraServer --set-target=DROP
+
+# Allow specific services
 firewall-cmd --permanent --zone=FedoraServer --add-service=http
 firewall-cmd --permanent --zone=FedoraServer --add-service=https
-firewall-cmd --permanent --zone=FedoraServer --add-service=wireguard
 firewall-cmd --permanent --zone=FedoraServer --add-service=dhcpv6-client
+
+# Allow Tailscale ports.
 firewall-cmd --permanent --zone=FedoraServer --add-port=41641/udp
+
+# Allow all ICMP traffic.
 firewall-cmd --permanent --zone=FedoraServer --add-rich-rule='rule protocol value="icmp" accept'
 firewall-cmd --permanent --zone=FedoraServer --add-rich-rule='rule protocol value="ipv6-icmp" accept'
 
@@ -71,27 +76,29 @@ echo ">>> Configuring the dedicated Tailscale zone..."
 # Assign the tailscale0 interface to this zone.
 firewall-cmd --permanent --zone=tailscale --change-interface=tailscale0
 
-# Allow all requested services in the tailscale zone.
+# Set the default target to DROP for a default-deny policy.
+firewall-cmd --permanent --zone=tailscale --set-target=DROP
+
+# Allow specific services.
+firewall-cmd --permanent --zone=tailscale --add-service=dns
 firewall-cmd --permanent --zone=tailscale --add-service=ssh
-firewall-cmd --permanent --zone=tailscale --add-service=cockpit
 firewall-cmd --permanent --zone=tailscale --add-service=http
 firewall-cmd --permanent --zone=tailscale --add-service=https
-firewall-cmd --permanent --zone=tailscale --add-service=dns
-# Some common http alternative ports
+firewall-cmd --permanent --zone=tailscale --add-service=glusterfs
+
+# Allow some common http alternative ports.
 firewall-cmd --permanent --zone=tailscale --add-port=8000/tcp
 firewall-cmd --permanent --zone=tailscale --add-port=8080/tcp
-# Allow all ICMP traffic
-firewall-cmd --permanent --zone=tailscale --add-rich-rule='rule protocol value="icmp" accept'
-firewall-cmd --permanent --zone=tailscale --add-rich-rule='rule protocol value="ipv6-icmp" accept'
 
-# Add rules for Docker Swarm
+# Allow Docker Swarm ports.
 firewall-cmd --permanent --zone=tailscale --add-port=2377/tcp # Cluster management
 firewall-cmd --permanent --zone=tailscale --add-port=7946/tcp # Node communication
 firewall-cmd --permanent --zone=tailscale --add-port=7946/udp # Node communication
 firewall-cmd --permanent --zone=tailscale --add-port=4789/udp # Overlay network
 
-# Add rule for GlusterFS using the predefined service
-firewall-cmd --permanent --zone=tailscale --add-service=glusterfs
+# Allow all ICMP traffic.
+firewall-cmd --permanent --zone=tailscale --add-rich-rule='rule protocol value="icmp" accept'
+firewall-cmd --permanent --zone=tailscale --add-rich-rule='rule protocol value="ipv6-icmp" accept'
 
 echo ">>> Applying firewall rules..."
 

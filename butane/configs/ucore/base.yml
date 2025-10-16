@@ -70,12 +70,12 @@ storage:
     - path: /usr/local/bin/coreos-live-setup
       mode: 0750
       contents:
-        local: files/coreos-live-setup.sh
+        local: bin/coreos-live-setup.sh
     # --- Firewall setup script ---
     - path: /usr/local/bin/setup-firewall
       mode: 0750
       contents:
-        local: files/setup-firewall.sh
+        local: bin/setup-firewall.sh
     # --- Podman configuration ---
     - path: /etc/containers/containers.conf
       mode: 0644
@@ -105,21 +105,21 @@ storage:
       user: { name: core }
       group: { name: core }
       contents:
-        local: files/xdg.conf
+        local: etc/xdg.conf
     # --- Sensible Bash configuration ---
     - path: /home/core/.local/share/sensible.bash
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        local: files/sensible.bash
+        local: bin/sensible.bash
     # --- User bashrc ---
     - path: /home/core/.bashrc
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        local: files/bashrc.sh
+        local: bin/bashrc.sh
       overwrite: true
     # --- Starship configuration ---
     - path: /home/core/.config/starship.toml
@@ -127,14 +127,14 @@ storage:
       user: { name: core }
       group: { name: core }
       contents:
-        local: files/starship.toml
+        local: etc/starship.toml
     # --- Python history configuration ---
     - path: /home/core/.config/python/pythonrc
       mode: 0640
       user: { name: core }
       group: { name: core }
       contents:
-        local: files/rc.py
+        local: etc/rc.py
 
 systemd:
   units:
