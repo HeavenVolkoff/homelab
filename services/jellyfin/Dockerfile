@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
-FROM docker.io/jellyfin/jellyfin:10.11.2@sha256:d43a8878689311f841a1967f899f54db56877bf6b426fd7ff870ac1a6fd1dce4
+FROM docker.io/jellyfin/jellyfin:10.11.3@sha256:1edf3f17997acbe139718f252a7d2ded2706762390d787a34204668498dbc5f6
 
 ENV TZ=UTC \
     PUID=1000 \
