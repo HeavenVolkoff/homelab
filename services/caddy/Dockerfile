@@ -9,7 +9,7 @@ ARG CADDY_VERSION='2.10.2'
 FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:add602d55daca18914838a78221f6bbe4284114b452c86a48f96d59aeb00f5c6 AS xx
 
 # === Stage 1.1 - Shoko ========================================================
-FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily@sha256:f246898900b93e7031d9655ae977fdcba2b06602550ac609d1b3ed0c6151b475 AS shoko
+FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily@sha256:7d753f6f0dba6a57c18543d9b0f03d51bc451cf4c69cd5e142b2bfae8be7ceb0 AS shoko
 
 # === Stage 1.2 - Flood ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.11.0@sha256:4b92628572d0b4ff740ca2d1e0262cf8e368cd39aa9e693a6dc2f681d71aadd2 AS flood
