@@ -6,7 +6,7 @@
 ARG CADDY_VERSION='2.10.2'
 
 # === Stage 0 - Cross-compilation helper =======================================
-FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:add602d55daca18914838a78221f6bbe4284114b452c86a48f96d59aeb00f5c6 AS xx
+FROM --platform=$BUILDPLATFORM docker.io/tonistiigi/xx:latest@sha256:c64defb9ed5a91eacb37f96ccc3d4cd72521c4bd18d5442905b95e2226b0e707 AS xx
 
 # === Stage 1.1 - Shoko ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/shokoanime/server:daily@sha256:a88d7563f6a21f5ebead4abcbc83d06e27bd4be563c18a7128f51d8d7717dd28 AS shoko
