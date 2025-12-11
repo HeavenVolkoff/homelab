@@ -161,7 +161,7 @@ jobs:
           buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}"
       - name: Cache image artifact
         if: "!steps.restore.outputs.cache-hit"
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           key: *cache_key
           path: *cache_path
