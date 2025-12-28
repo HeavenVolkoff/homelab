@@ -18,7 +18,7 @@ FROM --platform=$BUILDPLATFORM docker.io/jesec/flood:4.11.0@sha256:4b92628572d0b
 FROM --platform=$BUILDPLATFORM docker.io/jellyfin/jellyfin:10.11.5@sha256:6d819e9ab067efcf712993b23455cc100ee5585919bb297ea5a109ac00cb626e AS jellyfin
 
 # === Stage 1.4 - Vaultwarden ==================================================
-FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.34.3@sha256:84fd8a47f58d79a1ad824c27be0a9492750c0fa5216b35c749863093bfa3c3d7 AS vaultwarden
+FROM --platform=$BUILDPLATFORM docker.io/vaultwarden/server:1.35.0@sha256:a66735efe15d3a7ea63b5b3fe6913058756771349f6056e1be1ab7b4ef244b21 AS vaultwarden
 
 # === Stage 2 - Builder ========================================================
 FROM --platform=$BUILDPLATFORM docker.io/caddy:2.11-builder@sha256:5fa9a318e2f32bf2c75f59eb4bad9b3e1b8522fbce9a689a6a7d4614145672f3 AS builder
