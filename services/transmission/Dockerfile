@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
 # === Stage 0 - Install Transmission ===========================================
-FROM docker.io/library/alpine:edge@sha256:115729ec5cb049ba6359c3ab005ac742012d92bbaa5b8bc1a878f1e8f62c0cb8 AS install
+FROM docker.io/library/alpine:edge@sha256:ea71a031ed91cd46b00d438876550bc765da43b4ae40f331a12daf62f0937758 AS install
 
 RUN apk upgrade --no-cache
 RUN apk add --no-cache transmission-daemon binutils
