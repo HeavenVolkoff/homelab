@@ -51,7 +51,7 @@ RUN set -eux; \
     ; done
 
 # === Stage 2 - Busybox ========================================================
-FROM docker.io/library/busybox:stable-musl@sha256:e4e059ed82da88651913f2b3cc55aa1443b53f9fda43aae703dd157e0ae08e98 AS busybox
+FROM docker.io/library/busybox:stable-musl@sha256:c29b078aeeb7cdc487cf52dc87a69dac71499937f498b35cb606c7943bc412c9 AS busybox
 
 # === Stage 3 - Runtime ========================================================
 FROM gcr.io/distroless/cc-debian12@sha256:0c8eac8ea42a167255d03c3ba6dfad2989c15427ed93d16c53ef9706ea4691df
