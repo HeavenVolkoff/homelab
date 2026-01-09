@@ -10,7 +10,7 @@ RUN [ "/busybox/ln", "-s", "/busybox/env", "/usr/bin/env" ]
 RUN find / -type f -name '*.so*' | sort | uniq > /libs.txt
 
 # === Stage 1 - Vaultwarden ====================================================
-FROM docker.io/vaultwarden/server:1.35.1@sha256:1d43c6754a030861f960fd4dab47e1b33fc19f05bd5f8f597ab7236465a6f14b AS vaultwarden
+FROM docker.io/vaultwarden/server:1.35.2@sha256:d89a6d21e361254670c24a4272b4b5f245e402c284f2f55de2c379fdbcfa1fa5 AS vaultwarden
 
 # Don't allow APT to make question
 ARG DEBIAN_FRONTEND=noninteractive
