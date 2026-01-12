@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
 
 # === Stage 0 - Disambiguation =================================================
-FROM gcr.io/distroless/cc-debian12:debug@sha256:ab25b6e4beb485344f804f388abc3c4da350131abfb80dccdbf856362f64350a AS disambiguation
+FROM gcr.io/distroless/cc-debian12:debug@sha256:4de4d3dacd8bff60f46716b63394237b3a615f4081afc1ca0dacdc2b59b27af7 AS disambiguation
 
 # Setup busybox symlinks
 RUN [ "/busybox/ln", "-s", "/busybox/sh", "/bin/sh" ]
