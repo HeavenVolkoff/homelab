@@ -1,6 +1,6 @@
 services:
   shoko:
-    image: docker.io/shokoanime/server:daily@sha256:f85bf3ffed92711fcc8146d1ec1ca1b90421ea9be4a9630fcc322da514e0fdd2
+    image: docker.io/shokoanime/server:daily@sha256:638d77cf180953d3cd0b6d69ea57a0db0e2c742b59b4a8490156853d582a6c2c
     deploy:
       resources:
         limits:
