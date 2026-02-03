@@ -6,7 +6,7 @@
 ARG MINIDLNA_VERSION='1.3.3+p.1'
 
 # === Stage 0 - Install MiniDLNA ===============================================
-FROM --platform=$BUILDPLATFORM docker.io/library/busybox:stable-musl@sha256:a81cb4eb87319424f704f7ab455a164c92ce032b82ff4832ee402820ae5d3c76 AS install
+FROM --platform=$BUILDPLATFORM docker.io/library/busybox:stable-musl@sha256:3c6ae8008e2c2eedd141725c30b20d9c36b026eb796688f88205845ef17aa213 AS install
 
 ARG TARGETPLATFORM MINIDLNA_VERSION
 
@@ -26,7 +26,7 @@ RUN case "$TARGETPLATFORM" in \
     esac
 
 # === Stage 1 - Busybox ========================================================
-FROM docker.io/library/busybox:stable-musl@sha256:a81cb4eb87319424f704f7ab455a164c92ce032b82ff4832ee402820ae5d3c76 AS busybox
+FROM docker.io/library/busybox:stable-musl@sha256:3c6ae8008e2c2eedd141725c30b20d9c36b026eb796688f88205845ef17aa213 AS busybox
 
 # === Stage 2 - Runtime ========================================================
 FROM gcr.io/distroless/base-nossl-debian12@sha256:c0d97a3f0d6ad7d75c6494e3d6da54f09a961b80d755f0a09c7328f5a8edee5e
