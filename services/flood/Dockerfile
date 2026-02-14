@@ -62,7 +62,7 @@ RUN --mount=type=cache,sharing=locked,target=/root/.npm \
 FROM docker.io/library/busybox:stable-musl@sha256:3c6ae8008e2c2eedd141725c30b20d9c36b026eb796688f88205845ef17aa213 AS busybox
 
 # === Stage 3 - Runtime ========================================================
-FROM gcr.io/distroless/nodejs22-debian12@sha256:61ac74f7ae19c65e87fdfcd5a0b0cb7172074ecbbbf0c26820ec5c09fd2ff9d1
+FROM gcr.io/distroless/nodejs22-debian12@sha256:8a3e96fe3345b5d83ecec2066e7c498139a02a6d1214e4f6c39f9ce359f3f5bc
 
 ARG FLOOD_VERSION
 
