@@ -133,7 +133,7 @@ jobs:
         id: meta
         if: "!steps.restore.outputs.cache-hit"
         name: Gather image metadata
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           images: ${{ matrix.container }}
           labels: ${{ steps.labels.outputs.labels }}
