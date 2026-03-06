@@ -76,7 +76,7 @@ jobs:
         run: ln -s .env.example .env
       - name: List targets
         id: generate
-        uses: docker/bake-action/subaction/list-targets@v6
+        uses: docker/bake-action/subaction/list-targets@v7
         with:
           target: default
 
