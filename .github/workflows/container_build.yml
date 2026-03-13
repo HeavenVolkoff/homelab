@@ -251,7 +251,7 @@ jobs:
       - id: registry_case
         if: github.event_name != 'pull_request'
         name: Lowercase registry
-        uses: ASzc/change-string-case-action@v6
+        uses: ASzc/change-string-case-action@v7
         with:
           string: ${{ env.IMAGE_REGISTRY }}
       - id: push
