@@ -257,7 +257,7 @@ jobs:
       - id: push
         if: github.event_name != 'pull_request'
         name: Push image to GHCR
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@v3
         env:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ github.token }}
