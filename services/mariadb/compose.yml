@@ -14,7 +14,7 @@ configs:
 
 services:
   maria_db:
-    image: docker.io/library/mariadb:lts@sha256:8164f184d16c30e2f159e30518113667b796306dff0fe558876ab1ff521a682f
+    image: docker.io/library/mariadb:lts@sha256:ab1c3dd381940233af12512b97d47b508fd3a0f17fbe3ba388739b7bc17cbc0b
     deploy:
       resources:
         limits:
