@@ -8,7 +8,7 @@ Description=Docker-in-Podman Service
 
 [Container]
 # --- Image and Naming ---
-Image=ghcr.io/heavenvolkoff/dinp:latest
+Image=ghcr.io/heavenvolkoff/dinp:latest@sha256:2292f6b2126b2b6a505b56b3fbcab82eeb6e840d7285e4ff1194465cb36b9409
 Network=dualstack.network
 HostName=dinp.%H
 AutoUpdate=registry

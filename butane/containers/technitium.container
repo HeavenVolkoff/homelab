@@ -8,7 +8,7 @@ Description=Technitium DNS Server
 
 [Container]
 # --- Image and Naming ---
-Image=docker.io/technitium/dns-server:latest
+Image=docker.io/technitium/dns-server:latest@sha256:2502fd4993d18a8c6665ce6eefb20c76ca21918c5435a015d9485b36e8275b5e
 Network=dualstack.network
 HostName=technitium.%H
 AutoUpdate=registry
