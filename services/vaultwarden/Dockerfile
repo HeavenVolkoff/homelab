@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1@sha256:b6afd42430b15f2d2a4c5a02b919e98a525b785b1aaff16747d2f623364e39b6
+# syntax=docker/dockerfile:1@sha256:4edf897a3ffa55b89f906fc8cc78afdb3f1834cc9c7083565e611a8a7d5fe99e
 
 # === Stage 0 - Disambiguation =================================================
 FROM gcr.io/distroless/cc-debian12:debug@sha256:5b75ef3081b4f1b52e64bbf5bf39e7c1f251c6b42c6aff001844c80c95ea5d1c AS disambiguation
