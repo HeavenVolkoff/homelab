@@ -35,7 +35,7 @@ jobs:
       - name: Checkout repository
         uses: &checkout actions/checkout@v5
       - id: changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v3.0.4
         with:
           filters: |
             github:
@@ -133,14 +133,14 @@ jobs:
         id: meta
         if: "!steps.restore.outputs.cache-hit"
         name: Gather image metadata
-        uses: docker/metadata-action@v6
+        uses: docker/metadata-action@v6.2.0
         with:
           images: ${{ matrix.container }}
           labels: ${{ steps.labels.outputs.labels }}
       - id: build_image
         if: "!steps.restore.outputs.cache-hit"
         name: Build image
-        uses: redhat-actions/buildah-build@v2
+        uses: redhat-actions/buildah-build@v2.6.2
         with:
           containerfiles: |
             containers/${{ matrix.container }}/Containerfile
@@ -161,7 +161,7 @@ jobs:
           buildah push "${IMAGE_NAME:?}:${IMAGE_TAG:?}" "docker-archive:${IMAGE_PATH:?}"
       - name: Cache image artifact
         if: "!steps.restore.outputs.cache-hit"
-        uses: actions/cache/save@v5
+        uses: actions/cache/save@v5.1.0
         with:
           key: *cache_key
           path: *cache_path
@@ -257,7 +257,7 @@ jobs:
       - id: push
         if: github.event_name != 'pull_request'
         name: Push image to GHCR
-        uses: redhat-actions/push-to-registry@v2
+        uses: redhat-actions/push-to-registry@v2.7.1
         env:
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_PASSWORD: ${{ github.token }}

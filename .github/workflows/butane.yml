@@ -30,7 +30,7 @@ jobs:
       - name: Checkout repository
         uses: &checkout actions/checkout@v5
       - id: changes
-        uses: dorny/paths-filter@v3
+        uses: dorny/paths-filter@v3.0.4
         with:
           filters: |
             github:
