@@ -38,7 +38,7 @@ RUN env CGO_ENABLED=0 XCADDY_WHICH_GO=xx-go xcaddy build \
 
 #--
 
-FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659 AS static
+FROM --platform=$BUILDPLATFORM docker.io/library/alpine:3@sha256:f59abe656b692d901e184be3445e084786602108599d2a51d229c0f5a48c71bf AS static
 
 RUN apk add --no-cache jq curl file pigz zstd brotli mailcap moreutils libarchive-tools
 
